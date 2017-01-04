@@ -15,15 +15,16 @@
 
 use std::env;
 use std::fs;
+use std::ffi::OsString;
 use std::io::{self, BufRead, Write};
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
 
 fn main() {
-    let src_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-    let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
-    let jobs = env::var("NUM_JOBS").unwrap();
-    let make = "make";
+    let src_dir = PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").unwrap());
+    let out_dir = PathBuf::from(env::var_os("OUT_DIR").unwrap());
+    let jobs = env::var_os("NUM_JOBS").unwrap();
+    let make_name = OsString::from("make");
     let lib_dir = out_dir.join("lib");
     let gmp_build_dir = out_dir.join("build-gmp");
     let gmp_src_dir = src_dir.join("gmp-6.1.2");
@@ -32,57 +33,43 @@ fn main() {
     let mpfr_src_dir = src_dir.join("mpfr-3.1.5");
     let mpfr_lib = lib_dir.join("libmpfr.a");
 
-    if !lib_dir.exists() || !gmp_lib.exists() || !mpfr_lib.exists() {
-        let _ = fs::remove_dir_all(&lib_dir);
-        fs::create_dir(&lib_dir).unwrap();
-
+    fs::create_dir_all(&lib_dir).unwrap();
+    if !gmp_lib.exists() {
         let _ = fs::remove_dir_all(&gmp_build_dir);
         fs::create_dir(&gmp_build_dir).unwrap();
-        let gmp_conf_path = gmp_src_dir.join("configure");
-        let gmp_conf = gmp_conf_path.to_str().unwrap();
-        let mut gmp_conf_cmd = Command::new("sh");
-        gmp_conf_cmd.current_dir(&gmp_build_dir)
-            .arg("-c")
-            .arg(format!("{} --enable-shared=no --with-pic=yes", gmp_conf));
-        execute(gmp_conf_cmd);
+        configure(&gmp_src_dir, &gmp_build_dir, None);
         remove_doc_from_makefile(&gmp_build_dir);
-        let mut gmp_make_cmd = Command::new(make);
-        gmp_make_cmd.current_dir(&gmp_build_dir).arg("-j").arg(&jobs);
-        execute(gmp_make_cmd);
-        let mut gmp_check_cmd = Command::new(make);
-        gmp_check_cmd.current_dir(&gmp_build_dir).arg("-j").arg(&jobs).arg("check");
-        execute(gmp_check_cmd);
-        fs::copy(&gmp_build_dir.join(".libs/libgmp.a"), &gmp_lib).unwrap();
-
+        make_and_check(&make_name, &gmp_build_dir, &jobs);
+        fs::copy(&gmp_build_dir.join(".libs").join("libgmp.a"), &gmp_lib).unwrap();
+    }
+    if !mpfr_lib.exists() {
         let _ = fs::remove_dir_all(&mpfr_build_dir);
         fs::create_dir(&mpfr_build_dir).unwrap();
-        let mpfr_conf_path = mpfr_src_dir.join("configure");
-        let mpfr_conf = mpfr_conf_path.to_str().unwrap();
-        let mut mpfr_conf_cmd = Command::new("sh");
-        mpfr_conf_cmd.current_dir(&mpfr_build_dir)
-            .arg("-c")
-            .arg(format!("{} --enable-shared=no --with-pic=yes --with-gmp-build={}",
-                         mpfr_conf,
-                         gmp_build_dir.to_str().unwrap()));
-        execute(mpfr_conf_cmd);
+        let mut option = OsString::from("--with-gmp-build=\"");
+        option.push(gmp_build_dir);
+        option.push("\"");
+        configure(&mpfr_src_dir, &mpfr_build_dir, Some(option));
         remove_doc_from_makefile(&mpfr_build_dir);
-        let mut mpfr_make_cmd = Command::new(make);
-        mpfr_make_cmd.current_dir(&mpfr_build_dir).arg("-j").arg(&jobs);
-        execute(mpfr_make_cmd);
-        let mut mpfr_check_cmd = Command::new(make);
-        mpfr_check_cmd.current_dir(&mpfr_build_dir).arg("-j").arg(&jobs).arg("check");
-        execute(mpfr_check_cmd);
+        make_and_check(&make_name, &mpfr_build_dir, &jobs);
         fs::copy(&mpfr_build_dir.join("src/.libs/libmpfr.a"), &mpfr_lib).unwrap();
     }
 
-    println!("cargo:rustc-flags=-L {} -l gmp -l mpfr",
-             lib_dir.to_str().unwrap());
+    println!("cargo:rustc-link-lib=static=gmp");
+    println!("cargo:rustc-link-lib=static=mpfr");
+    println!("cargo:rustc-link-search=native={}", lib_dir.display());
 }
 
-fn execute(mut command: Command) {
-    println!("$ {:?}", command);
-    let status = command.stdout(Stdio::inherit()).stderr(Stdio::inherit()).status().unwrap();
-    assert!(status.success());
+fn configure(src_dir: &PathBuf, build_dir: &PathBuf, options: Option<OsString>) {
+    let mut line = OsString::from("\"");
+    line.push(src_dir.join("configure"));
+    line.push("\" --enable-shared=no --with-pic=yes");
+    if let Some(options) = options {
+        line.push(" ");
+        line.push(options);
+    }
+    let mut conf = Command::new("sh");
+    conf.current_dir(&build_dir).arg("-c").arg(line);
+    execute(conf);
 }
 
 fn remove_doc_from_makefile(build_dir: &PathBuf) {
@@ -109,4 +96,19 @@ fn remove_doc_from_makefile(build_dir: &PathBuf) {
     drop(writer);
     fs::remove_file(&makefile).unwrap();
     fs::rename(&work, &makefile).unwrap();
+}
+
+fn make_and_check(make_name: &OsString, build_dir: &PathBuf, jobs: &OsString) {
+    let mut make = Command::new(make_name);
+    make.current_dir(build_dir).arg("-j").arg(&jobs);
+    execute(make);
+    let mut make_check = Command::new(make_name);
+    make_check.current_dir(&build_dir).arg("-j").arg(&jobs).arg("check");
+    execute(make_check);
+}
+
+fn execute(mut command: Command) {
+    println!("$ {:?}", command);
+    let status = command.stdout(Stdio::inherit()).stderr(Stdio::inherit()).status().unwrap();
+    assert!(status.success());
 }
