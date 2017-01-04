@@ -1,4 +1,4 @@
-// Copyright (C) 2017  University of Malta
+// Copyright © 2017 University of Malta
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of either
@@ -19,5 +19,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+// Generate gmp.rs:
+//     bindgen --link static=gmp path/to/gmp.h --output=gmp.rs
 pub mod gmp;
+
+// Generate mpfr.rs:
+//     bindgen --link static=mpfr path/to/mpfr.h --output=mpfr.rs --match=mpfr.h
+// Then, after #![] block, insert:
+//     use ::gmp::*;
 pub mod mpfr;

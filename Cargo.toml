@@ -21,16 +21,10 @@
 
 [package]
 name = "gmp-mpfr-sys"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Trevor Spiteri <trevor.spiteri@um.edu.mt>"]
 build = "build.rs"
 description = "Rust bindings to the gmp and mpfr libraries"
 homepage = "https://github.com/tspiteri/gmp-mpfr-sys.git"
 repository = "https://github.com/tspiteri/gmp-mpfr-sys.git"
 license = "LGPL-3.0+/GPL-3.0+"
-
-[lib]
-name = "gmp_mpfr_sys"
-
-# bindgen --link static=gmp $(find . -name gmp.h) --output=src/gmp.rs
-# bindgen --link static=mpfr $(find . -name mpfr.h) --output=src/mpfr.rs
