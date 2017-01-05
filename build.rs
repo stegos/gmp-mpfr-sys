@@ -123,6 +123,8 @@ fn remove_doc_from_makefile(build_dir: &PathBuf) {
         buf.clear();
     }
     drop(reader);
+    // check for write errors
+    writer.flush().unwrap();
     drop(writer);
     fs::rename(&work, &makefile).unwrap();
 }
