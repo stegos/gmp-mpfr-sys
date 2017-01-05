@@ -1,4 +1,4 @@
-// Copyright (C) 2017  University of Malta
+// Copyright © 2017 University of Malta
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,6 +20,36 @@ use std::io::{self, BufRead, Write};
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
 
+// mkdir -p "${OUT_DIR}"/lib
+// if [ ! -f "${OUT_DIR}"/lib/libgmp.a ]; then
+//     rm -r "${OUT_DIR}"/build-gmp
+//     mkdir "${OUT_DIR}"/build-gmp
+//     (
+//         cd "${OUT_DIR}"/build-gmp
+//         "${CARGO_MANIFEST_DIR}"/gmp-6.1.2/configure --enable-shared=no \
+//             --with-pic=yes
+//         sed 's/\(^SUBDIRS = .*\) doc\( \|$\)/\1\2/' Makefile > Makefile.work
+//         mv Makefile.work Makefile
+//         make -j "${NUM_JOBS}"
+//         make -j "${NUM_JOBS}" check
+//     )
+//     cp "${OUT_DIR}"/.libs/libgmp.a "${OUT_DIR}"/lib
+// fi
+// if [ ! -f "${OUT_DIR}"/lib/libmpfr.a ]; then
+//     rm -r "${OUT_DIR}"/build-mpfr
+//     mkdir "${OUT_DIR}"/build-mpfr
+//     (
+//         cd "${OUT_DIR}"/build-mpfr
+//         "${CARGO_MANIFEST_DIR}"/mpfr-3.1.5/configure --enable-shared=no \
+//             --with-pic=yes --with-gmp-build="${OUT_DIR}"/build-gmp
+//         sed 's/\(^SUBDIRS = .*\) doc\( \|$\)/\1\2/' Makefile > Makefile.work
+//         mv Makefile.work Makefile
+//         make -j "${NUM_JOBS}"
+//         make -j "${NUM_JOBS}" check
+//     )
+//     cp "${OUT_DIR}"/src/.libs/libmpfr.a "${OUT_DIR}"/lib
+// fi
+
 fn main() {
     let src_dir = PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").unwrap());
     let out_dir = PathBuf::from(env::var_os("OUT_DIR").unwrap());
@@ -34,7 +64,7 @@ fn main() {
     let mpfr_lib = lib_dir.join("libmpfr.a");
 
     fs::create_dir_all(&lib_dir).unwrap();
-    if !gmp_lib.exists() {
+    if !gmp_lib.is_file() {
         let _ = fs::remove_dir_all(&gmp_build_dir);
         fs::create_dir(&gmp_build_dir).unwrap();
         configure(&gmp_src_dir, &gmp_build_dir, None);
@@ -42,7 +72,7 @@ fn main() {
         make_and_check(&make_name, &gmp_build_dir, &jobs);
         fs::copy(&gmp_build_dir.join(".libs").join("libgmp.a"), &gmp_lib).unwrap();
     }
-    if !mpfr_lib.exists() {
+    if !mpfr_lib.is_file() {
         let _ = fs::remove_dir_all(&mpfr_build_dir);
         fs::create_dir(&mpfr_build_dir).unwrap();
         let mut option = OsString::from("--with-gmp-build=\"");
@@ -94,7 +124,6 @@ fn remove_doc_from_makefile(build_dir: &PathBuf) {
     }
     drop(reader);
     drop(writer);
-    fs::remove_file(&makefile).unwrap();
     fs::rename(&work, &makefile).unwrap();
 }
 
