@@ -2,15 +2,15 @@
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of either
-
+#
 # * the GNU Lesser General Public License as published by the Free
 #   Software Foundation, either version 3 of the License, or (at your
 #   option) any later version, or
-
+#
 # * the GNU General Public License as published by the Free Software
 #   Foundation, either version 3 of the License, or (at your option)
 #   any later version.
-
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -24,7 +24,9 @@ name = "gmp-mpfr-sys"
 version = "0.2.0"
 authors = ["Trevor Spiteri <trevor.spiteri@um.edu.mt>"]
 build = "build.rs"
-description = "Rust bindings to the gmp and mpfr libraries"
-homepage = "https://github.com/tspiteri/gmp-mpfr-sys.git"
+description = "Low-level bindings for GMP and MPFR"
+homepage = "https://github.com/tspiteri/gmp-mpfr-sys"
 repository = "https://github.com/tspiteri/gmp-mpfr-sys.git"
+readme = "README.md"
+keywords = ["gmp", "mpfr", "mathematics", "numerics"]
 license = "LGPL-3.0+/GPL-3.0+"

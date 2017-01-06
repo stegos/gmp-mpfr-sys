@@ -1,7 +1,8 @@
 # GMP and MPFR bindings
 
-This package provides Rust bindings for the GMP and MPFR libraries.
-The source of the the two libraries is included in the package.
+This package provides low-level Rust bindings for the GMP and MPFR
+libraries.  The source of the the two libraries is included in the
+package.
 
 ## License
 
