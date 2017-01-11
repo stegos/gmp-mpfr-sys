@@ -21,7 +21,7 @@
 
 [package]
 name = "gmp-mpfr-sys"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Trevor Spiteri <trevor.spiteri@um.edu.mt>"]
 build = "build.rs"
 description = "Rust low-level bindings for GMP and MPFR"
