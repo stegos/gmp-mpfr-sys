@@ -14,52 +14,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 use std::env;
-use std::fs;
 use std::ffi::OsString;
+use std::fs;
 use std::io::{self, BufRead, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-// cd <mpfr build dir>
-// sed -i 's/\(^SUBDIRS =.*\) doc\( \|$\)/\1\2/' Makefile
-// make -j "${NUM_JOBS}"
-// make -j "${NUM_JOBS}" check
-
 const GMP_DIR: &'static str = "gmp-6.1.2";
 const MPFR_DIR: &'static str = "mpfr-3.1.5";
-
-fn cargo_env(name: &str) -> OsString {
-    env::var_os(name)
-        .unwrap_or_else(|| panic!("environment variable not found: {}, please use cargo", name))
-}
-
-fn create_dir(dir: &Path) {
-    fs::create_dir_all(dir)
-        .unwrap_or_else(|_| panic!("Unable to create directory: {}", dir.display()));
-}
-
-fn remove_dir(dir: &Path) {
-    if !dir.exists() {
-        return;
-    }
-    if !dir.is_dir() {
-        panic!("Not a directory: {}", dir.display());
-    }
-    fs::remove_dir_all(dir)
-        .unwrap_or_else(|_| panic!("Unable to remove directory: {}", dir.display()));
-}
-
-fn copy_file(src: &Path, dst: &Path) {
-    fs::copy(&src, &dst).unwrap_or_else(|_| {
-        panic!("Unable to copy {} -> {}", src.display(), dst.display());
-    });
-}
-
-fn rename(src: &Path, dst: &Path) {
-    fs::rename(&src, &dst).unwrap_or_else(|_| {
-        panic!("Unable to rename {} -> {}", src.display(), dst.display());
-    });
-}
 
 fn main() {
     let src_dir = PathBuf::from(cargo_env("CARGO_MANIFEST_DIR"));
@@ -69,20 +31,16 @@ fn main() {
     let lib_dir = out_dir.join("lib");
     create_dir(&lib_dir);
     let gmp_lib = lib_dir.join("libgmp.a");
-    let gmp_build_dir = out_dir.join("build-gmp");
     if !gmp_lib.is_file() {
+        let gmp_build_dir = out_dir.join("build-gmp");
         remove_dir(&gmp_build_dir);
         create_dir(&gmp_build_dir);
-        let gmp_src_dir = src_dir.join(GMP_DIR);
-        // configure --enable-shared=no --with-pic=yes [win: --enable-assembly=no]
-        let option = if cfg!(windows) {
-            Some(OsString::from("--enable-assembly=no"))
-        } else {
-            None
-        };
-        configure(&gmp_src_dir, &gmp_build_dir, option);
+        let mut conf = parent_rel(&gmp_build_dir, &src_dir);
+        conf.push("/");
+        conf.push(GMP_DIR);
+        conf.push("/configure --enable-shared=no --with-pic=yes");
+        configure(&conf, &gmp_build_dir);
         remove_from_makefile(&gmp_build_dir, &["doc", "demos"]);
-        // make -j "${NUM_JOBS}" && make -j "${NUM_JOBS}" check
         make_and_check(&gmp_build_dir, &jobs);
         let gmp_build_lib = gmp_build_dir.join(".libs").join("libgmp.a");
         copy_file(&gmp_build_lib, &gmp_lib);
@@ -92,19 +50,21 @@ fn main() {
         let mpfr_build_dir = out_dir.join("build-mpfr");
         remove_dir(&mpfr_build_dir);
         create_dir(&mpfr_build_dir);
-        let mpfr_src_dir = src_dir.join(MPFR_DIR);
         // touch these files so that we don't try to rebuild them
+        let abs_mpfr_src_dir = src_dir.join(MPFR_DIR);
         for f in &["aclocal.m4", "configure", "Makefile.am", "Makefile.in"] {
-            touch(&mpfr_src_dir.join(f));
+            touch(&abs_mpfr_src_dir.join(f));
         }
-        // configure --enable-shared=no --with-pic=yes --with-gmp-build=<gmp_build_dir>
-        let mut option = OsString::from("--with-gmp-build=\"");
-        option.push(check_path(gmp_build_dir.into_os_string()));
-        option.push("\"");
-        configure(&mpfr_src_dir, &mpfr_build_dir, Some(option));
+        let mut conf = parent_rel(&mpfr_build_dir, &src_dir);
+        conf.push("/");
+        conf.push(MPFR_DIR);
+        conf.push("/configure --enable-shared=no --with-pic=yes \
+                   --with-gmp-build=../build-gmp");
+        configure(&conf, &mpfr_build_dir);
         remove_from_makefile(&mpfr_build_dir, &["doc"]);
         make_and_check(&mpfr_build_dir, &jobs);
-        let mpfr_build_lib = mpfr_build_dir.join("src").join(".libs").join("libmpfr.a");
+        let mpfr_build_lib =
+            mpfr_build_dir.join("src").join(".libs").join("libmpfr.a");
         copy_file(&mpfr_build_lib, &mpfr_lib);
     }
 
@@ -117,56 +77,62 @@ fn main() {
     println!("cargo:rustc-link-lib=static=mpfr");
 }
 
-fn check_path(src: OsString) -> OsString {
-    if cfg!(windows) {
-        let s = src.to_str().unwrap_or_else(|| {
-            panic!("Path contains unsupported characters, can only make {}",
-                   src.to_string_lossy())
-        });
-        let mut slashes = s.replace("\\", "/");
-        if slashes.find(":") == Some(1) {
-            let mut s = String::from("/");
-            s.push_str(&slashes[0..1]);
-            s.push_str(&slashes[2..]);
-            slashes = s;
+fn cargo_env(name: &str) -> OsString {
+    env::var_os(name).unwrap_or_else(|| {
+        panic!("environment variable not found: {}, please use cargo", name)
+    })
+}
+
+fn remove_dir(dir: &Path) {
+    if !dir.exists() {
+        return;
+    }
+    if !dir.is_dir() {
+        panic!("Not a directory: {}", dir.display());
+    }
+    fs::remove_dir_all(dir).unwrap_or_else(|_| {
+        panic!("Unable to remove directory: {}", dir.display())
+    });
+}
+
+fn create_dir(dir: &Path) {
+    fs::create_dir_all(dir).unwrap_or_else(|_| {
+        panic!("Unable to create directory: {}", dir.display())
+    });
+}
+
+fn parent_rel(dir: &Path, parent: &Path) -> OsString {
+    if dir == parent {
+        return OsString::from(".");
+    }
+    let mut popped = PathBuf::from(dir);
+    let mut rel = OsString::from("..");
+    loop {
+        if !popped.pop() {
+            panic!("{} not a parent of {}", parent.display(), dir.display());
         }
-        slashes.into()
-    } else {
-        src
+        if popped == parent {
+            return rel;
+        }
+        rel.push("/..");
     }
 }
 
-fn touch(file: &Path) {
-    let mut t = Command::new("touch");
-    t.arg(file);
-    execute(t);
-}
-
-fn configure(src_dir: &PathBuf, build_dir: &PathBuf, options: Option<OsString>) {
-    let mut line = OsString::from("\"");
-    line.push(check_path(src_dir.join("configure").into_os_string()));
-    line.push("\" --enable-shared=no --with-pic=yes");
-    if let Some(options) = options {
-        line.push(" ");
-        line.push(options);
-    }
+fn configure(conf_line: &OsString, build_dir: &PathBuf) {
     let mut conf = Command::new("sh");
-    conf.current_dir(&build_dir).arg("-c").arg(line);
+    conf.current_dir(&build_dir).arg("-c").arg(conf_line);
     execute(conf);
 }
 
 fn remove_from_makefile(build_dir: &PathBuf, dirs: &[&str]) {
     let makefile = build_dir.join("Makefile");
     let work = build_dir.join("Makefile.work");
-    let read_file = fs::File::open(&makefile)
-        .unwrap_or_else(|_| panic!("Cannot open file: {}", makefile.display()));
+    let read_file = open(&makefile);
     let mut reader = io::BufReader::new(read_file);
-    let write_file = fs::File::create(&work)
-        .unwrap_or_else(|_| panic!("Cannot create file: {}", work.display()));
+    let write_file = create(&work);
     let mut writer = io::BufWriter::new(write_file);
     let mut buf = String::new();
-    while reader.read_line(&mut buf)
-        .unwrap_or_else(|_| panic!("Cannot read from: {}", makefile.display())) > 0 {
+    while read_line(&mut reader, &mut buf, &makefile) > 0 {
         if buf.starts_with("SUBDIRS = ") {
             for dir in dirs {
                 let mut space = String::from(" ") + dir + " ";
@@ -186,13 +152,12 @@ fn remove_from_makefile(build_dir: &PathBuf, dirs: &[&str]) {
                 buf.drain(doc..doc + 4);
             }
         }
-        writer.write(buf.as_bytes())
-            .unwrap_or_else(|_| panic!("Cannot write to: {}", work.display()));
+        write(&mut writer, &buf, &work);
         buf.clear();
     }
     drop(reader);
     // check for write errors
-    writer.flush().unwrap_or_else(|_| panic!("Cannot write to: {}", work.display()));
+    flush(&mut writer, &work);
     drop(writer);
     rename(&work, &makefile);
 }
@@ -206,9 +171,22 @@ fn make_and_check(build_dir: &PathBuf, jobs: &OsString) {
     execute(make_check);
 }
 
+fn copy_file(src: &Path, dst: &Path) {
+    fs::copy(&src, &dst).unwrap_or_else(|_| {
+        panic!("Unable to copy {} -> {}", src.display(), dst.display());
+    });
+}
+
+fn touch(file: &Path) {
+    let mut t = Command::new("touch");
+    t.arg(file);
+    execute(t);
+}
+
 fn execute(mut command: Command) {
     println!("$ {:?}", command);
-    let status = command.status().unwrap_or_else(|_| panic!("Unable to execute: {:?}", command));
+    let status = command.status()
+        .unwrap_or_else(|_| panic!("Unable to execute: {:?}", command));
     if !status.success() {
         if let Some(code) = status.code() {
             panic!("Program failed with code {}: {:?}", code, command);
@@ -216,4 +194,38 @@ fn execute(mut command: Command) {
             panic!("Program failed: {:?}", command);
         }
     }
+}
+
+fn open(name: &PathBuf) -> fs::File {
+    fs::File::open(name)
+        .unwrap_or_else(|_| panic!("Cannot open file: {}", name.display()))
+}
+
+fn create(name: &PathBuf) -> fs::File {
+    fs::File::create(name)
+        .unwrap_or_else(|_| panic!("Cannot create file: {}", name.display()))
+}
+
+fn read_line(reader: &mut io::BufReader<fs::File>,
+             buf: &mut String,
+             name: &PathBuf)
+             -> usize {
+    reader.read_line(buf)
+        .unwrap_or_else(|_| panic!("Cannot read from: {}", name.display()))
+}
+
+fn write(writer: &mut io::BufWriter<fs::File>, buf: &str, name: &PathBuf) {
+    writer.write(buf.as_bytes())
+        .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
+}
+
+fn flush(writer: &mut io::BufWriter<fs::File>, name: &PathBuf) {
+    writer.flush()
+        .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
+}
+
+fn rename(src: &Path, dst: &Path) {
+    fs::rename(&src, &dst).unwrap_or_else(|_| {
+        panic!("Unable to rename {} -> {}", src.display(), dst.display());
+    });
 }

@@ -1,0 +1,4 @@
+max_width = 80
+reorder_imported_names = true
+reorder_imports = true
+take_source_hints = false

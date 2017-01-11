@@ -20,3 +20,21 @@ redistribute it and/or modify it under the terms of either
   
 See [LICENSE-LGPL](LICENSE-LGPL.md) and [LICENSE-GPL](LICENSE-GPL.md)
 for details.
+
+## Building on Windows
+
+You can build on Windows with the rust gnu toolchain and an up-to-date
+MSYS2 installation. To install MSYS2, you can do the following:
+
+1. Install MSYS2 using the [installer](https://msys2.github.io/).
+
+2. Launch the MSYS2 MinGW 64-bit terminal from the start menu. You
+   should build from this terminal.
+
+3. Install the required tools.
+
+   ```sh
+   $ pacman -S pacman-mirrors
+   
+   $ pacman -S make diffutils mingw-w64-x86_64-gcc
+   ```
