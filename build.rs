@@ -38,6 +38,7 @@ fn main() {
         let gmp_src_dir = src_dir.join(GMP_DIR);
         let mut conf = dir_relative(&gmp_build_dir, &gmp_src_dir);
         conf.push("/configure --enable-shared=no --with-pic=yes");
+        println!("Running configure in {}", gmp_build_dir.display());
         configure(&conf, &gmp_build_dir);
         remove_from_makefile(&gmp_build_dir, &["doc", "demos"]);
         make_and_check(&gmp_build_dir, &jobs);
@@ -57,6 +58,7 @@ fn main() {
         let mut conf = dir_relative(&mpfr_build_dir, &mpfr_src_dir);
         conf.push("/configure --enable-shared=no --with-pic=yes \
                    --with-gmp-build=../build-gmp");
+        println!("Running configure in {}", mpfr_build_dir.display());
         configure(&conf, &mpfr_build_dir);
         remove_from_makefile(&mpfr_build_dir, &["doc"]);
         make_and_check(&mpfr_build_dir, &jobs);
