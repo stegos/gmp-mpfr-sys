@@ -35,9 +35,8 @@ fn main() {
         let gmp_build_dir = out_dir.join("build-gmp");
         remove_dir(&gmp_build_dir);
         create_dir(&gmp_build_dir);
-        let mut conf = parent_rel(&gmp_build_dir, &src_dir);
-        conf.push("/");
-        conf.push(GMP_DIR);
+        let gmp_src_dir = src_dir.join(GMP_DIR);
+        let mut conf = dir_relative(&gmp_build_dir, &gmp_src_dir);
         conf.push("/configure --enable-shared=no --with-pic=yes");
         configure(&conf, &gmp_build_dir);
         remove_from_makefile(&gmp_build_dir, &["doc", "demos"]);
@@ -51,13 +50,11 @@ fn main() {
         remove_dir(&mpfr_build_dir);
         create_dir(&mpfr_build_dir);
         // touch these files so that we don't try to rebuild them
-        let abs_mpfr_src_dir = src_dir.join(MPFR_DIR);
+        let mpfr_src_dir = src_dir.join(MPFR_DIR);
         for f in &["aclocal.m4", "configure", "Makefile.am", "Makefile.in"] {
-            touch(&abs_mpfr_src_dir.join(f));
+            touch(&mpfr_src_dir.join(f));
         }
-        let mut conf = parent_rel(&mpfr_build_dir, &src_dir);
-        conf.push("/");
-        conf.push(MPFR_DIR);
+        let mut conf = dir_relative(&mpfr_build_dir, &mpfr_src_dir);
         conf.push("/configure --enable-shared=no --with-pic=yes \
                    --with-gmp-build=../build-gmp");
         configure(&conf, &mpfr_build_dir);
@@ -101,21 +98,42 @@ fn create_dir(dir: &Path) {
     });
 }
 
-fn parent_rel(dir: &Path, parent: &Path) -> OsString {
-    if dir == parent {
-        return OsString::from(".");
-    }
-    let mut popped = PathBuf::from(dir);
-    let mut rel = OsString::from("..");
-    loop {
-        if !popped.pop() {
-            panic!("{} not a parent of {}", parent.display(), dir.display());
+fn dir_relative(dir: &Path, rel_to: &Path) -> OsString {
+    let (mut diri, mut reli) = (dir.components(), rel_to.components());
+    let (mut dirc, mut relc) = (diri.next(), reli.next());
+    let mut some_common = false;
+    while let (Some(d), Some(r)) = (dirc, relc) {
+        if d != r {
+            break;
         }
-        if popped == parent {
-            return rel;
-        }
-        rel.push("/..");
+        some_common = true;
+        dirc = diri.next();
+        relc = reli.next();
     }
+    if !some_common {
+        panic!("cannot access {} from {} using relative paths",
+               rel_to.display(),
+               dir.display());
+    }
+    let mut ret = OsString::from("");
+    while dirc.is_some() {
+        if !ret.is_empty() {
+            ret.push("/");
+        }
+        ret.push("..");
+        dirc = diri.next();
+    }
+    while let Some(r) = relc {
+        if !ret.is_empty() {
+            ret.push("/");
+        }
+        ret.push(r);
+        relc = reli.next();
+    }
+    if ret.is_empty() {
+        ret.push(".");
+    }
+    ret
 }
 
 fn configure(conf_line: &OsString, build_dir: &PathBuf) {
