@@ -27,7 +27,7 @@ To build on GNU/Linux, simply make sure you have `diffutils`, `gcc`
 and `make` installed on your system. For example on Fedora:
 
 ```sh
-# sudo dnf install diffutils gcc make
+sudo dnf install diffutils gcc make
 ```
 
 ## Building on macOS
@@ -40,7 +40,9 @@ which should help you install them.
 ## Building on Windows
 
 You can build on Windows with the Rust GNU toolchain and an up-to-date
-MSYS2 installation. To install MSYS2, you can do the following:
+MSYS2 installation. Some steps for a 64-bit environment are listed
+below, you can follow similar steps for a 32-bit environment by
+substituting 32 for 64. To install MSYS2:
 
 1. Install MSYS2 using the [installer](https://msys2.github.io/).
 
@@ -49,19 +51,20 @@ MSYS2 installation. To install MSYS2, you can do the following:
 3. Install the required tools.
 
    ```sh
-   $ pacman -S pacman-mirrors
-   
-   $ pacman -S diffutils make mingw-w64-x86_64-gcc
+   pacman -S pacman-mirrors
+   pacman -S diffutils make mingw-w64-x86_64-gcc
    ```
    
 Then, to build a crate with a dependency on this crate:
 
 1. Launch the MSYS MinGW 64-bit terminal from the start menu.
 
-2. Change to the crate directory. Note that building the GMP and MPFR
-   libraries in MinGW with absolute paths does not work very well, so
-   relative paths are used. If your crate is inside `C:\mingw` and the
-   `.cargo` directory is outside `C:\mingw`, this will not work.
-   Please move your crate to the same side of `C:\mingw` as `.cargo`.
+2. Change to the crate directory.
 
-3. Run `cargo build`.
+   Note that building the GMP and MPFR libraries in MSYS with absolute
+   paths does not work very well, so relative paths are used. If your
+   crate is inside `C:\msys64` and the `.cargo` directory is outside
+   `C:\msys64`, this will not work. Please move your crate to the
+   same side of `C:\msys64` as `.cargo`.
+
+3. Build the crate using `cargo`.

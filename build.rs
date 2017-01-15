@@ -15,8 +15,8 @@
 
 use std::env;
 use std::ffi::OsString;
-use std::fs;
-use std::io::{self, BufRead, Write};
+use std::fs::{self, File};
+use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -37,7 +37,7 @@ fn main() {
         create_dir(&gmp_build_dir);
         let gmp_src_dir = src_dir.join(GMP_DIR);
         let mut conf = dir_relative(&gmp_build_dir, &gmp_src_dir);
-        conf.push("/configure --enable-shared=no --with-pic=yes");
+        conf.push("/configure --enable-fat --disable-shared --with-pic");
         println!("Running configure in {}", gmp_build_dir.display());
         configure(&conf, &gmp_build_dir);
         remove_from_makefile(&gmp_build_dir, &["doc", "demos"]);
@@ -56,8 +56,8 @@ fn main() {
             touch(&mpfr_src_dir.join(f));
         }
         let mut conf = dir_relative(&mpfr_build_dir, &mpfr_src_dir);
-        conf.push("/configure --enable-shared=no --with-pic=yes \
-                   --with-gmp-build=../build-gmp");
+        conf.push("/configure --enable-thread-safe --disable-shared \
+                   --with-gmp-build=../build-gmp --with-pic");
         println!("Running configure in {}", mpfr_build_dir.display());
         configure(&conf, &mpfr_build_dir);
         remove_from_makefile(&mpfr_build_dir, &["doc"]);
@@ -86,9 +86,7 @@ fn remove_dir(dir: &Path) {
     if !dir.exists() {
         return;
     }
-    if !dir.is_dir() {
-        panic!("Not a directory: {}", dir.display());
-    }
+    assert!(dir.is_dir(), "Not a directory: {}", dir.display());
     fs::remove_dir_all(dir).unwrap_or_else(|_| {
         panic!("Unable to remove directory: {}", dir.display())
     });
@@ -112,12 +110,11 @@ fn dir_relative(dir: &Path, rel_to: &Path) -> OsString {
         dirc = diri.next();
         relc = reli.next();
     }
-    if !some_common {
-        panic!("cannot access {} from {} using relative paths",
-               rel_to.display(),
-               dir.display());
-    }
-    let mut ret = OsString::from("");
+    assert!(some_common,
+            "cannot access {} from {} using relative paths",
+            rel_to.display(),
+            dir.display());
+    let mut ret = OsString::new();
     while dirc.is_some() {
         if !ret.is_empty() {
             ret.push("/");
@@ -147,10 +144,8 @@ fn configure(conf_line: &OsString, build_dir: &PathBuf) {
 fn remove_from_makefile(build_dir: &PathBuf, dirs: &[&str]) {
     let makefile = build_dir.join("Makefile");
     let work = build_dir.join("Makefile.work");
-    let read_file = open(&makefile);
-    let mut reader = io::BufReader::new(read_file);
-    let write_file = create(&work);
-    let mut writer = io::BufWriter::new(write_file);
+    let mut reader = open(&makefile);
+    let mut writer = create(&work);
     let mut buf = String::new();
     while read_line(&mut reader, &mut buf, &makefile) > 0 {
         if buf.starts_with("SUBDIRS = ") {
@@ -184,10 +179,10 @@ fn remove_from_makefile(build_dir: &PathBuf, dirs: &[&str]) {
 
 fn make_and_check(build_dir: &PathBuf, jobs: &OsString) {
     let mut make = Command::new("make");
-    make.current_dir(build_dir).arg("-j").arg(&jobs);
+    make.current_dir(build_dir).arg("-j").arg(jobs);
     execute(make);
     let mut make_check = Command::new("make");
-    make_check.current_dir(&build_dir).arg("-j").arg(&jobs).arg("check");
+    make_check.current_dir(build_dir).arg("-j").arg(jobs).arg("check");
     execute(make_check);
 }
 
@@ -216,17 +211,19 @@ fn execute(mut command: Command) {
     }
 }
 
-fn open(name: &PathBuf) -> fs::File {
-    fs::File::open(name)
-        .unwrap_or_else(|_| panic!("Cannot open file: {}", name.display()))
+fn open(name: &PathBuf) -> BufReader<File> {
+    let file = File::open(name)
+        .unwrap_or_else(|_| panic!("Cannot open file: {}", name.display()));
+    BufReader::new(file)
 }
 
-fn create(name: &PathBuf) -> fs::File {
-    fs::File::create(name)
-        .unwrap_or_else(|_| panic!("Cannot create file: {}", name.display()))
+fn create(name: &PathBuf) -> BufWriter<File> {
+    let file = File::create(name)
+        .unwrap_or_else(|_| panic!("Cannot create file: {}", name.display()));
+    BufWriter::new(file)
 }
 
-fn read_line(reader: &mut io::BufReader<fs::File>,
+fn read_line(reader: &mut BufReader<File>,
              buf: &mut String,
              name: &PathBuf)
              -> usize {
@@ -234,12 +231,12 @@ fn read_line(reader: &mut io::BufReader<fs::File>,
         .unwrap_or_else(|_| panic!("Cannot read from: {}", name.display()))
 }
 
-fn write(writer: &mut io::BufWriter<fs::File>, buf: &str, name: &PathBuf) {
+fn write(writer: &mut BufWriter<File>, buf: &str, name: &PathBuf) {
     writer.write(buf.as_bytes())
         .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
 }
 
-fn flush(writer: &mut io::BufWriter<fs::File>, name: &PathBuf) {
+fn flush(writer: &mut BufWriter<File>, name: &PathBuf) {
     writer.flush()
         .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
 }
