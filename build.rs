@@ -1,17 +1,41 @@
 // Copyright © 2017 University of Malta
 
 // This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-
+// it under the terms of either
+//
+// * the GNU Lesser General Public License as published by the Free
+//   Software Foundation, either version 3 of the License, or (at your
+//   option) any later version, or
+//
+// * the GNU General Public License as published by the Free Software
+//   Foundation, either version 3 of the License, or (at your option)
+//   any later version.
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+// Notes:
+//
+// 1. Add the following line to the top of mpfr-3.1.5/configure, to
+//    work around lacking realpath in macOS:
+//
+//    # Define realpath if it is not found (for macOS)
+//    realpath . >/dev/null 2>&1 || realpath() { case "$1" in
+//      [\\/]* | ?:[\\/]* ) echo "$1" ;;
+//      * ) echo "$PWD/$1" ;;
+//    esac; }
+//
+// 2. Configure GMP with --enable-fat so that built file is portable.
+//
+// 3. Configure GMP and MPFR with: --disable-shared --with-pic
+//
+// 4. Use relative paths for configure otherwise mingw might be
+//    confused with drives and such.
 
 use std::env;
 use std::ffi::OsString;
