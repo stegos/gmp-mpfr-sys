@@ -30,9 +30,10 @@ fn main() {
 
     let lib_dir = out_dir.join("lib");
     create_dir(&lib_dir);
+    let gmp_build_dir = out_dir.join("build-gmp");
+    let mpfr_build_dir = out_dir.join("build-mpfr");
     let gmp_lib = lib_dir.join("libgmp.a");
     if !gmp_lib.is_file() {
-        let gmp_build_dir = out_dir.join("build-gmp");
         remove_dir(&gmp_build_dir);
         create_dir(&gmp_build_dir);
         let gmp_src_dir = src_dir.join(GMP_DIR);
@@ -47,7 +48,6 @@ fn main() {
     }
     let mpfr_lib = lib_dir.join("libmpfr.a");
     if !mpfr_lib.is_file() {
-        let mpfr_build_dir = out_dir.join("build-mpfr");
         remove_dir(&mpfr_build_dir);
         create_dir(&mpfr_build_dir);
         // touch these files so that we don't try to rebuild them
@@ -66,6 +66,8 @@ fn main() {
             mpfr_build_dir.join("src").join(".libs").join("libmpfr.a");
         copy_file(&mpfr_build_lib, &mpfr_lib);
     }
+    remove_dir(&gmp_build_dir);
+    remove_dir(&mpfr_build_dir);
 
     let lib_search = lib_dir.to_str().unwrap_or_else(|| {
         panic!("Path contains unsupported characters, can only make {}",
