@@ -8,15 +8,10 @@ libraries is included in the package.
 
 ## License
 
-Just like GMP and MPFR, this crate is free software: you can
-redistribute it and/or modify it under the terms of either
-
-* the GNU Lesser General Public License as published by the Free
-  Software Foundation, either version 3 of the License, or (at your
-  option) any later version, or
-* the GNU General Public License as published by the Free Software
-  Foundation, either version 3 of the License, or (at your option) any
-  later version.
+This crate is free software: you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
   
 See [LICENSE-LGPL](LICENSE-LGPL.md) and [LICENSE-GPL](LICENSE-GPL.md)
 for details.
