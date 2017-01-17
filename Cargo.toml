@@ -16,11 +16,11 @@
 
 [package]
 name = "gmp-mpfr-sys"
-version = "0.2.2"
+version = "0.2.3"
 authors = ["Trevor Spiteri <trevor.spiteri@um.edu.mt>"]
 build = "build.rs"
 description = "Rust low-level bindings for GMP and MPFR"
-repository = "https://gitlab.com/tspiteri/gmp-mpfr-sys.git"
+repository = "https://gitlab.com/tspiteri/gmp-mpfr-sys"
 readme = "README.md"
 keywords = ["gmp", "mpfr", "mathematics", "numerics"]
 license = "LGPL-3.0+"
