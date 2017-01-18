@@ -1,10 +1,18 @@
-# Rust low-level bindings for GMP and MPFR
+# Rust low-level bindings for GMP, MPFR and MPC
 
-The `gmp-mpfr-sys` crate provides Rust low-level bindings for the
-[GNU Multiple Precision Arithmetic Library](https://gmplib.org/) (GMP)
-and the [GNU MPFR Library](http://www.mpfr.org/), a library for
-multiple-precision floating-point computations. The source of the two
-libraries is included in the package.
+The `gmp-mpfr-sys` crate provides Rust low-level bindings for
+
+  - the
+    [GNU Multiple Precision Arithmetic Library](https://gmplib.org/)
+    (GMP),
+
+  - the [GNU MPFR Library](http://www.mpfr.org/), a library for
+    multiple-precision floating-point computations, and
+	
+  - [GNU MPC](http://www.multiprecision.org/), a library for the
+    arithmetic of complex numbers with arbitrarily high precision.
+
+The source of the three libraries is included in the package.
 
 ## License
 

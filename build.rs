@@ -41,6 +41,7 @@ use std::process::Command;
 
 const GMP_DIR: &'static str = "gmp-6.1.2";
 const MPFR_DIR: &'static str = "mpfr-3.1.5";
+const MPC_DIR: &'static str = "mpc-1.0.3";
 
 fn main() {
     let src_dir = PathBuf::from(cargo_env("CARGO_MANIFEST_DIR"));
@@ -51,6 +52,8 @@ fn main() {
     create_dir(&lib_dir);
     let gmp_build_dir = out_dir.join("build-gmp");
     let mpfr_build_dir = out_dir.join("build-mpfr");
+    let mpc_build_dir = out_dir.join("build-mpc");
+
     let gmp_lib = lib_dir.join("libgmp.a");
     if !gmp_lib.is_file() {
         remove_dir(&gmp_build_dir);
@@ -65,12 +68,13 @@ fn main() {
         let gmp_build_lib = gmp_build_dir.join(".libs").join("libgmp.a");
         copy_file(&gmp_build_lib, &gmp_lib);
     }
+
     let mpfr_lib = lib_dir.join("libmpfr.a");
     if !mpfr_lib.is_file() {
         remove_dir(&mpfr_build_dir);
         create_dir(&mpfr_build_dir);
-        // touch these files so that we don't try to rebuild them
         let mpfr_src_dir = src_dir.join(MPFR_DIR);
+        // touch these files so that we don't try to rebuild them
         for f in &["aclocal.m4", "configure", "Makefile.am", "Makefile.in"] {
             touch(&mpfr_src_dir.join(f));
         }
@@ -85,8 +89,33 @@ fn main() {
             mpfr_build_dir.join("src").join(".libs").join("libmpfr.a");
         copy_file(&mpfr_build_lib, &mpfr_lib);
     }
+
+    let mpc_lib = lib_dir.join("libmpc.a");
+    if !mpc_lib.is_file() {
+        remove_dir(&mpc_build_dir);
+        create_dir(&mpc_build_dir);
+        let mpc_src_dir = src_dir.join(MPC_DIR);
+        symlink(&mpc_build_dir, &PathBuf::from("../build-gmp"));
+        symlink(&mpc_build_dir, &PathBuf::from("../build-mpfr"));
+        let mut conf = dir_relative(&mpc_build_dir, &mpc_src_dir);
+        conf.push("/configure --disable-shared --with-pic \
+                   --with-gmp-lib=../build-gmp/.libs \
+                   --with-gmp-include=../build-gmp/include \
+                   --with-mpfr-lib=../build-mpfr/src/.libs \
+                   --with-mpfr-include=");
+        conf.push(dir_relative(&mpc_build_dir, &mpc_src_dir));
+        conf.push("/src");
+        println!("Running configure in {}", mpc_build_dir.display());
+        configure(&conf, &mpc_build_dir);
+        remove_from_makefile(&mpc_build_dir, &["doc"]);
+        make_and_check(&mpc_build_dir, &jobs);
+        let mpc_build_lib =
+            mpc_build_dir.join("src").join(".libs").join("libmpc.a");
+        copy_file(&mpc_build_lib, &mpc_lib);
+    }
     remove_dir(&gmp_build_dir);
     remove_dir(&mpfr_build_dir);
+    remove_dir(&mpc_build_dir);
 
     let lib_search = lib_dir.to_str().unwrap_or_else(|| {
         panic!("Path contains unsupported characters, can only make {}",
@@ -95,6 +124,7 @@ fn main() {
     println!("cargo:rustc-link-search=native={}", lib_search);
     println!("cargo:rustc-link-lib=static=gmp");
     println!("cargo:rustc-link-lib=static=mpfr");
+    println!("cargo:rustc-link-lib=static=mpc");
 }
 
 fn cargo_env(name: &str) -> OsString {
@@ -217,6 +247,12 @@ fn touch(file: &Path) {
     let mut t = Command::new("touch");
     t.arg(file);
     execute(t);
+}
+
+fn symlink(dir: &Path, link: &Path) {
+    let mut c = Command::new("ln");
+    c.current_dir(dir).arg("-s").arg(link);
+    execute(c);
 }
 
 fn execute(mut command: Command) {
