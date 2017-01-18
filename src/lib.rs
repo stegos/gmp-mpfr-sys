@@ -25,7 +25,7 @@ pub mod gmp;
 pub mod mpfr;
 
 // Generate mpc.rs:
-//     bindgen --link static=mpc path/to/mpfr.h --output=mpc.rs --match=mpc.h
+//     bindgen --link static=mpc path/to/mpc.h --output=mpc.rs --match=mpc.h
 // Then, after #![] block, insert:
 //     use ::gmp::*;
 //     use ::mpfr::*;

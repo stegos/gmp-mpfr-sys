@@ -113,6 +113,7 @@ fn main() {
             mpc_build_dir.join("src").join(".libs").join("libmpc.a");
         copy_file(&mpc_build_lib, &mpc_lib);
     }
+
     remove_dir(&gmp_build_dir);
     remove_dir(&mpfr_build_dir);
     remove_dir(&mpc_build_dir);
