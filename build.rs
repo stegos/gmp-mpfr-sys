@@ -16,18 +16,13 @@
 
 // Notes:
 //
-// 1. Add the following line to the top of mpfr-3.1.5/configure, to
-//    work around lacking realpath in macOS:
+// 1. Configure GMP with --enable-fat so that built file is portable.
 //
-//    # Define realpath if it is not found (for macOS)
-//    realpath . >/dev/null 2>&1 || realpath() { case "$1" in
-//      [\\/]* | ?:[\\/]* ) echo "$1" ;;
-//      * ) echo "$PWD/$1" ;;
-//    esac; }
+// 2. Configure GMP, MPFR and MPC with: --disable-shared --with-pic
 //
-// 2. Configure GMP with --enable-fat so that built file is portable.
-//
-// 3. Configure GMP and MPFR with: --disable-shared --with-pic
+// 3. Add symlinks to work around relative path issues in MPFR and MPC.
+//    In MPFR: ln -s ../gmp-build
+//    In MPC: ln -s ../mpfr-src ../mpfr-build ../gmp-build .
 //
 // 4. Use relative paths for configure otherwise mingw might be
 //    confused with drives and such.
