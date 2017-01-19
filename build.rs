@@ -33,7 +33,7 @@
 //    confused with drives and such.
 
 use std::env;
-use std::ffi::OsString;
+use std::ffi::{OsStr, OsString};
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};
@@ -50,19 +50,27 @@ fn main() {
 
     let lib_dir = out_dir.join("lib");
     create_dir(&lib_dir);
-    let gmp_build_dir = out_dir.join("build-gmp");
-    let mpfr_build_dir = out_dir.join("build-mpfr");
-    let mpc_build_dir = out_dir.join("build-mpc");
+    let build_dir = out_dir.join("build");
+    create_dir(&build_dir);
+    symlink(&build_dir,
+            &dir_relative(&build_dir, &src_dir.join(GMP_DIR)),
+            Some(&OsString::from("gmp-src")));
+    symlink(&build_dir,
+            &dir_relative(&build_dir, &src_dir.join(MPFR_DIR)),
+            Some(&OsString::from("mpfr-src")));
+    symlink(&build_dir,
+            &dir_relative(&build_dir, &src_dir.join(MPC_DIR)),
+            Some(&OsString::from("mpc-src")));
 
     let gmp_lib = lib_dir.join("libgmp.a");
     if !gmp_lib.is_file() {
+        let gmp_build_dir = build_dir.join("gmp-build");
         remove_dir(&gmp_build_dir);
         create_dir(&gmp_build_dir);
-        let gmp_src_dir = src_dir.join(GMP_DIR);
-        let mut conf = dir_relative(&gmp_build_dir, &gmp_src_dir);
-        conf.push("/configure --enable-fat --disable-shared --with-pic");
+        let conf = "../gmp-src/configure --enable-fat --disable-shared \
+                    --with-pic";
         println!("Running configure in {}", gmp_build_dir.display());
-        configure(&conf, &gmp_build_dir);
+        configure(&gmp_build_dir, &OsString::from(conf));
         remove_from_makefile(&gmp_build_dir, &["doc", "demos"]);
         make_and_check(&gmp_build_dir, &jobs);
         let gmp_build_lib = gmp_build_dir.join(".libs").join("libgmp.a");
@@ -71,18 +79,18 @@ fn main() {
 
     let mpfr_lib = lib_dir.join("libmpfr.a");
     if !mpfr_lib.is_file() {
+        let mpfr_build_dir = build_dir.join("mpfr-build");
         remove_dir(&mpfr_build_dir);
         create_dir(&mpfr_build_dir);
-        let mpfr_src_dir = src_dir.join(MPFR_DIR);
+        symlink(&mpfr_build_dir, &OsString::from("../gmp-build"), None);
         // touch these files so that we don't try to rebuild them
         for f in &["aclocal.m4", "configure", "Makefile.am", "Makefile.in"] {
-            touch(&mpfr_src_dir.join(f));
+            touch(&mpfr_build_dir.join("../mpfr-src"), &OsString::from(f));
         }
-        let mut conf = dir_relative(&mpfr_build_dir, &mpfr_src_dir);
-        conf.push("/configure --enable-thread-safe --disable-shared \
-                   --with-gmp-build=../build-gmp --with-pic");
+        let conf = "../mpfr-src/configure --enable-thread-safe \
+                    --disable-shared --with-gmp-build=../gmp-build --with-pic";
         println!("Running configure in {}", mpfr_build_dir.display());
-        configure(&conf, &mpfr_build_dir);
+        configure(&mpfr_build_dir, &OsString::from(conf));
         remove_from_makefile(&mpfr_build_dir, &["doc"]);
         make_and_check(&mpfr_build_dir, &jobs);
         let mpfr_build_lib =
@@ -92,21 +100,19 @@ fn main() {
 
     let mpc_lib = lib_dir.join("libmpc.a");
     if !mpc_lib.is_file() {
+        let mpc_build_dir = build_dir.join("mpc-build");
         remove_dir(&mpc_build_dir);
         create_dir(&mpc_build_dir);
-        let mpc_src_dir = src_dir.join(MPC_DIR);
-        symlink(&mpc_build_dir, &PathBuf::from("../build-gmp"));
-        symlink(&mpc_build_dir, &PathBuf::from("../build-mpfr"));
-        let mut conf = dir_relative(&mpc_build_dir, &mpc_src_dir);
-        conf.push("/configure --disable-shared --with-pic \
-                   --with-gmp-lib=../build-gmp/.libs \
-                   --with-gmp-include=../build-gmp/include \
-                   --with-mpfr-lib=../build-mpfr/src/.libs \
-                   --with-mpfr-include=");
-        conf.push(dir_relative(&mpc_build_dir, &mpc_src_dir));
-        conf.push("/src");
+        symlink(&mpc_build_dir, &OsString::from("../mpfr-src"), None);
+        symlink(&mpc_build_dir, &OsString::from("../mpfr-build"), None);
+        symlink(&mpc_build_dir, &OsString::from("../gmp-build"), None);
+        let conf = "../mpc-src/configure --disable-shared \
+                    --with-mpfr-include=../mpfr-src/src \
+                    --with-mpfr-lib=../mpfr-build/src/.libs \
+                    --with-gmp-include=../gmp-build \
+                    --with-gmp-lib=../gmp-build --with-pic";
         println!("Running configure in {}", mpc_build_dir.display());
-        configure(&conf, &mpc_build_dir);
+        configure(&mpc_build_dir, &OsString::from(conf));
         remove_from_makefile(&mpc_build_dir, &["doc"]);
         make_and_check(&mpc_build_dir, &jobs);
         let mpc_build_lib =
@@ -114,9 +120,7 @@ fn main() {
         copy_file(&mpc_build_lib, &mpc_lib);
     }
 
-    remove_dir(&gmp_build_dir);
-    remove_dir(&mpfr_build_dir);
-    remove_dir(&mpc_build_dir);
+    // remove_dir(&build_dir);
 
     let lib_search = lib_dir.to_str().unwrap_or_else(|| {
         panic!("Path contains unsupported characters, can only make {}",
@@ -187,13 +191,13 @@ fn dir_relative(dir: &Path, rel_to: &Path) -> OsString {
     ret
 }
 
-fn configure(conf_line: &OsString, build_dir: &PathBuf) {
+fn configure(build_dir: &Path, conf_line: &OsStr) {
     let mut conf = Command::new("sh");
     conf.current_dir(&build_dir).arg("-c").arg(conf_line);
     execute(conf);
 }
 
-fn remove_from_makefile(build_dir: &PathBuf, dirs: &[&str]) {
+fn remove_from_makefile(build_dir: &Path, dirs: &[&str]) {
     let makefile = build_dir.join("Makefile");
     let work = build_dir.join("Makefile.work");
     let mut reader = open(&makefile);
@@ -229,7 +233,7 @@ fn remove_from_makefile(build_dir: &PathBuf, dirs: &[&str]) {
     rename(&work, &makefile);
 }
 
-fn make_and_check(build_dir: &PathBuf, jobs: &OsString) {
+fn make_and_check(build_dir: &Path, jobs: &OsStr) {
     let mut make = Command::new("make");
     make.current_dir(build_dir).arg("-j").arg(jobs);
     execute(make);
@@ -244,15 +248,18 @@ fn copy_file(src: &Path, dst: &Path) {
     });
 }
 
-fn touch(file: &Path) {
-    let mut t = Command::new("touch");
-    t.arg(file);
-    execute(t);
+fn touch(dir: &Path, file: &OsStr) {
+    let mut c = Command::new("touch");
+    c.current_dir(dir).arg(file);
+    execute(c);
 }
 
-fn symlink(dir: &Path, link: &Path) {
+fn symlink(dir: &Path, link: &OsStr, name: Option<&OsStr>) {
     let mut c = Command::new("ln");
     c.current_dir(dir).arg("-s").arg(link);
+    if let Some(name) = name {
+        c.arg(name);
+    }
     execute(c);
 }
 
@@ -269,13 +276,13 @@ fn execute(mut command: Command) {
     }
 }
 
-fn open(name: &PathBuf) -> BufReader<File> {
+fn open(name: &Path) -> BufReader<File> {
     let file = File::open(name)
         .unwrap_or_else(|_| panic!("Cannot open file: {}", name.display()));
     BufReader::new(file)
 }
 
-fn create(name: &PathBuf) -> BufWriter<File> {
+fn create(name: &Path) -> BufWriter<File> {
     let file = File::create(name)
         .unwrap_or_else(|_| panic!("Cannot create file: {}", name.display()));
     BufWriter::new(file)
@@ -283,18 +290,18 @@ fn create(name: &PathBuf) -> BufWriter<File> {
 
 fn read_line(reader: &mut BufReader<File>,
              buf: &mut String,
-             name: &PathBuf)
+             name: &Path)
              -> usize {
     reader.read_line(buf)
         .unwrap_or_else(|_| panic!("Cannot read from: {}", name.display()))
 }
 
-fn write(writer: &mut BufWriter<File>, buf: &str, name: &PathBuf) {
+fn write(writer: &mut BufWriter<File>, buf: &str, name: &Path) {
     writer.write(buf.as_bytes())
         .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
 }
 
-fn flush(writer: &mut BufWriter<File>, name: &PathBuf) {
+fn flush(writer: &mut BufWriter<File>, name: &Path) {
     writer.flush()
         .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
 }
