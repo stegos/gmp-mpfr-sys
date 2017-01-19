@@ -51,6 +51,7 @@ fn main() {
     let lib_dir = out_dir.join("lib");
     create_dir(&lib_dir);
     let build_dir = out_dir.join("build");
+    remove_dir(&build_dir);
     create_dir(&build_dir);
     symlink(&build_dir,
             &dir_relative(&build_dir, &src_dir.join(GMP_DIR)),
@@ -67,9 +68,9 @@ fn main() {
         let gmp_build_dir = build_dir.join("gmp-build");
         remove_dir(&gmp_build_dir);
         create_dir(&gmp_build_dir);
+        println!("$ cd \"{}\"", gmp_build_dir.display());
         let conf = "../gmp-src/configure --enable-fat --disable-shared \
                     --with-pic";
-        println!("Running configure in {}", gmp_build_dir.display());
         configure(&gmp_build_dir, &OsString::from(conf));
         remove_from_makefile(&gmp_build_dir, &["doc", "demos"]);
         make_and_check(&gmp_build_dir, &jobs);
@@ -82,6 +83,7 @@ fn main() {
         let mpfr_build_dir = build_dir.join("mpfr-build");
         remove_dir(&mpfr_build_dir);
         create_dir(&mpfr_build_dir);
+        println!("$ cd {}", mpfr_build_dir.display());
         symlink(&mpfr_build_dir, &OsString::from("../gmp-build"), None);
         // touch these files so that we don't try to rebuild them
         for f in &["aclocal.m4", "configure", "Makefile.am", "Makefile.in"] {
@@ -89,7 +91,6 @@ fn main() {
         }
         let conf = "../mpfr-src/configure --enable-thread-safe \
                     --disable-shared --with-gmp-build=../gmp-build --with-pic";
-        println!("Running configure in {}", mpfr_build_dir.display());
         configure(&mpfr_build_dir, &OsString::from(conf));
         remove_from_makefile(&mpfr_build_dir, &["doc"]);
         make_and_check(&mpfr_build_dir, &jobs);
@@ -103,6 +104,7 @@ fn main() {
         let mpc_build_dir = build_dir.join("mpc-build");
         remove_dir(&mpc_build_dir);
         create_dir(&mpc_build_dir);
+        println!("$ cd {}", mpc_build_dir.display());
         symlink(&mpc_build_dir, &OsString::from("../mpfr-src"), None);
         symlink(&mpc_build_dir, &OsString::from("../mpfr-build"), None);
         symlink(&mpc_build_dir, &OsString::from("../gmp-build"), None);
@@ -111,7 +113,6 @@ fn main() {
                     --with-mpfr-lib=../mpfr-build/src/.libs \
                     --with-gmp-include=../gmp-build \
                     --with-gmp-lib=../gmp-build --with-pic";
-        println!("Running configure in {}", mpc_build_dir.display());
         configure(&mpc_build_dir, &OsString::from(conf));
         remove_from_makefile(&mpc_build_dir, &["doc"]);
         make_and_check(&mpc_build_dir, &jobs);
@@ -120,7 +121,7 @@ fn main() {
         copy_file(&mpc_build_lib, &mpc_lib);
     }
 
-    // remove_dir(&build_dir);
+    remove_dir(&build_dir);
 
     let lib_search = lib_dir.to_str().unwrap_or_else(|| {
         panic!("Path contains unsupported characters, can only make {}",
