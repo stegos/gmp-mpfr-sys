@@ -28,7 +28,7 @@ mv mpc-1.0.3 mpc-1.0.3-slim
 )
 find *-slim -name Makefile.am | xargs rm
 for m in $(find *-slim -name Makefile.in); do
-	sed -i.rm~ '/Makefile:/,/esac/d' Makefile.in
+	sed -i.rm~ '/Makefile:/,/esac/d' $m
 done
 find *-slim -name \*.rm~ | xargs rm
 
