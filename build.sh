@@ -1,34 +1,36 @@
-#!/bin/sh
+#!/bin/bash
 TARDIR=~/Downloads
 tar xf $TARDIR/gmp-6.1.2.tar.lz
 mv gmp-6.1.2 gmp-6.1.2-slim
 (
 	cd gmp-6.1.2-slim
-	rm -r ac*.m4 ChangeLog configure.ac demos doc Makefile.am
-	sed -i '/Configs for demos/,/Create config.m4/{//!d}' configure
-	sed -i '/ac_config_files=/s/[^ ]*\(doc\|demos\)[^ ]*.Makefile//g' \
+	rm -r ac*.m4 ChangeLog configure.ac demos doc
+	sed -i.rm~ '/Configs for demos/,/Create config.m4/{//!d}' configure
+	sed -i.rm~ '/ac_config_files=/s/[^ ]*\(doc\|demos\)[^ ]*.Makefile//g' \
 	    configure
-	sed -i '/Makefile:/,/esac/d' Makefile.in
-	sed -i '/SUBDIRS = /s/doc\|demos//g' Makefile.in
+	sed -i.rm~ '/SUBDIRS = /s/doc\|demos//g' Makefile.in
 )
 tar xf $TARDIR/mpfr-3.1.5.tar.xz
 mv mpfr-3.1.5 mpfr-3.1.5-slim
 (
 	cd mpfr-3.1.5-slim
-	rm -r ac*.m4 ChangeLog configure.ac doc m4 Makefile.am
-	sed -i '/ac_config_files=/s/[^ ]*doc[^ ]*.Makefile//g' configure
-	sed -i '/Makefile:/,/esac/d' Makefile.in
-	sed -i '/SUBDIRS = /s/doc//g' Makefile.in
+	rm -r ac*.m4 ChangeLog configure.ac doc m4
+	sed -i.rm~ '/ac_config_files=/s/[^ ]*doc[^ ]*.Makefile//g' configure
+	sed -i.rm~ '/SUBDIRS = /s/doc//g' Makefile.in
 )
 tar xf $TARDIR/mpc-1.0.3.tar.gz
 mv mpc-1.0.3 mpc-1.0.3-slim
 (
 	cd mpc-1.0.3-slim
-	rm -rf ac*.m4 ChangeLog configure.ac doc m4 Makefile.am
-	sed -i '/ac_config_files=/s/[^ ]*doc[^ ]*.Makefile//g' configure
-	sed -i '/Makefile:/,/esac/d' Makefile.in
-	sed -i '/SUBDIRS = /s/doc//g' Makefile.in
+	rm -rf ac*.m4 ChangeLog configure.ac doc m4
+	sed -i.rm~ '/ac_config_files=/s/[^ ]*doc[^ ]*.Makefile//g' configure
+	sed -i.rm~ '/SUBDIRS = /s/doc//g' Makefile.in
 )
+find *-slim -name Makefile.am | xargs rm
+for m in $(find *-slim -name Makefile.in); do
+	sed -i.rm~ '/Makefile:/,/esac/d' Makefile.in
+done
+find *-slim -name \*.rm~ | xargs rm
 
 #do not actually compile
 exit
