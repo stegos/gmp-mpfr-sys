@@ -41,6 +41,8 @@ fn main() {
     let src_dir = PathBuf::from(cargo_env("CARGO_MANIFEST_DIR"));
     let out_dir = PathBuf::from(cargo_env("OUT_DIR"));
     let jobs = cargo_env("NUM_JOBS");
+    let profile = cargo_env("PROFILE");
+    let check = profile == OsString::from("release");
 
     let lib_dir = out_dir.join("lib");
     let gmp_lib = lib_dir.join("libgmp.a");
@@ -54,32 +56,32 @@ fn main() {
         symlink(&build_dir,
                 &dir_relative(&build_dir, &src_dir.join(GMP_DIR)),
                 Some(&OsString::from("gmp-src")));
-        build_gmp(&build_dir, &jobs, &gmp_lib);
+        build_gmp(&build_dir, &jobs, check, &gmp_lib);
         symlink(&build_dir,
                 &dir_relative(&build_dir, &src_dir.join(MPFR_DIR)),
                 Some(&OsString::from("mpfr-src")));
-        build_mpfr(&build_dir, &jobs, &mpfr_lib);
+        build_mpfr(&build_dir, &jobs, check, &mpfr_lib);
         symlink(&build_dir,
                 &dir_relative(&build_dir, &src_dir.join(MPC_DIR)),
                 Some(&OsString::from("mpc-src")));
-        build_mpc(&build_dir, &jobs, &mpc_lib);
+        build_mpc(&build_dir, &jobs, check, &mpc_lib);
         remove_dir(&build_dir);
     }
     write_cargo_info(&lib_dir);
 }
 
-fn build_gmp(top_build_dir: &Path, jobs: &OsStr, lib: &Path) {
+fn build_gmp(top_build_dir: &Path, jobs: &OsStr, check: bool, lib: &Path) {
     let build_dir = top_build_dir.join("gmp-build");
     create_dir(&build_dir);
     println!("$ cd \"{}\"", build_dir.display());
     let conf = "../gmp-src/configure --enable-fat --disable-shared --with-pic";
     configure(&build_dir, &OsString::from(conf));
-    make_and_check(&build_dir, &jobs);
+    make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join(".libs").join("libgmp.a");
     copy_file(&build_lib, &lib);
 }
 
-fn build_mpfr(top_build_dir: &Path, jobs: &OsStr, lib: &Path) {
+fn build_mpfr(top_build_dir: &Path, jobs: &OsStr, check: bool, lib: &Path) {
     let build_dir = top_build_dir.join("mpfr-build");
     create_dir(&build_dir);
     println!("$ cd {}", build_dir.display());
@@ -87,12 +89,12 @@ fn build_mpfr(top_build_dir: &Path, jobs: &OsStr, lib: &Path) {
     let conf = "../mpfr-src/configure --enable-thread-safe --disable-shared \
                 --with-gmp-build=../gmp-build --with-pic";
     configure(&build_dir, &OsString::from(conf));
-    make_and_check(&build_dir, &jobs);
+    make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join("src").join(".libs").join("libmpfr.a");
     copy_file(&build_lib, &lib);
 }
 
-fn build_mpc(top_build_dir: &Path, jobs: &OsStr, lib: &Path) {
+fn build_mpc(top_build_dir: &Path, jobs: &OsStr, check: bool, lib: &Path) {
     let build_dir = top_build_dir.join("mpc-build");
     create_dir(&build_dir);
     println!("$ cd {}", build_dir.display());
@@ -105,7 +107,7 @@ fn build_mpc(top_build_dir: &Path, jobs: &OsStr, lib: &Path) {
                 --with-gmp-include=../gmp-build \
                 --with-gmp-lib=../gmp-build/.libs --with-pic";
     configure(&build_dir, &OsString::from(conf));
-    make_and_check(&build_dir, &jobs);
+    make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join("src").join(".libs").join("libmpc.a");
     copy_file(&build_lib, &lib);
 }
@@ -186,13 +188,15 @@ fn configure(build_dir: &Path, conf_line: &OsStr) {
     execute(conf);
 }
 
-fn make_and_check(build_dir: &Path, jobs: &OsStr) {
+fn make_and_check(build_dir: &Path, jobs: &OsStr, check: bool) {
     let mut make = Command::new("make");
     make.current_dir(build_dir).arg("-j").arg(jobs);
     execute(make);
-    let mut make_check = Command::new("make");
-    make_check.current_dir(build_dir).arg("-j").arg(jobs).arg("check");
-    execute(make_check);
+    if check {
+        let mut make_check = Command::new("make");
+        make_check.current_dir(build_dir).arg("-j").arg(jobs).arg("check");
+        execute(make_check);
+    }
 }
 
 fn copy_file(src: &Path, dst: &Path) {
