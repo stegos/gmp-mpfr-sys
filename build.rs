@@ -29,14 +29,13 @@
 
 use std::env;
 use std::ffi::{OsStr, OsString};
-use std::fs::{self, File};
-use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-const GMP_DIR: &'static str = "gmp-6.1.2";
-const MPFR_DIR: &'static str = "mpfr-3.1.5";
-const MPC_DIR: &'static str = "mpc-1.0.3";
+const GMP_DIR: &'static str = "gmp-6.1.2-slim";
+const MPFR_DIR: &'static str = "mpfr-3.1.5-slim";
+const MPC_DIR: &'static str = "mpc-1.0.3-slim";
 
 fn main() {
     let src_dir = PathBuf::from(cargo_env("CARGO_MANIFEST_DIR"));
@@ -75,7 +74,6 @@ fn build_gmp(top_build_dir: &Path, jobs: &OsStr, lib: &Path) {
     println!("$ cd \"{}\"", build_dir.display());
     let conf = "../gmp-src/configure --enable-fat --disable-shared --with-pic";
     configure(&build_dir, &OsString::from(conf));
-    remove_from_makefile(&build_dir, &["doc", "demos"]);
     make_and_check(&build_dir, &jobs);
     let build_lib = build_dir.join(".libs").join("libgmp.a");
     copy_file(&build_lib, &lib);
@@ -86,14 +84,9 @@ fn build_mpfr(top_build_dir: &Path, jobs: &OsStr, lib: &Path) {
     create_dir(&build_dir);
     println!("$ cd {}", build_dir.display());
     symlink(&build_dir, &OsString::from("../gmp-build"), None);
-    // touch these files so that we don't try to rebuild them
-    for f in &["aclocal.m4", "configure", "Makefile.am", "Makefile.in"] {
-        touch(&build_dir.join("../mpfr-src"), &OsString::from(f));
-    }
     let conf = "../mpfr-src/configure --enable-thread-safe --disable-shared \
                 --with-gmp-build=../gmp-build --with-pic";
     configure(&build_dir, &OsString::from(conf));
-    remove_from_makefile(&build_dir, &["doc"]);
     make_and_check(&build_dir, &jobs);
     let build_lib = build_dir.join("src").join(".libs").join("libmpfr.a");
     copy_file(&build_lib, &lib);
@@ -112,7 +105,6 @@ fn build_mpc(top_build_dir: &Path, jobs: &OsStr, lib: &Path) {
                 --with-gmp-include=../gmp-build \
                 --with-gmp-lib=../gmp-build/.libs --with-pic";
     configure(&build_dir, &OsString::from(conf));
-    remove_from_makefile(&build_dir, &["doc"]);
     make_and_check(&build_dir, &jobs);
     let build_lib = build_dir.join("src").join(".libs").join("libmpc.a");
     copy_file(&build_lib, &lib);
@@ -194,42 +186,6 @@ fn configure(build_dir: &Path, conf_line: &OsStr) {
     execute(conf);
 }
 
-fn remove_from_makefile(build_dir: &Path, dirs: &[&str]) {
-    let makefile = build_dir.join("Makefile");
-    let work = build_dir.join("Makefile.work");
-    let mut reader = open(&makefile);
-    let mut writer = create(&work);
-    let mut buf = String::new();
-    while read_line(&mut reader, &mut buf, &makefile) > 0 {
-        if buf.starts_with("SUBDIRS = ") {
-            for dir in dirs {
-                let mut space = String::from(" ") + dir + " ";
-                if let Some(i) = buf.find(&space) {
-                    buf.drain(i..i + dir.len() + 1);
-                } else {
-                    space.pop();
-                    space += "\n";
-                    if let Some(i) = buf.find(&space) {
-                        buf.drain(i..i + dir.len() + 1);
-                    }
-                }
-            }
-            if let Some(doc) = buf.find(" doc ") {
-                buf.drain(doc..doc + 4);
-            } else if let Some(doc) = buf.find(" doc\n") {
-                buf.drain(doc..doc + 4);
-            }
-        }
-        write(&mut writer, &buf, &work);
-        buf.clear();
-    }
-    drop(reader);
-    // check for write errors
-    flush(&mut writer, &work);
-    drop(writer);
-    rename(&work, &makefile);
-}
-
 fn make_and_check(build_dir: &Path, jobs: &OsStr) {
     let mut make = Command::new("make");
     make.current_dir(build_dir).arg("-j").arg(jobs);
@@ -243,12 +199,6 @@ fn copy_file(src: &Path, dst: &Path) {
     fs::copy(&src, &dst).unwrap_or_else(|_| {
         panic!("Unable to copy {} -> {}", src.display(), dst.display());
     });
-}
-
-fn touch(dir: &Path, file: &OsStr) {
-    let mut c = Command::new("touch");
-    c.current_dir(dir).arg(file);
-    execute(c);
 }
 
 fn symlink(dir: &Path, link: &OsStr, name: Option<&OsStr>) {
@@ -271,40 +221,4 @@ fn execute(mut command: Command) {
             panic!("Program failed: {:?}", command);
         }
     }
-}
-
-fn open(name: &Path) -> BufReader<File> {
-    let file = File::open(name)
-        .unwrap_or_else(|_| panic!("Cannot open file: {}", name.display()));
-    BufReader::new(file)
-}
-
-fn create(name: &Path) -> BufWriter<File> {
-    let file = File::create(name)
-        .unwrap_or_else(|_| panic!("Cannot create file: {}", name.display()));
-    BufWriter::new(file)
-}
-
-fn read_line(reader: &mut BufReader<File>,
-             buf: &mut String,
-             name: &Path)
-             -> usize {
-    reader.read_line(buf)
-        .unwrap_or_else(|_| panic!("Cannot read from: {}", name.display()))
-}
-
-fn write(writer: &mut BufWriter<File>, buf: &str, name: &Path) {
-    writer.write(buf.as_bytes())
-        .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
-}
-
-fn flush(writer: &mut BufWriter<File>, name: &Path) {
-    writer.flush()
-        .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
-}
-
-fn rename(src: &Path, dst: &Path) {
-    fs::rename(&src, &dst).unwrap_or_else(|_| {
-        panic!("Unable to rename {} -> {}", src.display(), dst.display());
-    });
 }
