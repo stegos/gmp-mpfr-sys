@@ -25,6 +25,7 @@ mv mpc-1.0.3 mpc-1.0.3-slim
 	rm -rf ac*.m4 ChangeLog configure.ac doc m4
 	sed -i.rm~ '/ac_config_files=/s/[^ ]*doc[^ ]*.Makefile//g' configure
 	sed -i.rm~ '/SUBDIRS = /s/doc//g' Makefile.in
+	chmod u+w *
 )
 find *-slim -name Makefile.am | xargs rm
 for m in $(find *-slim -name Makefile.in); do
