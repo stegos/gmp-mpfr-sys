@@ -64,4 +64,10 @@ Then, to build a crate with a dependency on this crate:
 
 2. Change to the crate directory.
 
+   Note that building the GMP and MPFR libraries in MSYS with absolute
+   paths does not work very well, so relative paths are used. If your
+   crate is inside `C:\msys64` and the `.cargo` directory is outside
+   `C:\msys64`, this will not work. Please move your crate to the
+   same side of `C:\msys64` as `.cargo`.
+
 3. Build the crate using `cargo`.

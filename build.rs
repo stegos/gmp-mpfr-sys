@@ -53,67 +53,59 @@ fn main() {
         let build_dir = out_dir.join("build");
         remove_dir(&build_dir);
         create_dir(&build_dir);
-        build_gmp(&build_dir, &src_dir, &jobs, check, &gmp_lib);
-        build_mpfr(&build_dir, &src_dir, &jobs, check, &mpfr_lib);
-        build_mpc(&build_dir, &src_dir, &jobs, check, &mpc_lib);
+        symlink(&build_dir,
+                &dir_relative(&build_dir, &src_dir.join(GMP_DIR)),
+                Some(&OsString::from("gmp-src")));
+        build_gmp(&build_dir, &jobs, check, &gmp_lib);
+        symlink(&build_dir,
+                &dir_relative(&build_dir, &src_dir.join(MPFR_DIR)),
+                Some(&OsString::from("mpfr-src")));
+        build_mpfr(&build_dir, &jobs, check, &mpfr_lib);
+        symlink(&build_dir,
+                &dir_relative(&build_dir, &src_dir.join(MPC_DIR)),
+                Some(&OsString::from("mpc-src")));
+        build_mpc(&build_dir, &jobs, check, &mpc_lib);
         remove_dir(&build_dir);
     }
     write_cargo_info(&lib_dir);
 }
 
-fn build_gmp(top_build_dir: &Path,
-             src_dir: &Path,
-             jobs: &OsStr,
-             check: bool,
-             lib: &Path) {
+fn build_gmp(top_build_dir: &Path, jobs: &OsStr, check: bool, lib: &Path) {
     let build_dir = top_build_dir.join("gmp-build");
     create_dir(&build_dir);
     println!("$ cd \"{}\"", build_dir.display());
-    let mut conf = dir_sane(&src_dir.join(GMP_DIR));
-    conf.push("configure --enable-fat --disable-shared --with-pic");
-    configure(&build_dir, &conf);
+    let conf = "../gmp-src/configure --enable-fat --disable-shared --with-pic";
+    configure(&build_dir, &OsString::from(conf));
     make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join(".libs").join("libgmp.a");
     copy_file(&build_lib, &lib);
 }
 
-fn build_mpfr(top_build_dir: &Path,
-              src_dir: &Path,
-              jobs: &OsStr,
-              check: bool,
-              lib: &Path) {
+fn build_mpfr(top_build_dir: &Path, jobs: &OsStr, check: bool, lib: &Path) {
     let build_dir = top_build_dir.join("mpfr-build");
     create_dir(&build_dir);
     println!("$ cd {}", build_dir.display());
-    let mut conf = dir_sane(&src_dir.join(MPFR_DIR));
-    conf.push("configure --enable-thread-safe --disable-shared --with-pic \
-               --with-gmp-build=");
-    conf.push(dir_sane(&top_build_dir.join("gmp-build")));
-    configure(&build_dir, &conf);
+    symlink(&build_dir, &OsString::from("../gmp-build"), None);
+    let conf = "../mpfr-src/configure --enable-thread-safe --disable-shared \
+                --with-gmp-build=../gmp-build --with-pic";
+    configure(&build_dir, &OsString::from(conf));
     make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join("src").join(".libs").join("libmpfr.a");
     copy_file(&build_lib, &lib);
 }
 
-fn build_mpc(top_build_dir: &Path,
-             src_dir: &Path,
-             jobs: &OsStr,
-             check: bool,
-             lib: &Path) {
+fn build_mpc(top_build_dir: &Path, jobs: &OsStr, check: bool, lib: &Path) {
     let build_dir = top_build_dir.join("mpc-build");
     create_dir(&build_dir);
     println!("$ cd {}", build_dir.display());
-    let mut conf = dir_sane(&src_dir.join(MPC_DIR));
-    conf.push("configure --disable-shared --with-pic --with-mpfr-include=");
-    conf.push(dir_sane(&src_dir.join(MPFR_DIR).join("src")));
-    conf.push(" --with-mpfr-lib=");
-    conf.push(dir_sane(&build_dir.join("mpfr-build")
-        .join("src")
-        .join(".libs")));
-    conf.push(" --with-gmp-include=");
-    conf.push(dir_sane(&build_dir.join("gmp-build")));
-    conf.push(" --with-gmp-lib=");
-    conf.push(dir_sane(&build_dir.join("gmp-build").join(".libs")));
+    symlink(&build_dir, &OsString::from("../mpfr-src"), None);
+    symlink(&build_dir, &OsString::from("../mpfr-build"), None);
+    symlink(&build_dir, &OsString::from("../gmp-build"), None);
+    let conf = "../mpc-src/configure --disable-shared \
+                --with-mpfr-include=../mpfr-src/src \
+                --with-mpfr-lib=../mpfr-build/src/.libs \
+                --with-gmp-include=../gmp-build \
+                --with-gmp-lib=../gmp-build/.libs --with-pic";
     configure(&build_dir, &OsString::from(conf));
     make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join("src").join(".libs").join("libmpc.a");
@@ -153,44 +145,41 @@ fn create_dir(dir: &Path) {
     });
 }
 
-fn dir_sane(dir: &Path) -> OsString {
-    let s = dir.to_str().unwrap_or_else(|| {
-        panic!("Path contains unsupported characters, can only make {}",
-               dir.display())
-    });
-    if !cfg!(windows) {
-        let mut r = OsString::from(s);
-        if !s.ends_with('/') {
-            r.push("/");
+fn dir_relative(dir: &Path, rel_to: &Path) -> OsString {
+    let (mut diri, mut reli) = (dir.components(), rel_to.components());
+    let (mut dirc, mut relc) = (diri.next(), reli.next());
+    let mut some_common = false;
+    while let (Some(d), Some(r)) = (dirc, relc) {
+        if d != r {
+            break;
         }
-        return r;
+        some_common = true;
+        dirc = diri.next();
+        relc = reli.next();
     }
-    let mut result = String::new();
-    let mut chars = s.chars();
-    let first = chars.next();
-    let second = chars.next();
-    let third = chars.next();
-    if second == Some(':') {
-        result.push('/');
-        result.push(first.unwrap());
-        result.push('/');
-        match third {
-            None | Some('/') | Some('\\') => {}
-            Some(c) => result.push(c),
+    assert!(some_common,
+            "cannot access {} from {} using relative paths",
+            rel_to.display(),
+            dir.display());
+    let mut ret = OsString::new();
+    while dirc.is_some() {
+        if !ret.is_empty() {
+            ret.push("/");
         }
-    } else {
-        chars = s.chars();
+        ret.push("..");
+        dirc = diri.next();
     }
-    for c in chars {
-        match c {
-            '\\' => result.push('/'),
-            _ => result.push(c),
+    while let Some(r) = relc {
+        if !ret.is_empty() {
+            ret.push("/");
         }
+        ret.push(r);
+        relc = reli.next();
     }
-    if !result.ends_with('/') {
-        result.push('/');
+    if ret.is_empty() {
+        ret.push(".");
     }
-    OsString::from(result)
+    ret
 }
 
 fn configure(build_dir: &Path, conf_line: &OsStr) {
@@ -214,6 +203,15 @@ fn copy_file(src: &Path, dst: &Path) {
     fs::copy(&src, &dst).unwrap_or_else(|_| {
         panic!("Unable to copy {} -> {}", src.display(), dst.display());
     });
+}
+
+fn symlink(dir: &Path, link: &OsStr, name: Option<&OsStr>) {
+    let mut c = Command::new("ln");
+    c.current_dir(dir).arg("-s").arg(link);
+    if let Some(name) = name {
+        c.arg(name);
+    }
+    execute(c);
 }
 
 fn execute(mut command: Command) {
