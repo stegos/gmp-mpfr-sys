@@ -24,7 +24,7 @@
 //    In MPFR: ln -s ../gmp-build
 //    In MPC: ln -s ../mpfr-src ../mpfr-build ../gmp-build .
 //
-// 4. Use relative paths for configure otherwise mingw might be
+// 4. Use relative paths for configure otherwise msys/mingw might be
 //    confused with drives and such.
 
 use std::env;
