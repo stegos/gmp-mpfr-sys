@@ -17,6 +17,13 @@
 #![allow(non_camel_case_types, non_upper_case_globals, non_snake_case)]
 
 use ::gmp::*;
+type mpz_srcptr = *const mpz_t;
+type mpz_ptr = *mut mpz_t;
+type mpq_srcptr = *const mpq_t;
+type mpq_ptr = *mut mpq_t;
+type mpf_srcptr = *const mpf_t;
+type mpf_ptr = *mut mpf_t;
+type randstate_ptr = *mut gmp_randstate_t;
 use ::mpfr::*;
 use std::os::raw::{c_char, c_int, c_long, c_ulong};
 
@@ -318,7 +325,7 @@ extern "C" {
                      arg3: mpc_rnd_t)
                      -> c_int;
     pub fn mpc_clear(arg1: mpc_ptr);
-    pub fn mpc_urandom(arg1: mpc_ptr, arg2: gmp_randstate_t) -> c_int;
+    pub fn mpc_urandom(arg1: mpc_ptr, arg2: randstate_ptr) -> c_int;
     pub fn mpc_init2(arg1: mpc_ptr, arg2: mpfr_prec_t);
     pub fn mpc_init3(arg1: mpc_ptr, arg2: mpfr_prec_t, arg3: mpfr_prec_t);
     pub fn mpc_get_prec(x: mpc_srcptr) -> mpfr_prec_t;

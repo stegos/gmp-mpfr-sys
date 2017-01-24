@@ -17,6 +17,14 @@
 #![allow(non_camel_case_types, non_upper_case_globals, non_snake_case)]
 
 use ::gmp::*;
+type mpz_srcptr = *const mpz_t;
+type mpz_ptr = *mut mpz_t;
+type mpq_srcptr = *const mpq_t;
+type mpq_ptr = *mut mpq_t;
+type mpf_srcptr = *const mpf_t;
+type mpf_ptr = *mut mpf_t;
+type randstate_ptr = *mut gmp_randstate_t;
+
 use std::os::raw::{c_char, c_int, c_long, c_uint, c_ulong, c_void};
 
 #[repr(i32)]
@@ -243,15 +251,15 @@ extern "C" {
     pub fn mpfr_get_z(z: mpz_ptr, f: mpfr_srcptr, arg1: mpfr_rnd_t) -> c_int;
     pub fn mpfr_free_str(arg1: *mut c_char);
     pub fn mpfr_urandom(arg1: mpfr_ptr,
-                        arg2: gmp_randstate_t,
+                        arg2: randstate_ptr,
                         arg3: mpfr_rnd_t)
                         -> c_int;
     pub fn mpfr_grandom(arg1: mpfr_ptr,
                         arg2: mpfr_ptr,
-                        arg3: gmp_randstate_t,
+                        arg3: randstate_ptr,
                         arg4: mpfr_rnd_t)
                         -> c_int;
-    pub fn mpfr_urandomb(arg1: mpfr_ptr, arg2: gmp_randstate_t) -> c_int;
+    pub fn mpfr_urandomb(arg1: mpfr_ptr, arg2: randstate_ptr) -> c_int;
     pub fn mpfr_nextabove(arg1: mpfr_ptr);
     pub fn mpfr_nextbelow(arg1: mpfr_ptr);
     pub fn mpfr_nexttoward(arg1: mpfr_ptr, arg2: mpfr_srcptr);
