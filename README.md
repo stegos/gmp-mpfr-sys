@@ -57,7 +57,7 @@ gmp-mpfr-sys = "0.4"
 and this to your crate root:
 
 ```rust
-extern crate gmp-mpfr-sys;
+extern crate gmp_mpfr_sys;
 ```
 
 ## Building on GNU/Linux
@@ -88,7 +88,6 @@ substituting 32 for 64. To install MSYS2:
 2. Launch the MSYS2 MinGW 64-bit terminal from the start menu.
 
 3. Install the required tools.
-
    ```sh
    pacman -S pacman-mirrors
    pacman -S diffutils make mingw-w64-x86_64-gcc
