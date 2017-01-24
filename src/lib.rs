@@ -14,19 +14,6 @@
 // License and a copy of the GNU General Public License along with
 // this program. If not, see <http://www.gnu.org/licenses/>.
 
-// Generate gmp.rs:
-//     bindgen --link static=gmp path/to/gmp.h --output=gmp.rs
 pub mod gmp;
-
-// Generate mpfr.rs:
-//     bindgen --link static=mpfr path/to/mpfr.h --output=mpfr.rs --match=mpfr.h
-// Then, after #![] block, insert:
-//     use ::gmp::*;
 pub mod mpfr;
-
-// Generate mpc.rs:
-//     bindgen --link static=mpc path/to/mpc.h --output=mpc.rs --match=mpc.h
-// Then, after #![] block, insert:
-//     use ::gmp::*;
-//     use ::mpfr::*;
 pub mod mpc;
