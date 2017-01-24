@@ -102,7 +102,7 @@ enum gmp_randalg_t {
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct __gmp_randstate_struct {
-    _mp_seed: [__mpz_struct; 1],
+    _mp_seed: mpz_t,
     _mp_alg: gmp_randalg_t,
     _mp_algdata: __gmp_randstate_struct_union,
 }

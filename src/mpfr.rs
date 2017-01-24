@@ -16,7 +16,25 @@
 
 #![allow(non_camel_case_types, non_upper_case_globals, non_snake_case)]
 
+macro_rules! c_fn {
+    { $($c:ident
+        $( ($($par:ident: $ty:ty),* $(; $dots:tt)*) $(-> $ret:ty)*
+        )* ;
+    )* } => {
+        $(
+            $(
+                #[link(name = "mpfr", kind = "static")]
+                extern "C" {
+                    pub fn $c($($par: $ty),* $(, $dots)*) $(-> $ret)*;
+                }
+            )*
+        )*
+    };
+}
+
 use ::gmp::*;
+use std::os::raw::{c_char, c_int, c_long, c_ulong, c_void};
+
 type mpz_srcptr = *const mpz_t;
 type mpz_ptr = *mut mpz_t;
 type mpq_srcptr = *const mpq_t;
@@ -25,9 +43,7 @@ type mpf_srcptr = *const mpf_t;
 type mpf_ptr = *mut mpf_t;
 type randstate_ptr = *mut gmp_randstate_t;
 
-use std::os::raw::{c_char, c_int, c_long, c_uint, c_ulong, c_void};
-
-#[repr(i32)]
+#[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub enum mpfr_rnd_t {
     MPFR_RNDN = 0,
@@ -38,6 +54,11 @@ pub enum mpfr_rnd_t {
     MPFR_RNDF = 5,
     MPFR_RNDNA = -1,
 }
+pub const GMP_RNDN: mpfr_rnd_t = mpfr_rnd_t::MPFR_RNDN;
+pub const GMP_RNDZ: mpfr_rnd_t = mpfr_rnd_t::MPFR_RNDZ;
+pub const GMP_RNDU: mpfr_rnd_t = mpfr_rnd_t::MPFR_RNDU;
+pub const GMP_RNDD: mpfr_rnd_t = mpfr_rnd_t::MPFR_RNDD;
+
 pub type mpfr_prec_t = c_long;
 pub type mpfr_uprec_t = c_ulong;
 pub type mpfr_sign_t = c_int;
@@ -59,11 +80,12 @@ pub struct __mpfr_struct {
     pub _mpfr_exp: mpfr_exp_t,
     pub _mpfr_d: *mut mp_limb_t,
 }
-pub type mpfr_t = [__mpfr_struct; 1];
-pub type mpfr_ptr = *mut __mpfr_struct;
-pub type mpfr_srcptr = *const __mpfr_struct;
+pub type mpfr_t = __mpfr_struct;
 
-#[repr(u32)]
+type mpfr_ptr = *mut __mpfr_struct;
+type mpfr_srcptr = *const __mpfr_struct;
+
+#[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub enum mpfr_kind_t {
     MPFR_NAN_KIND = 0,
@@ -72,811 +94,696 @@ pub enum mpfr_kind_t {
     MPFR_REGULAR_KIND = 3,
 }
 
-#[link(name = "mpfr", kind = "static")]
-extern "C" {
-    pub fn mpfr_get_version() -> *const c_char;
-    pub fn mpfr_get_patches() -> *const c_char;
-    pub fn mpfr_buildopt_tls_p() -> c_int;
-    pub fn mpfr_buildopt_decimal_p() -> c_int;
-    pub fn mpfr_buildopt_gmpinternals_p() -> c_int;
-    pub fn mpfr_buildopt_tune_case() -> *const c_char;
-    pub fn mpfr_get_emin() -> mpfr_exp_t;
-    pub fn mpfr_set_emin(arg1: mpfr_exp_t) -> c_int;
-    pub fn mpfr_get_emin_min() -> mpfr_exp_t;
-    pub fn mpfr_get_emin_max() -> mpfr_exp_t;
-    pub fn mpfr_get_emax() -> mpfr_exp_t;
-    pub fn mpfr_set_emax(arg1: mpfr_exp_t) -> c_int;
-    pub fn mpfr_get_emax_min() -> mpfr_exp_t;
-    pub fn mpfr_get_emax_max() -> mpfr_exp_t;
-    pub fn mpfr_set_default_rounding_mode(arg1: mpfr_rnd_t);
-    pub fn mpfr_get_default_rounding_mode() -> mpfr_rnd_t;
-    pub fn mpfr_print_rnd_mode(arg1: mpfr_rnd_t) -> *const c_char;
-    pub fn mpfr_clear_flags();
-    pub fn mpfr_clear_underflow();
-    pub fn mpfr_clear_overflow();
-    pub fn mpfr_clear_divby0();
-    pub fn mpfr_clear_nanflag();
-    pub fn mpfr_clear_inexflag();
-    pub fn mpfr_clear_erangeflag();
-    pub fn mpfr_set_underflow();
-    pub fn mpfr_set_overflow();
-    pub fn mpfr_set_divby0();
-    pub fn mpfr_set_nanflag();
-    pub fn mpfr_set_inexflag();
-    pub fn mpfr_set_erangeflag();
-    pub fn mpfr_underflow_p() -> c_int;
-    pub fn mpfr_overflow_p() -> c_int;
-    pub fn mpfr_divby0_p() -> c_int;
-    pub fn mpfr_nanflag_p() -> c_int;
-    pub fn mpfr_inexflag_p() -> c_int;
-    pub fn mpfr_erangeflag_p() -> c_int;
-    pub fn mpfr_check_range(arg1: mpfr_ptr,
-                            arg2: c_int,
-                            arg3: mpfr_rnd_t)
-                            -> c_int;
-    pub fn mpfr_init2(arg1: mpfr_ptr, arg2: mpfr_prec_t);
-    pub fn mpfr_init(arg1: mpfr_ptr);
-    pub fn mpfr_clear(arg1: mpfr_ptr);
-    pub fn mpfr_inits2(arg1: mpfr_prec_t, arg2: mpfr_ptr, ...);
-    pub fn mpfr_inits(arg1: mpfr_ptr, ...);
-    pub fn mpfr_clears(arg1: mpfr_ptr, ...);
-    pub fn mpfr_prec_round(arg1: mpfr_ptr,
-                           arg2: mpfr_prec_t,
-                           arg3: mpfr_rnd_t)
-                           -> c_int;
-    pub fn mpfr_can_round(arg1: mpfr_srcptr,
-                          arg2: mpfr_exp_t,
-                          arg3: mpfr_rnd_t,
-                          arg4: mpfr_rnd_t,
-                          arg5: mpfr_prec_t)
-                          -> c_int;
-    pub fn mpfr_min_prec(arg1: mpfr_srcptr) -> mpfr_prec_t;
-    pub fn mpfr_get_exp(arg1: mpfr_srcptr) -> mpfr_exp_t;
-    pub fn mpfr_set_exp(arg1: mpfr_ptr, arg2: mpfr_exp_t) -> c_int;
-    pub fn mpfr_get_prec(arg1: mpfr_srcptr) -> mpfr_prec_t;
-    pub fn mpfr_set_prec(arg1: mpfr_ptr, arg2: mpfr_prec_t);
-    pub fn mpfr_set_prec_raw(arg1: mpfr_ptr, arg2: mpfr_prec_t);
-    pub fn mpfr_set_default_prec(arg1: mpfr_prec_t);
-    pub fn mpfr_get_default_prec() -> mpfr_prec_t;
-    pub fn mpfr_set_d(arg1: mpfr_ptr, arg2: f64, arg3: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_set_flt(arg1: mpfr_ptr, arg2: f32, arg3: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_set_ld(arg1: mpfr_ptr, arg2: f64, arg3: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_set_z(arg1: mpfr_ptr,
-                      arg2: mpz_srcptr,
-                      arg3: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_set_z_2exp(arg1: mpfr_ptr,
-                           arg2: mpz_srcptr,
-                           arg3: mpfr_exp_t,
-                           arg4: mpfr_rnd_t)
-                           -> c_int;
-    pub fn mpfr_set_nan(arg1: mpfr_ptr);
-    pub fn mpfr_set_inf(arg1: mpfr_ptr, arg2: c_int);
-    pub fn mpfr_set_zero(arg1: mpfr_ptr, arg2: c_int);
-    pub fn mpfr_set_f(arg1: mpfr_ptr,
-                      arg2: mpf_srcptr,
-                      arg3: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_get_f(arg1: mpf_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_set_si(arg1: mpfr_ptr,
-                       arg2: c_long,
-                       arg3: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_set_ui(arg1: mpfr_ptr,
-                       arg2: c_ulong,
-                       arg3: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_set_si_2exp(arg1: mpfr_ptr,
-                            arg2: c_long,
-                            arg3: mpfr_exp_t,
-                            arg4: mpfr_rnd_t)
-                            -> c_int;
-    pub fn mpfr_set_ui_2exp(arg1: mpfr_ptr,
-                            arg2: c_ulong,
-                            arg3: mpfr_exp_t,
-                            arg4: mpfr_rnd_t)
-                            -> c_int;
-    pub fn mpfr_set_q(arg1: mpfr_ptr,
-                      arg2: mpq_srcptr,
-                      arg3: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_set_str(arg1: mpfr_ptr,
-                        arg2: *const c_char,
-                        arg3: c_int,
-                        arg4: mpfr_rnd_t)
-                        -> c_int;
-    pub fn mpfr_init_set_str(arg1: mpfr_ptr,
-                             arg2: *const c_char,
-                             arg3: c_int,
-                             arg4: mpfr_rnd_t)
-                             -> c_int;
-    pub fn mpfr_set4(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t,
-                     arg4: c_int)
+c_fn! {
+    // Initialization Functions
+    mpfr_init2(x: mpfr_ptr, prec: mpfr_prec_t);
+    mpfr_inits2(prec: mpfr_prec_t, x: mpfr_ptr; ...);
+    mpfr_clear(x: mpfr_ptr);
+    mpfr_clears(x: mpfr_ptr; ...);
+    mpfr_init(x: mpfr_ptr);
+    mpfr_inits(x: mpfr_ptr; ...);
+    mpfr_set_default_prec(prec: mpfr_prec_t);
+    mpfr_get_default_prec() -> mpfr_prec_t;
+    mpfr_set_prec(x: mpfr_ptr, prec: mpfr_prec_t);
+    mpfr_get_prec(x: mpfr_srcptr) -> mpfr_prec_t;
+
+    // Assignment Functions
+    mpfr_set(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_set_ui(rop: mpfr_ptr, op: c_ulong, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_set_si(rop: mpfr_ptr, op: c_long, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_set_flt(rop: mpfr_ptr, op: f32, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_set_d(rop: mpfr_ptr, op: f64, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_set_ld(rop: mpfr_ptr, op: f64, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_set_z(rop: mpfr_ptr, op: mpz_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_set_q(rop: mpfr_ptr, op: mpq_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_set_f(rop: mpfr_ptr, op: mpf_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_set_ui_2exp(rop: mpfr_ptr,
+                     op: c_ulong,
+                     e: mpfr_exp_t,
+                     rnd: mpfr_rnd_t)
                      -> c_int;
-    pub fn mpfr_abs(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_set(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_neg(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_signbit(arg1: mpfr_srcptr) -> c_int;
-    pub fn mpfr_setsign(arg1: mpfr_ptr,
-                        arg2: mpfr_srcptr,
-                        arg3: c_int,
-                        arg4: mpfr_rnd_t)
-                        -> c_int;
-    pub fn mpfr_copysign(arg1: mpfr_ptr,
-                         arg2: mpfr_srcptr,
-                         arg3: mpfr_srcptr,
-                         arg4: mpfr_rnd_t)
-                         -> c_int;
-    pub fn mpfr_get_z_2exp(arg1: mpz_ptr, arg2: mpfr_srcptr) -> mpfr_exp_t;
-    pub fn mpfr_get_flt(arg1: mpfr_srcptr, arg2: mpfr_rnd_t) -> f32;
-    pub fn mpfr_get_d(arg1: mpfr_srcptr, arg2: mpfr_rnd_t) -> f64;
-    pub fn mpfr_get_ld(arg1: mpfr_srcptr, arg2: mpfr_rnd_t) -> f64;
-    pub fn mpfr_get_d1(arg1: mpfr_srcptr) -> f64;
-    pub fn mpfr_get_d_2exp(arg1: *mut c_long,
-                           arg2: mpfr_srcptr,
-                           arg3: mpfr_rnd_t)
-                           -> f64;
-    pub fn mpfr_get_ld_2exp(arg1: *mut c_long,
-                            arg2: mpfr_srcptr,
-                            arg3: mpfr_rnd_t)
-                            -> f64;
-    pub fn mpfr_frexp(arg1: *mut mpfr_exp_t,
-                      arg2: mpfr_ptr,
-                      arg3: mpfr_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_get_si(arg1: mpfr_srcptr, arg2: mpfr_rnd_t) -> c_long;
-    pub fn mpfr_get_ui(arg1: mpfr_srcptr, arg2: mpfr_rnd_t) -> c_ulong;
-    pub fn mpfr_get_str(arg1: *mut c_char,
-                        arg2: *mut mpfr_exp_t,
-                        arg3: c_int,
-                        arg4: usize,
-                        arg5: mpfr_srcptr,
-                        arg6: mpfr_rnd_t)
-                        -> *mut c_char;
-    pub fn mpfr_get_z(z: mpz_ptr, f: mpfr_srcptr, arg1: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_free_str(arg1: *mut c_char);
-    pub fn mpfr_urandom(arg1: mpfr_ptr,
-                        arg2: randstate_ptr,
-                        arg3: mpfr_rnd_t)
-                        -> c_int;
-    pub fn mpfr_grandom(arg1: mpfr_ptr,
-                        arg2: mpfr_ptr,
-                        arg3: randstate_ptr,
-                        arg4: mpfr_rnd_t)
-                        -> c_int;
-    pub fn mpfr_urandomb(arg1: mpfr_ptr, arg2: randstate_ptr) -> c_int;
-    pub fn mpfr_nextabove(arg1: mpfr_ptr);
-    pub fn mpfr_nextbelow(arg1: mpfr_ptr);
-    pub fn mpfr_nexttoward(arg1: mpfr_ptr, arg2: mpfr_srcptr);
-    pub fn mpfr_printf(arg1: *const c_char, ...) -> c_int;
-    pub fn mpfr_asprintf(arg1: *mut *mut c_char,
-                         arg2: *const c_char,
-                         ...)
-                         -> c_int;
-    pub fn mpfr_sprintf(arg1: *mut c_char, arg2: *const c_char, ...) -> c_int;
-    pub fn mpfr_snprintf(arg1: *mut c_char,
-                         arg2: usize,
-                         arg3: *const c_char,
-                         ...)
-                         -> c_int;
-    pub fn mpfr_pow(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_srcptr,
-                    arg4: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_pow_si(arg1: mpfr_ptr,
-                       arg2: mpfr_srcptr,
-                       arg3: c_long,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_pow_ui(arg1: mpfr_ptr,
-                       arg2: mpfr_srcptr,
-                       arg3: c_ulong,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_ui_pow_ui(arg1: mpfr_ptr,
-                          arg2: c_ulong,
-                          arg3: c_ulong,
-                          arg4: mpfr_rnd_t)
-                          -> c_int;
-    pub fn mpfr_ui_pow(arg1: mpfr_ptr,
-                       arg2: c_ulong,
-                       arg3: mpfr_srcptr,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_pow_z(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpz_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_sqrt(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
+    mpfr_set_si_2exp(rop: mpfr_ptr,
+                     op: c_long,
+                     e: mpfr_exp_t,
+                     rnd: mpfr_rnd_t)
                      -> c_int;
-    pub fn mpfr_sqrt_ui(arg1: mpfr_ptr,
-                        arg2: c_ulong,
-                        arg3: mpfr_rnd_t)
-                        -> c_int;
-    pub fn mpfr_rec_sqrt(arg1: mpfr_ptr,
-                         arg2: mpfr_srcptr,
-                         arg3: mpfr_rnd_t)
-                         -> c_int;
-    pub fn mpfr_add(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_srcptr,
-                    arg4: mpfr_rnd_t)
+    mpfr_set_z_2exp(rop: mpfr_ptr,
+                    op: mpz_srcptr,
+                    e: mpfr_exp_t,
+                    rnd: mpfr_rnd_t)
                     -> c_int;
-    pub fn mpfr_sub(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_srcptr,
-                    arg4: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_mul(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_srcptr,
-                    arg4: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_div(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_srcptr,
-                    arg4: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_add_ui(arg1: mpfr_ptr,
-                       arg2: mpfr_srcptr,
-                       arg3: c_ulong,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_sub_ui(arg1: mpfr_ptr,
-                       arg2: mpfr_srcptr,
-                       arg3: c_ulong,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_ui_sub(arg1: mpfr_ptr,
-                       arg2: c_ulong,
-                       arg3: mpfr_srcptr,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_mul_ui(arg1: mpfr_ptr,
-                       arg2: mpfr_srcptr,
-                       arg3: c_ulong,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_div_ui(arg1: mpfr_ptr,
-                       arg2: mpfr_srcptr,
-                       arg3: c_ulong,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_ui_div(arg1: mpfr_ptr,
-                       arg2: c_ulong,
-                       arg3: mpfr_srcptr,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_add_si(arg1: mpfr_ptr,
-                       arg2: mpfr_srcptr,
-                       arg3: c_long,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_sub_si(arg1: mpfr_ptr,
-                       arg2: mpfr_srcptr,
-                       arg3: c_long,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_si_sub(arg1: mpfr_ptr,
-                       arg2: c_long,
-                       arg3: mpfr_srcptr,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_mul_si(arg1: mpfr_ptr,
-                       arg2: mpfr_srcptr,
-                       arg3: c_long,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_div_si(arg1: mpfr_ptr,
-                       arg2: mpfr_srcptr,
-                       arg3: c_long,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_si_div(arg1: mpfr_ptr,
-                       arg2: c_long,
-                       arg3: mpfr_srcptr,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_add_d(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: f64,
-                      arg4: mpfr_rnd_t)
+    mpfr_set_str(rop: mpfr_ptr,
+                 s: *const c_char,
+                 base: c_int,
+                 rnd: mpfr_rnd_t)
+                 -> c_int;
+    mpfr_strtofr(rop: mpfr_ptr,
+                 nptr: *const c_char,
+                 endptr: *mut *mut c_char,
+                 base: c_int,
+                 rnd: mpfr_rnd_t)
+                 -> c_int;
+    mpfr_set_nan(x: mpfr_ptr);
+    mpfr_set_inf(x: mpfr_ptr, sign: c_int);
+    mpfr_set_zero(x: mpfr_ptr, sign: c_int);
+    mpfr_swap(x: mpfr_ptr, y: mpfr_ptr);
+
+    // Combined Initialization and Assignment Functions
+}
+#[inline]
+pub unsafe fn mpfr_init_set(rop: mpfr_ptr,
+                            op: mpfr_srcptr,
+                            rnd: mpfr_rnd_t)
+                            -> c_int {
+    mpfr_init(rop);
+    mpfr_set(rop, op, rnd)
+}
+#[inline]
+pub unsafe fn mpfr_init_set_ui(rop: mpfr_ptr,
+                               op: c_ulong,
+                               rnd: mpfr_rnd_t)
+                               -> c_int {
+    mpfr_init(rop);
+    mpfr_set_ui(rop, op, rnd)
+}
+#[inline]
+pub unsafe fn mpfr_init_set_si(rop: mpfr_ptr,
+                               op: c_long,
+                               rnd: mpfr_rnd_t)
+                               -> c_int {
+    mpfr_init(rop);
+    mpfr_set_si(rop, op, rnd)
+}
+#[inline]
+pub unsafe fn mpfr_init_set_d(rop: mpfr_ptr,
+                              op: f64,
+                              rnd: mpfr_rnd_t)
+                              -> c_int {
+    mpfr_init(rop);
+    mpfr_set_d(rop, op, rnd)
+}
+#[inline]
+pub unsafe fn mpfr_init_set_ld(rop: mpfr_ptr,
+                               op: f64,
+                               rnd: mpfr_rnd_t)
+                               -> c_int {
+    mpfr_init(rop);
+    mpfr_set_ld(rop, op, rnd)
+}
+#[inline]
+pub unsafe fn mpfr_init_set_z(rop: mpfr_ptr,
+                              op: mpz_srcptr,
+                              rnd: mpfr_rnd_t)
+                              -> c_int {
+    mpfr_init(rop);
+    mpfr_set_z(rop, op, rnd)
+}
+#[inline]
+pub unsafe fn mpfr_init_set_q(rop: mpfr_ptr,
+                              op: mpq_srcptr,
+                              rnd: mpfr_rnd_t)
+                              -> c_int {
+    mpfr_init(rop);
+    mpfr_set_q(rop, op, rnd)
+}
+#[inline]
+pub unsafe fn mpfr_init_set_f(rop: mpfr_ptr,
+                              op: mpf_srcptr,
+                              rnd: mpfr_rnd_t)
+                              -> c_int {
+    mpfr_init(rop);
+    mpfr_set_f(rop, op, rnd)
+}
+c_fn! {
+    mpfr_init_set_str(x: mpfr_ptr,
+                      s: *const c_char,
+                      base: c_int,
+                      rnd: mpfr_rnd_t)
                       -> c_int;
-    pub fn mpfr_sub_d(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: f64,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_d_sub(arg1: mpfr_ptr,
-                      arg2: f64,
-                      arg3: mpfr_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_mul_d(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: f64,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_div_d(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: f64,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_d_div(arg1: mpfr_ptr,
-                      arg2: f64,
-                      arg3: mpfr_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_sqr(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_const_pi(arg1: mpfr_ptr, arg2: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_const_log2(arg1: mpfr_ptr, arg2: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_const_euler(arg1: mpfr_ptr, arg2: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_const_catalan(arg1: mpfr_ptr, arg2: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_agm(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_srcptr,
-                    arg4: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_log(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_log2(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_log10(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_log1p(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_exp(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_exp2(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_exp10(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_expm1(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_eint(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_li2(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_cmp(arg1: mpfr_srcptr, arg2: mpfr_srcptr) -> c_int;
-    pub fn mpfr_cmp3(arg1: mpfr_srcptr,
-                     arg2: mpfr_srcptr,
-                     arg3: c_int)
-                     -> c_int;
-    pub fn mpfr_cmp_d(arg1: mpfr_srcptr, arg2: f64) -> c_int;
-    pub fn mpfr_cmp_ld(arg1: mpfr_srcptr, arg2: f64) -> c_int;
-    pub fn mpfr_cmpabs(arg1: mpfr_srcptr, arg2: mpfr_srcptr) -> c_int;
-    pub fn mpfr_cmp_ui(arg1: mpfr_srcptr, arg2: c_ulong) -> c_int;
-    pub fn mpfr_cmp_si(arg1: mpfr_srcptr, arg2: c_long) -> c_int;
-    pub fn mpfr_cmp_ui_2exp(arg1: mpfr_srcptr,
-                            arg2: c_ulong,
-                            arg3: mpfr_exp_t)
-                            -> c_int;
-    pub fn mpfr_cmp_si_2exp(arg1: mpfr_srcptr,
-                            arg2: c_long,
-                            arg3: mpfr_exp_t)
-                            -> c_int;
-    pub fn mpfr_reldiff(arg1: mpfr_ptr,
-                        arg2: mpfr_srcptr,
-                        arg3: mpfr_srcptr,
-                        arg4: mpfr_rnd_t);
-    pub fn mpfr_eq(arg1: mpfr_srcptr,
-                   arg2: mpfr_srcptr,
-                   arg3: c_ulong)
+
+    // Conversion Functions
+    mpfr_get_flt(op: mpfr_srcptr, rnd: mpfr_rnd_t) -> f32;
+    mpfr_get_d(op: mpfr_srcptr, rnd: mpfr_rnd_t) -> f64;
+    mpfr_get_ld(op: mpfr_srcptr, rnd: mpfr_rnd_t) -> f64;
+    mpfr_get_si(op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_long;
+    mpfr_get_ui(op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_ulong;
+    mpfr_get_d_2exp(exp: *mut c_long, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> f64;
+    mpfr_get_ld_2exp(exp: *mut c_long, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> f64;
+    mpfr_frexp(exp: *mut mpfr_exp_t,
+               y: mpfr_ptr,
+               x: mpfr_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_get_z_2exp(rop: mpz_ptr, op: mpfr_srcptr) -> mpfr_exp_t;
+    mpfr_get_z(z: mpz_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_get_f(rop: mpf_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_get_str(str: *mut c_char,
+                 expptr: *mut mpfr_exp_t,
+                 b: c_int,
+                 n: usize,
+                 op: mpfr_srcptr,
+                 rnd: mpfr_rnd_t)
+                 -> *mut c_char;
+    mpfr_free_str(str: *mut c_char);
+    mpfr_fits_ulong_p(op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_fits_slong_p(op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_fits_uint_p(op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_fits_sint_p(op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_fits_ushort_p(op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_fits_sshort_p(op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_fits_uintmax_p(op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_fits_intmax_p(op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+
+    // Basic Arithmetic Functions
+    mpfr_add(rop: mpfr_ptr,
+             op1: mpfr_srcptr,
+             op2: mpfr_srcptr,
+             rnd: mpfr_rnd_t)
+             -> c_int;
+    mpfr_add_ui(rop: mpfr_ptr,
+                op1: mpfr_srcptr,
+                op2: c_ulong,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_add_si(rop: mpfr_ptr,
+                op1: mpfr_srcptr,
+                op2: c_long,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_add_d(rop: mpfr_ptr,
+               op1: mpfr_srcptr,
+               op2: f64,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_add_z(rop: mpfr_ptr,
+               op1: mpfr_srcptr,
+               op2: mpz_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_add_q(rop: mpfr_ptr,
+               op1: mpfr_srcptr,
+               op2: mpq_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_sub(rop: mpfr_ptr,
+             op1: mpfr_srcptr,
+             op2: mpfr_srcptr,
+             rnd: mpfr_rnd_t)
+             -> c_int;
+    mpfr_ui_sub(rop: mpfr_ptr,
+                op1: c_ulong,
+                op2: mpfr_srcptr,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_sub_ui(rop: mpfr_ptr,
+                op1: mpfr_srcptr,
+                op2: c_ulong,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_si_sub(rop: mpfr_ptr,
+                op1: c_long,
+                op2: mpfr_srcptr,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_sub_si(rop: mpfr_ptr,
+                op1: mpfr_srcptr,
+                op2: c_long,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_d_sub(rop: mpfr_ptr,
+               op1: f64,
+               op2: mpfr_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_sub_d(rop: mpfr_ptr,
+               op1: mpfr_srcptr,
+               op2: f64,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_z_sub(rop: mpfr_ptr,
+               op1: mpz_srcptr,
+               op2: mpfr_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_sub_z(rop: mpfr_ptr,
+               op1: mpfr_srcptr,
+               op2: mpz_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_sub_q(rop: mpfr_ptr,
+               op1: mpfr_srcptr,
+               op2: mpq_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_mul(rop: mpfr_ptr,
+             op1: mpfr_srcptr,
+             op2: mpfr_srcptr,
+             rnd: mpfr_rnd_t)
+             -> c_int;
+    mpfr_mul_ui(rop: mpfr_ptr,
+                op1: mpfr_srcptr,
+                op2: c_ulong,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_mul_si(rop: mpfr_ptr,
+                op1: mpfr_srcptr,
+                op2: c_long,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_mul_d(rop: mpfr_ptr,
+               op1: mpfr_srcptr,
+               op2: f64,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_mul_z(rop: mpfr_ptr,
+               op1: mpfr_srcptr,
+               op2: mpz_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_mul_q(rop: mpfr_ptr,
+               op1: mpfr_srcptr,
+               op2: mpq_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_sqr(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_div(rop: mpfr_ptr,
+             op1: mpfr_srcptr,
+             op2: mpfr_srcptr,
+             rnd: mpfr_rnd_t)
+             -> c_int;
+    mpfr_ui_div(rop: mpfr_ptr,
+                op1: c_ulong,
+                op2: mpfr_srcptr,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_div_ui(rop: mpfr_ptr,
+                op1: mpfr_srcptr,
+                op2: c_ulong,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_si_div(rop: mpfr_ptr,
+                op1: c_long,
+                op2: mpfr_srcptr,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_div_si(rop: mpfr_ptr,
+                op1: mpfr_srcptr,
+                op2: c_long,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_d_div(rop: mpfr_ptr,
+               op1: f64,
+               op2: mpfr_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_div_d(rop: mpfr_ptr,
+               op1: mpfr_srcptr,
+               op2: f64,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_div_z(rop: mpfr_ptr,
+               op1: mpfr_srcptr,
+               op2: mpz_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_div_q(rop: mpfr_ptr,
+               op1: mpfr_srcptr,
+               op2: mpq_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_sqrt(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_sqrt_ui(rop: mpfr_ptr, op: c_ulong, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_rec_sqrt(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_cbrt(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_root(rop: mpfr_ptr,
+              op: mpfr_srcptr,
+              k: c_ulong,
+              rnd: mpfr_rnd_t)
+              -> c_int;
+    mpfr_pow(rop: mpfr_ptr,
+             op1: mpfr_srcptr,
+             op2: mpfr_srcptr,
+             rnd: mpfr_rnd_t)
+             -> c_int;
+    mpfr_pow_ui(rop: mpfr_ptr,
+                op1: mpfr_srcptr,
+                op2: c_ulong,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_pow_si(rop: mpfr_ptr,
+                op1: mpfr_srcptr,
+                op2: c_long,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_pow_z(rop: mpfr_ptr,
+               op1: mpfr_srcptr,
+               op2: mpz_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_ui_pow_ui(rop: mpfr_ptr,
+                   op1: c_ulong,
+                   op2: c_ulong,
+                   rnd: mpfr_rnd_t)
                    -> c_int;
-    pub fn mpfr_sgn(arg1: mpfr_srcptr) -> c_int;
-    pub fn mpfr_mul_2exp(arg1: mpfr_ptr,
-                         arg2: mpfr_srcptr,
-                         arg3: c_ulong,
-                         arg4: mpfr_rnd_t)
-                         -> c_int;
-    pub fn mpfr_div_2exp(arg1: mpfr_ptr,
-                         arg2: mpfr_srcptr,
-                         arg3: c_ulong,
-                         arg4: mpfr_rnd_t)
-                         -> c_int;
-    pub fn mpfr_mul_2ui(arg1: mpfr_ptr,
-                        arg2: mpfr_srcptr,
-                        arg3: c_ulong,
-                        arg4: mpfr_rnd_t)
-                        -> c_int;
-    pub fn mpfr_div_2ui(arg1: mpfr_ptr,
-                        arg2: mpfr_srcptr,
-                        arg3: c_ulong,
-                        arg4: mpfr_rnd_t)
-                        -> c_int;
-    pub fn mpfr_mul_2si(arg1: mpfr_ptr,
-                        arg2: mpfr_srcptr,
-                        arg3: c_long,
-                        arg4: mpfr_rnd_t)
-                        -> c_int;
-    pub fn mpfr_div_2si(arg1: mpfr_ptr,
-                        arg2: mpfr_srcptr,
-                        arg3: c_long,
-                        arg4: mpfr_rnd_t)
-                        -> c_int;
-    pub fn mpfr_rint(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_round(arg1: mpfr_ptr, arg2: mpfr_srcptr) -> c_int;
-    pub fn mpfr_trunc(arg1: mpfr_ptr, arg2: mpfr_srcptr) -> c_int;
-    pub fn mpfr_ceil(arg1: mpfr_ptr, arg2: mpfr_srcptr) -> c_int;
-    pub fn mpfr_floor(arg1: mpfr_ptr, arg2: mpfr_srcptr) -> c_int;
-    pub fn mpfr_rint_round(arg1: mpfr_ptr,
-                           arg2: mpfr_srcptr,
-                           arg3: mpfr_rnd_t)
-                           -> c_int;
-    pub fn mpfr_rint_trunc(arg1: mpfr_ptr,
-                           arg2: mpfr_srcptr,
-                           arg3: mpfr_rnd_t)
-                           -> c_int;
-    pub fn mpfr_rint_ceil(arg1: mpfr_ptr,
-                          arg2: mpfr_srcptr,
-                          arg3: mpfr_rnd_t)
-                          -> c_int;
-    pub fn mpfr_rint_floor(arg1: mpfr_ptr,
-                           arg2: mpfr_srcptr,
-                           arg3: mpfr_rnd_t)
-                           -> c_int;
-    pub fn mpfr_frac(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_modf(arg1: mpfr_ptr,
-                     arg2: mpfr_ptr,
-                     arg3: mpfr_srcptr,
-                     arg4: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_remquo(arg1: mpfr_ptr,
-                       arg2: *mut c_long,
-                       arg3: mpfr_srcptr,
-                       arg4: mpfr_srcptr,
-                       arg5: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_remainder(arg1: mpfr_ptr,
-                          arg2: mpfr_srcptr,
-                          arg3: mpfr_srcptr,
-                          arg4: mpfr_rnd_t)
-                          -> c_int;
-    pub fn mpfr_fmod(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_srcptr,
-                     arg4: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_fits_ulong_p(arg1: mpfr_srcptr, arg2: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_fits_slong_p(arg1: mpfr_srcptr, arg2: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_fits_uint_p(arg1: mpfr_srcptr, arg2: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_fits_sint_p(arg1: mpfr_srcptr, arg2: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_fits_ushort_p(arg1: mpfr_srcptr, arg2: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_fits_sshort_p(arg1: mpfr_srcptr, arg2: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_fits_uintmax_p(arg1: mpfr_srcptr, arg2: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_fits_intmax_p(arg1: mpfr_srcptr, arg2: mpfr_rnd_t) -> c_int;
-    pub fn mpfr_extract(arg1: mpz_ptr, arg2: mpfr_srcptr, arg3: c_uint);
-    pub fn mpfr_swap(arg1: mpfr_ptr, arg2: mpfr_ptr);
-    pub fn mpfr_dump(arg1: mpfr_srcptr);
-    pub fn mpfr_nan_p(arg1: mpfr_srcptr) -> c_int;
-    pub fn mpfr_inf_p(arg1: mpfr_srcptr) -> c_int;
-    pub fn mpfr_number_p(arg1: mpfr_srcptr) -> c_int;
-    pub fn mpfr_integer_p(arg1: mpfr_srcptr) -> c_int;
-    pub fn mpfr_zero_p(arg1: mpfr_srcptr) -> c_int;
-    pub fn mpfr_regular_p(arg1: mpfr_srcptr) -> c_int;
-    pub fn mpfr_greater_p(arg1: mpfr_srcptr, arg2: mpfr_srcptr) -> c_int;
-    pub fn mpfr_greaterequal_p(arg1: mpfr_srcptr, arg2: mpfr_srcptr) -> c_int;
-    pub fn mpfr_less_p(arg1: mpfr_srcptr, arg2: mpfr_srcptr) -> c_int;
-    pub fn mpfr_lessequal_p(arg1: mpfr_srcptr, arg2: mpfr_srcptr) -> c_int;
-    pub fn mpfr_lessgreater_p(arg1: mpfr_srcptr, arg2: mpfr_srcptr) -> c_int;
-    pub fn mpfr_equal_p(arg1: mpfr_srcptr, arg2: mpfr_srcptr) -> c_int;
-    pub fn mpfr_unordered_p(arg1: mpfr_srcptr, arg2: mpfr_srcptr) -> c_int;
-    pub fn mpfr_atanh(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_acosh(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_asinh(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_cosh(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_sinh(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_tanh(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_sinh_cosh(arg1: mpfr_ptr,
-                          arg2: mpfr_ptr,
-                          arg3: mpfr_srcptr,
-                          arg4: mpfr_rnd_t)
-                          -> c_int;
-    pub fn mpfr_sech(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_csch(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_coth(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_acos(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_asin(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_atan(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_sin(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_sin_cos(arg1: mpfr_ptr,
-                        arg2: mpfr_ptr,
-                        arg3: mpfr_srcptr,
-                        arg4: mpfr_rnd_t)
-                        -> c_int;
-    pub fn mpfr_cos(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_tan(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_atan2(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpfr_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_sec(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_csc(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_cot(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_hypot(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpfr_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_erf(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_erfc(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_cbrt(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_root(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: c_ulong,
-                     arg4: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_gamma(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_lngamma(arg1: mpfr_ptr,
-                        arg2: mpfr_srcptr,
-                        arg3: mpfr_rnd_t)
-                        -> c_int;
-    pub fn mpfr_lgamma(arg1: mpfr_ptr,
-                       arg2: *mut c_int,
-                       arg3: mpfr_srcptr,
-                       arg4: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_digamma(arg1: mpfr_ptr,
-                        arg2: mpfr_srcptr,
-                        arg3: mpfr_rnd_t)
-                        -> c_int;
-    pub fn mpfr_zeta(arg1: mpfr_ptr,
-                     arg2: mpfr_srcptr,
-                     arg3: mpfr_rnd_t)
-                     -> c_int;
-    pub fn mpfr_zeta_ui(arg1: mpfr_ptr,
-                        arg2: c_ulong,
-                        arg3: mpfr_rnd_t)
-                        -> c_int;
-    pub fn mpfr_fac_ui(arg1: mpfr_ptr,
-                       arg2: c_ulong,
-                       arg3: mpfr_rnd_t)
-                       -> c_int;
-    pub fn mpfr_j0(arg1: mpfr_ptr,
-                   arg2: mpfr_srcptr,
-                   arg3: mpfr_rnd_t)
+    mpfr_ui_pow(rop: mpfr_ptr,
+                op1: c_ulong,
+                op2: mpfr_srcptr,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_neg(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_abs(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_dim(rop: mpfr_ptr,
+             op1: mpfr_srcptr,
+             op2: mpfr_srcptr,
+             rnd: mpfr_rnd_t)
+             -> c_int;
+    mpfr_mul_2ui(rop: mpfr_ptr,
+                 op1: mpfr_srcptr,
+                 op2: c_ulong,
+                 rnd: mpfr_rnd_t)
+                 -> c_int;
+    mpfr_mul_2si(rop: mpfr_ptr,
+                 op1: mpfr_srcptr,
+                 op2: c_long,
+                 rnd: mpfr_rnd_t)
+                 -> c_int;
+    mpfr_div_2ui(rop: mpfr_ptr,
+                 op1: mpfr_srcptr,
+                 op2: c_ulong,
+                 rnd: mpfr_rnd_t)
+                 -> c_int;
+    mpfr_div_2si(rop: mpfr_ptr,
+                 op1: mpfr_srcptr,
+                 op2: c_long,
+                 rnd: mpfr_rnd_t)
+                 -> c_int;
+
+    // Comparison Functions
+    mpfr_cmp(op1: mpfr_srcptr, op2: mpfr_srcptr) -> c_int;
+    mpfr_cmp_ui(op1: mpfr_srcptr, op2: c_ulong) -> c_int;
+    mpfr_cmp_si(op1: mpfr_srcptr, op2: c_long) -> c_int;
+    mpfr_cmp_d(op1: mpfr_srcptr, op2: f64) -> c_int;
+    mpfr_cmp_ld(op1: mpfr_srcptr, op2: f64) -> c_int;
+    mpfr_cmp_z(op1: mpfr_srcptr, op2: mpz_srcptr) -> c_int;
+    mpfr_cmp_q(op1: mpfr_srcptr, op2: mpq_srcptr) -> c_int;
+    mpfr_cmp_f(op1: mpfr_srcptr, op2: mpf_srcptr) -> c_int;
+    mpfr_cmp_ui_2exp(op1: mpfr_srcptr, op2: c_ulong, e: mpfr_exp_t) -> c_int;
+    mpfr_cmp_si_2exp(op1: mpfr_srcptr, op2: c_long, e: mpfr_exp_t) -> c_int;
+    mpfr_cmpabs(op1: mpfr_srcptr, op2: mpfr_srcptr) -> c_int;
+    mpfr_nan_p(op: mpfr_srcptr) -> c_int;
+    mpfr_inf_p(op: mpfr_srcptr) -> c_int;
+    mpfr_number_p(op: mpfr_srcptr) -> c_int;
+    mpfr_zero_p(op: mpfr_srcptr) -> c_int;
+    mpfr_regular_p(op: mpfr_srcptr) -> c_int;
+    mpfr_sgn(op: mpfr_srcptr) -> c_int;
+    mpfr_greater_p(op1: mpfr_srcptr, op2: mpfr_srcptr) -> c_int;
+    mpfr_greaterequal_p(op1: mpfr_srcptr, op2: mpfr_srcptr) -> c_int;
+    mpfr_less_p(op1: mpfr_srcptr, op2: mpfr_srcptr) -> c_int;
+    mpfr_lessequal_p(op1: mpfr_srcptr, op2: mpfr_srcptr) -> c_int;
+    mpfr_equal_p(op1: mpfr_srcptr, op2: mpfr_srcptr) -> c_int;
+    mpfr_lessgreater_p(op1: mpfr_srcptr, op2: mpfr_srcptr) -> c_int;
+    mpfr_unordered_p(op1: mpfr_srcptr, op2: mpfr_srcptr) -> c_int;
+
+    // Special Functions
+    mpfr_log(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_log2(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_log10(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_exp(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_exp2(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_exp10(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_cos(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_sin(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_tan(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_sin_cos(sop: mpfr_ptr,
+                 cop: mpfr_ptr,
+                 op: mpfr_srcptr,
+                 rnd: mpfr_rnd_t)
+                 -> c_int;
+    mpfr_sec(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_csc(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_cot(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_acos(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_asin(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_atan(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_atan2(rop: mpfr_ptr,
+               y: mpfr_srcptr,
+               x: mpfr_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_cosh(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_sinh(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_tanh(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_sinh_cosh(sop: mpfr_ptr,
+                   cop: mpfr_ptr,
+                   op: mpfr_srcptr,
+                   rnd: mpfr_rnd_t)
                    -> c_int;
-    pub fn mpfr_j1(arg1: mpfr_ptr,
-                   arg2: mpfr_srcptr,
-                   arg3: mpfr_rnd_t)
+    mpfr_sech(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_csch(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_coth(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_acosh(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_asinh(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_atanh(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_fac_ui(rop: mpfr_ptr, op: c_ulong, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_log1p(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_expm1(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_eint(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_li2(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_gamma(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_lngamma(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_lgamma(rop: mpfr_ptr,
+                signp: *mut c_int,
+                op: mpfr_srcptr,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_digamma(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_zeta(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_zeta_ui(rop: mpfr_ptr, op: c_ulong, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_erf(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_erfc(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_j0(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_j1(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_jn(rop: mpfr_ptr,
+            n: c_long,
+            op: mpfr_srcptr,
+            rnd: mpfr_rnd_t)
+            -> c_int;
+    mpfr_y0(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_y1(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_yn(rop: mpfr_ptr,
+            n: c_long,
+            op: mpfr_srcptr,
+            rnd: mpfr_rnd_t)
+            -> c_int;
+    mpfr_fma(rop: mpfr_ptr,
+             op1: mpfr_srcptr,
+             op2: mpfr_srcptr,
+             op3: mpfr_srcptr,
+             rnd: mpfr_rnd_t)
+             -> c_int;
+    mpfr_fms(rop: mpfr_ptr,
+             op1: mpfr_srcptr,
+             op2: mpfr_srcptr,
+             op3: mpfr_srcptr,
+             rnd: mpfr_rnd_t)
+             -> c_int;
+    mpfr_agm(rop: mpfr_ptr,
+             op1: mpfr_srcptr,
+             op2: mpfr_srcptr,
+             rnd: mpfr_rnd_t)
+             -> c_int;
+    mpfr_hypot(rop: mpfr_ptr,
+               x: mpfr_srcptr,
+               y: mpfr_srcptr,
+               rnd: mpfr_rnd_t)
+               -> c_int;
+    mpfr_ai(rop: mpfr_ptr, x: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_const_log2(rop: mpfr_ptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_const_pi(rop: mpfr_ptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_const_euler(rop: mpfr_ptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_const_catalan(rop: mpfr_ptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_free_cache();
+    mpfr_sum(rop: mpfr_ptr,
+             tab: *mut mpfr_ptr,
+             n: c_ulong,
+             rnd: mpfr_rnd_t)
+             -> c_int;
+
+    // Formatted Output Functions
+    mpfr_printf(template: *const c_char; ...) -> c_int;
+    mpfr_sprintf(buf: *mut c_char, template: *const c_char; ...) -> c_int;
+    mpfr_snprintf(buf: *mut c_char,
+                  n: usize,
+                  template: *const c_char;
+                  ...)
+                  -> c_int;
+    mpfr_asprintf(str: *mut *mut c_char, template: *const c_char; ...) -> c_int;
+
+    // Integer and Remainder Related Functions
+    mpfr_rint(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_ceil(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int;
+    mpfr_floor(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int;
+    mpfr_round(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int;
+    mpfr_trunc(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int;
+    mpfr_rint_ceil(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_rint_floor(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_rint_round(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_rint_trunc(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_frac(rop: mpfr_ptr, op: mpfr_srcptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_modf(iop: mpfr_ptr,
+              fop: mpfr_ptr,
+              op: mpfr_srcptr,
+              rnd: mpfr_rnd_t)
+              -> c_int;
+    mpfr_fmod(r: mpfr_ptr,
+              x: mpfr_srcptr,
+              y: mpfr_srcptr,
+              rnd: mpfr_rnd_t)
+              -> c_int;
+    mpfr_remainder(r: mpfr_ptr,
+                   x: mpfr_srcptr,
+                   y: mpfr_srcptr,
+                   rnd: mpfr_rnd_t)
                    -> c_int;
-    pub fn mpfr_jn(arg1: mpfr_ptr,
-                   arg2: c_long,
-                   arg3: mpfr_srcptr,
-                   arg4: mpfr_rnd_t)
+    mpfr_remquo(r: mpfr_ptr,
+                q: *mut c_long,
+                x: mpfr_srcptr,
+                y: mpfr_srcptr,
+                rnd: mpfr_rnd_t)
+                -> c_int;
+    mpfr_integer_p(op: mpfr_srcptr) -> c_int;
+
+    // Rounding Related Functions
+    mpfr_set_default_rounding_mode(rnd: mpfr_rnd_t);
+    mpfr_get_default_rounding_mode() -> mpfr_rnd_t;
+    mpfr_prec_round(x: mpfr_ptr, prec: mpfr_prec_t, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_can_round(b: mpfr_srcptr,
+                   err: mpfr_exp_t,
+                   rnd1: mpfr_rnd_t,
+                   rnd2: mpfr_rnd_t,
+                   prec: mpfr_prec_t)
                    -> c_int;
-    pub fn mpfr_y0(arg1: mpfr_ptr,
-                   arg2: mpfr_srcptr,
-                   arg3: mpfr_rnd_t)
-                   -> c_int;
-    pub fn mpfr_y1(arg1: mpfr_ptr,
-                   arg2: mpfr_srcptr,
-                   arg3: mpfr_rnd_t)
-                   -> c_int;
-    pub fn mpfr_yn(arg1: mpfr_ptr,
-                   arg2: c_long,
-                   arg3: mpfr_srcptr,
-                   arg4: mpfr_rnd_t)
-                   -> c_int;
-    pub fn mpfr_ai(arg1: mpfr_ptr,
-                   arg2: mpfr_srcptr,
-                   arg3: mpfr_rnd_t)
-                   -> c_int;
-    pub fn mpfr_min(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_srcptr,
-                    arg4: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_max(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_srcptr,
-                    arg4: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_dim(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_srcptr,
-                    arg4: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_mul_z(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpz_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_div_z(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpz_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_add_z(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpz_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_sub_z(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpz_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_z_sub(arg1: mpfr_ptr,
-                      arg2: mpz_srcptr,
-                      arg3: mpfr_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_cmp_z(arg1: mpfr_srcptr, arg2: mpz_srcptr) -> c_int;
-    pub fn mpfr_mul_q(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpq_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_div_q(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpq_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_add_q(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpq_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_sub_q(arg1: mpfr_ptr,
-                      arg2: mpfr_srcptr,
-                      arg3: mpq_srcptr,
-                      arg4: mpfr_rnd_t)
-                      -> c_int;
-    pub fn mpfr_cmp_q(arg1: mpfr_srcptr, arg2: mpq_srcptr) -> c_int;
-    pub fn mpfr_cmp_f(arg1: mpfr_srcptr, arg2: mpf_srcptr) -> c_int;
-    pub fn mpfr_fma(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_srcptr,
-                    arg4: mpfr_srcptr,
-                    arg5: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_fms(arg1: mpfr_ptr,
-                    arg2: mpfr_srcptr,
-                    arg3: mpfr_srcptr,
-                    arg4: mpfr_srcptr,
-                    arg5: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_sum(arg1: mpfr_ptr,
-                    arg2: *mut mpfr_ptr,
-                    arg3: c_ulong,
-                    arg4: mpfr_rnd_t)
-                    -> c_int;
-    pub fn mpfr_free_cache();
-    pub fn mpfr_subnormalize(arg1: mpfr_ptr,
-                             arg2: c_int,
-                             arg3: mpfr_rnd_t)
-                             -> c_int;
-    pub fn mpfr_strtofr(arg1: mpfr_ptr,
-                        arg2: *const c_char,
-                        arg3: *mut *mut c_char,
-                        arg4: c_int,
-                        arg5: mpfr_rnd_t)
-                        -> c_int;
-    pub fn mpfr_custom_get_size(arg1: mpfr_prec_t) -> usize;
-    pub fn mpfr_custom_init(arg1: *mut c_void, arg2: mpfr_prec_t);
-    pub fn mpfr_custom_get_significand(arg1: mpfr_srcptr) -> *mut c_void;
-    pub fn mpfr_custom_get_exp(arg1: mpfr_srcptr) -> mpfr_exp_t;
-    pub fn mpfr_custom_move(arg1: mpfr_ptr, arg2: *mut c_void);
-    pub fn mpfr_custom_init_set(arg1: mpfr_ptr,
-                                arg2: c_int,
-                                arg3: mpfr_exp_t,
-                                arg4: mpfr_prec_t,
-                                arg5: *mut c_void);
-    pub fn mpfr_custom_get_kind(arg1: mpfr_srcptr) -> c_int;
+    mpfr_min_prec(x: mpfr_srcptr) -> mpfr_prec_t;
+    mpfr_print_rnd_mode(rnd: mpfr_rnd_t) -> *const c_char;
+
+    // Miscellaneous Functions
+    mpfr_nexttoward(x: mpfr_ptr, y: mpfr_srcptr);
+    mpfr_nextabove(x: mpfr_ptr);
+    mpfr_nextbelow(x: mpfr_ptr);
+    mpfr_min(rop: mpfr_ptr,
+             op1: mpfr_srcptr,
+             op2: mpfr_srcptr,
+             rnd: mpfr_rnd_t)
+             -> c_int;
+    mpfr_max(rop: mpfr_ptr,
+             op1: mpfr_srcptr,
+             op2: mpfr_srcptr,
+             rnd: mpfr_rnd_t)
+             -> c_int;
+    mpfr_urandomb(rop: mpfr_ptr, state: randstate_ptr) -> c_int;
+    mpfr_urandom(rop: mpfr_ptr, state: randstate_ptr, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_grandom(rop1: mpfr_ptr,
+                 rop2: mpfr_ptr,
+                 state: randstate_ptr,
+                 rnd: mpfr_rnd_t)
+                 -> c_int;
+    mpfr_get_exp(x: mpfr_srcptr) -> mpfr_exp_t;
+    mpfr_set_exp(x: mpfr_ptr, e: mpfr_exp_t) -> c_int;
+    mpfr_signbit(op: mpfr_srcptr) -> c_int;
+    mpfr_setsign(rop: mpfr_ptr,
+                 op: mpfr_srcptr,
+                 s: c_int,
+                 rnd: mpfr_rnd_t)
+                 -> c_int;
+    mpfr_copysign(rop: mpfr_ptr,
+                  op1: mpfr_srcptr,
+                  op2: mpfr_srcptr,
+                  rnd: mpfr_rnd_t)
+                  -> c_int;
+    mpfr_get_version() -> *const c_char;
+}
+pub const MPFR_VERSION: c_int = (MPFR_VERSION_MAJOR << 16) |
+                                (MPFR_VERSION_MINOR << 8) |
+                                MPFR_VERSION_PATCHLEVEL;
+pub const MPFR_VERSION_MAJOR: c_int = 3;
+pub const MPFR_VERSION_MINOR: c_int = 1;
+pub const MPFR_VERSION_PATCHLEVEL: c_int = 5;
+const MPFR_VERSION_BUFFER: &'static [u8] = b"3.1.5\0";
+pub const MPFR_VERSION_STRING: *const c_char =
+    &MPFR_VERSION_BUFFER[0] as *const _ as *const c_char;
+#[inline]
+pub fn MPFR_VERSION_NUM(major: c_int,
+                        minor: c_int,
+                        patchlevel: c_int)
+                        -> c_int {
+    (major << 16) | (minor << 8) | patchlevel
+}
+c_fn! {
+    mpfr_get_patches() -> *const c_char;
+    mpfr_buildopt_tls_p() -> c_int;
+    mpfr_buildopt_decimal_p() -> c_int;
+    mpfr_buildopt_gmpinternals_p() -> c_int;
+    mpfr_buildopt_tune_case() -> *const c_char;
+
+    // Exception Related Functions
+    mpfr_get_emin() -> mpfr_exp_t;
+    mpfr_get_emax() -> mpfr_exp_t;
+    mpfr_set_emin(exp: mpfr_exp_t) -> c_int;
+    mpfr_set_emax(exp: mpfr_exp_t) -> c_int;
+    mpfr_get_emin_min() -> mpfr_exp_t;
+    mpfr_get_emin_max() -> mpfr_exp_t;
+    mpfr_get_emax_min() -> mpfr_exp_t;
+    mpfr_get_emax_max() -> mpfr_exp_t;
+    mpfr_check_range(x: mpfr_ptr, t: c_int, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_subnormalize(x: mpfr_ptr, t: c_int, rnd: mpfr_rnd_t) -> c_int;
+    mpfr_clear_underflow();
+    mpfr_clear_overflow();
+    mpfr_clear_divby0();
+    mpfr_clear_nanflag();
+    mpfr_clear_inexflag();
+    mpfr_clear_erangeflag();
+    mpfr_set_underflow();
+    mpfr_set_overflow();
+    mpfr_set_divby0();
+    mpfr_set_nanflag();
+    mpfr_set_inexflag();
+    mpfr_set_erangeflag();
+    mpfr_clear_flags();
+    mpfr_underflow_p() -> c_int;
+    mpfr_overflow_p() -> c_int;
+    mpfr_divby0_p() -> c_int;
+    mpfr_nanflag_p() -> c_int;
+    mpfr_inexflag_p() -> c_int;
+    mpfr_erangeflag_p() -> c_int;
+
+    // Compatibility with MPF
+    mpfr_set_prec_raw(x: mpfr_ptr, prec: mpfr_prec_t);
+    mpfr_eq(op1: mpfr_srcptr, op2: mpfr_srcptr, op3: c_ulong) -> c_int;
+    mpfr_reldiff(rop: mpfr_ptr,
+                 op1: mpfr_srcptr,
+                 op2: mpfr_srcptr,
+                 rnd: mpfr_rnd_t);
+    mpfr_mul_2exp(rop: mpfr_ptr,
+                  op1: mpfr_srcptr,
+                  op2: c_ulong,
+                  rnd: mpfr_rnd_t)
+                  -> c_int;
+    mpfr_div_2exp(rop: mpfr_ptr,
+                  op1: mpfr_srcptr,
+                  op2: c_ulong,
+                  rnd: mpfr_rnd_t)
+                  -> c_int;
+
+    // Custom Interface
+    mpfr_custom_get_size(prec: mpfr_prec_t) -> usize;
+    mpfr_custom_init(significand: *mut c_void, prec: mpfr_prec_t);
+    mpfr_custom_init_set(x: mpfr_ptr,
+                         kind: c_int,
+                         exp: mpfr_exp_t,
+                         prec: mpfr_prec_t,
+                         significand: *mut c_void);
+    mpfr_custom_get_kind(x: mpfr_srcptr) -> c_int;
+    mpfr_custom_get_significand(x: mpfr_srcptr) -> *mut c_void;
+    mpfr_custom_get_exp(x: mpfr_srcptr) -> mpfr_exp_t;
+    mpfr_custom_move(x: mpfr_ptr, new_position: *mut c_void);
 }
