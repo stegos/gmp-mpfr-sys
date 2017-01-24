@@ -24,6 +24,42 @@ by the Free Software Foundation, either version 3 of the License, or
 See [LICENSE-LGPL](LICENSE-LGPL.md) and [LICENSE-GPL](LICENSE-GPL.md)
 for details.
 
+## Documentation
+
+This crate provides a low-level interface to GMP, MPFR and MPC. If you
+want a high-level API, consider using the following crates:
+
+* [`rugint`](https://tspiteri.gitlab.io/gmp-mpfr/rugint/)
+  provides arbitrary-precision integers based on GMP.
+* [`rugrat`](https://tspiteri.gitlab.io/gmp-mpfr/rugrat/)
+  provides arbitrary-precision rational number based on GMP.
+* [`rugflo`](https://tspiteri.gitlab.io/gmp-mpfr/rugflo/)
+  provides arbitrary-precision floating-point numbers based on MPFR.
+* [`rugcom`](https://tspiteri.gitlab.io/gmp-mpfr/rugcom/)
+  provides arbitrary-precision complex numbers based on MPC.
+
+If you want to use the low-level bindings, you can see the
+documentation of the libraries themselves:
+
+* [GMP](https://gmplib.org/manual/)
+* [MPFR](http://www.mpfr.org/mpfr-current/mpfr.html)
+* [MPC](http://www.multiprecision.org/index.php?prog=mpc&page=html)
+
+## Usage
+
+Add this to your `Cargo.toml`:
+
+```toml
+[dependencies]
+gmp-mpfr-sys = "0.4"
+```
+
+and this to your crate root:
+
+```rust
+extern crate gmp-mpfr-sys;
+```
+
 ## Building on GNU/Linux
 
 To build on GNU/Linux, simply make sure you have `diffutils`, `gcc`
