@@ -38,7 +38,6 @@ use std::os::raw::{c_char, c_int, c_long, c_ulong, c_void};
 type mpz_srcptr = *const mpz_t;
 type mpz_ptr = *mut mpz_t;
 type mpq_srcptr = *const mpq_t;
-type mpq_ptr = *mut mpq_t;
 type mpf_srcptr = *const mpf_t;
 type mpf_ptr = *mut mpf_t;
 type randstate_ptr = *mut gmp_randstate_t;
