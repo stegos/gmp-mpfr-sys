@@ -68,9 +68,6 @@ pub const MPFR_PREC_MIN: mpfr_prec_t = 2;
 pub const MPFR_PREC_MAX: mpfr_prec_t = (!(0 as mpfr_uprec_t) >> 1) as
                                        mpfr_prec_t;
 
-pub const MPFR_EMAX_DEFAULT: mpfr_exp_t = ((1 << 30) - 1) as mpfr_exp_t;
-pub const MPFR_EMIN_DEFAULT: mpfr_exp_t = -MPFR_EMAX_DEFAULT;
-
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct __mpfr_struct {
