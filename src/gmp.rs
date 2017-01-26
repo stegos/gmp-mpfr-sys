@@ -260,7 +260,10 @@ c_fn! {
                                          b: bitcnt_t);
     "__gmpz_mod" mpz_mod(r: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
 }
-pub use self::mpz_fdiv_r_ui as mpz_mod_ui;
+#[inline]
+pub unsafe fn mpz_mod_ui(r: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong {
+    mpz_fdiv_r_ui(r, n, d)
+}
 c_fn! {
     "__gmpz_divexact" mpz_divexact(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
     "__gmpz_divexact_ui" mpz_divexact_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong);
@@ -334,8 +337,14 @@ c_fn! {
                                -> c_int;
     "__gmpz_jacobi" mpz_jacobi(a: mpz_srcptr, b: mpz_srcptr) -> c_int;
 }
-pub use self::mpz_jacobi as mpz_legendre;
-pub use self::mpz_jacobi as mpz_kronecker;
+#[inline]
+pub unsafe fn mpz_legendre(a: mpz_srcptr, p: mpz_srcptr) -> c_int {
+    mpz_jacobi(a, p)
+}
+#[inline]
+pub unsafe fn mpz_kronecker(a: mpz_srcptr, b: mpz_srcptr) -> c_int {
+    mpz_jacobi(a, b)
+}
 c_fn! {
     "__gmpz_kronecker_si" mpz_kronecker_si(a: mpz_srcptr, b: c_long) -> c_int;
     "__gmpz_kronecker_ui" mpz_kronecker_ui(a: mpz_srcptr, b: c_ulong) -> c_int;

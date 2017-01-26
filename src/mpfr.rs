@@ -712,10 +712,8 @@ pub const VERSION: c_int = (VERSION_MAJOR << 16) | (VERSION_MINOR << 8) |
 pub const VERSION_MAJOR: c_int = 3;
 pub const VERSION_MINOR: c_int = 1;
 pub const VERSION_PATCHLEVEL: c_int = 5;
-const VERSION_BUFFER: &'static [u8] = b"3.1.5\0";
-const VERSION_C_STRING: *const c_char = &VERSION_BUFFER[0] as *const _ as
-                                        *const c_char;
-pub const VERSION_STRING: *const c_char = VERSION_C_STRING;
+pub const VERSION_STRING: *const c_char = b"3.1.5\0" as *const u8 as
+                                          *const c_char;
 #[inline]
 pub fn VERSION_NUM(major: c_int, minor: c_int, patchlevel: c_int) -> c_int {
     (major << 16) | (minor << 8) | patchlevel
