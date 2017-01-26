@@ -47,17 +47,17 @@ documentation of the libraries themselves:
 ### Name prefixes
 
 Since modules and enumerated types provide namespacing, most prefixes
-in the C names were removed. However, when the prefix is not a whole
-word it is not removed, for example `mp_set_memory_functions` becomes
-`gmp::set_memory_functions`, but `mpz_init` becomes `gmp::mpz_init`
-not `gmp::z_init`, and `MPFR_RNDN` in `enum MPFR_RND_T` becomes
-`mpfr::rnd_t::RNDN` not `mpfr::rnd_t::N`. Also, the types
-`mpfr::mpfr_t` and `mpc::mpc_t` are *not* shortened to `mpfr::t` or
-`mpc::t`.
+in the C names are removed. However, when the prefix is not a whole
+word it is not removed, for example `mp_set_memory_functions()`
+becomes `gmp::set_memory_functions()`, but `mpz_init()` becomes
+`gmp::mpz_init()` not `gmp::z_init()`, and `MPFR_RNDN` in `enum
+MPFR_RND_T` becomes `mpfr::rnd_t::RNDN` not `mpfr::rnd_t::N`. Also,
+the types `mpfr::mpfr_t` and `mpc::mpc_t` are *not* shortened to
+`mpfr::t` or `mpc::t`.
 
 ### Types
 
-Unlike the C libraries, the types `gmp::mpz_t`, `gmp::mpq_t`,
+Unlike in the C libraries, the types `gmp::mpz_t`, `gmp::mpq_t`,
 `gmp::mpf_t`, `gmp::rand_state_t`, `mpfr::mpfr_t` and `mpc::mpc_t` are
 defined directly as structs, not as single-element arrays.
 
@@ -72,7 +72,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-gmp-mpfr-sys = "0.4"
+gmp-mpfr-sys = "0.5"
 ```
 
 and this to your crate root:

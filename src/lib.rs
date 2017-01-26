@@ -52,13 +52,13 @@
 //! ## Name prefixes
 //!
 //! Since modules and enumerated types provide namespacing, most
-//! prefixes in the C names were removed. However, when the prefix is
+//! prefixes in the C names are removed. However, when the prefix is
 //! not a whole word it is not removed, for example
-//! `mp_set_memory_functions` becomes `gmp::set_memory_functions`, but
-//! `mpz_init` becomes `gmp::mpz_init` not `gmp::z_init`, and
-//! `MPFR_RNDN` in `enum MPFR_RND_T` becomes `mpfr::rnd_t::RNDN` not
-//! `mpfr::rnd_t::N`. Also, the types `mpfr::mpfr_t` and `mpc::mpc_t`
-//! are *not* shortened to `mpfr::t` or `mpc::t`.
+//! `mp_set_memory_functions()` becomes `gmp::set_memory_functions()`,
+//! but `mpz_init()` becomes `gmp::mpz_init()` not `gmp::z_init()`,
+//! and `MPFR_RNDN` in `enum MPFR_RND_T` becomes `mpfr::rnd_t::RNDN`
+//! not `mpfr::rnd_t::N`. Also, the types `mpfr::mpfr_t` and
+//! `mpc::mpc_t` are *not* shortened to `mpfr::t` or `mpc::t`.
 //!
 //! ## Types
 //!
