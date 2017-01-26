@@ -2,15 +2,12 @@
 
 The `gmp-mpfr-sys` crate provides Rust low-level bindings for
 
-  - the
-    [GNU Multiple Precision Arithmetic Library](https://gmplib.org/)
-    (GMP),
-
-  - the [GNU MPFR Library](http://www.mpfr.org/), a library for
-    multiple-precision floating-point computations, and
-	
-  - [GNU MPC](http://www.multiprecision.org/), a library for the
-    arithmetic of complex numbers with arbitrarily high precision.
+* the [GNU Multiple Precision Arithmetic Library](https://gmplib.org/)
+  (GMP),
+* the [GNU MPFR Library](http://www.mpfr.org/), a library for
+  multiple-precision floating-point computations, and
+* [GNU MPC](http://www.multiprecision.org/), a library for the
+  arithmetic of complex numbers with arbitrarily high precision.
 
 The source of the three libraries is included in the package.
 
@@ -44,6 +41,28 @@ documentation of the libraries themselves:
 * [GMP](https://gmplib.org/manual/)
 * [MPFR](http://www.mpfr.org/mpfr-current/mpfr.html)
 * [MPC](http://www.multiprecision.org/index.php?prog=mpc&page=html)
+
+## Notes
+
+### Name prefixes
+
+Since modules and enumerated types provide namespacing, most prefixes
+in the C names were removed. However, when the prefix is not a whole
+word it is not removed, for example `gmp::mp_set_memory_functions`
+becomes `gmp::set_memory_functions`, but `gmp::mpz_init` does *not*
+become `gmp::z_init`. Also, the types `mpfr::mpfr_t` and `mpc::mpc_t`
+are *not* shortened to `mpfr::t` or `mpc::t`.
+
+### Types
+
+Unlike the C libraries, the types `gmp::mpz_t`, `gmp::mpq_t`,
+`gmp::mpf_t`, `gmp::rand_state_t`, `mpfr::mpfr_t` and `mpc::mpc_t` are
+defined directly as structs, not as single-element arrays.
+
+### Undocumented or obsolete functions
+
+The bindings do not cover undocumented or obsolete functions and
+macros.
 
 ## Usage
 
