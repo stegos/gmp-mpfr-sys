@@ -62,7 +62,7 @@
 //!
 //! ## Types
 //!
-//! Unlike the C libraries, the types `gmp::mpz_t`, `gmp::mpq_t`,
+//! Unlike in the C libraries, the types `gmp::mpz_t`, `gmp::mpq_t`,
 //! `gmp::mpf_t`, `gmp::rand_state_t`, `mpfr::mpfr_t` and `mpc::mpc_t`
 //! are defined directly as structs, not as single-element arrays.
 //!
