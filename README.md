@@ -36,11 +36,17 @@ want a high-level API, consider using the following crates:
   provides arbitrary-precision complex numbers based on MPC.
 
 If you want to use the low-level bindings, you can see the
-documentation of the libraries themselves:
+documentation of the C libraries themselves:
 
 * [GMP](https://gmplib.org/manual/)
 * [MPFR](http://www.mpfr.org/mpfr-current/mpfr.html)
 * [MPC](http://www.multiprecision.org/index.php?prog=mpc&page=html)
+
+Some of the information in this page, together with the list of all
+functions and constants, can be found on
+[docs.rs](https://docs.rs/gmp-mpfr-sys/). Note that the list of
+functions and constants is not documented; refer to the documentation
+of the C libaries for details.
 
 ## Notes
 
