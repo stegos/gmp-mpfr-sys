@@ -55,7 +55,6 @@ pub const ZERO_KIND: c_int = 2;
 pub const REGULAR_KIND: c_int = 3;
 
 // Types for function declarations in this file.
-
 type mpz_srcptr = *const gmp::mpz_t;
 type mpz_ptr = *mut gmp::mpz_t;
 type mpq_srcptr = *const gmp::mpq_t;
@@ -65,9 +64,7 @@ type randstate_ptr = *mut gmp::randstate_t;
 type mpfr_ptr = *mut mpfr_t;
 type mpfr_srcptr = *const mpfr_t;
 
-extern_c! {
-    "mpfr"
-
+c_fn! {
     // Initialization Functions
     "mpfr_init2" init2(x: mpfr_ptr, prec: prec_t);
     "mpfr_inits2" inits2(prec: prec_t, x: mpfr_ptr; ...);
@@ -122,6 +119,48 @@ extern_c! {
     "mpfr_swap" swap(x: mpfr_ptr, y: mpfr_ptr);
 
     // Combined Initialization and Assignment Functions
+}
+#[inline]
+pub unsafe fn init_set(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int {
+    init(rop);
+    set(rop, op, rnd)
+}
+#[inline]
+pub unsafe fn init_set_ui(rop: mpfr_ptr, op: c_ulong, rnd: rnd_t) -> c_int {
+    init(rop);
+    set_ui(rop, op, rnd)
+}
+#[inline]
+pub unsafe fn init_set_si(rop: mpfr_ptr, op: c_long, rnd: rnd_t) -> c_int {
+    init(rop);
+    set_si(rop, op, rnd)
+}
+#[inline]
+pub unsafe fn init_set_d(rop: mpfr_ptr, op: f64, rnd: rnd_t) -> c_int {
+    init(rop);
+    set_d(rop, op, rnd)
+}
+#[inline]
+pub unsafe fn init_set_ld(rop: mpfr_ptr, op: f64, rnd: rnd_t) -> c_int {
+    init(rop);
+    set_ld(rop, op, rnd)
+}
+#[inline]
+pub unsafe fn init_set_z(rop: mpfr_ptr, op: mpz_srcptr, rnd: rnd_t) -> c_int {
+    init(rop);
+    set_z(rop, op, rnd)
+}
+#[inline]
+pub unsafe fn init_set_q(rop: mpfr_ptr, op: mpq_srcptr, rnd: rnd_t) -> c_int {
+    init(rop);
+    set_q(rop, op, rnd)
+}
+#[inline]
+pub unsafe fn init_set_f(rop: mpfr_ptr, op: mpf_srcptr, rnd: rnd_t) -> c_int {
+    init(rop);
+    set_f(rop, op, rnd)
+}
+c_fn! {
     "mpfr_init_set_str" init_set_str(x: mpfr_ptr,
                                      s: *const c_char,
                                      base: c_int,
@@ -650,6 +689,19 @@ extern_c! {
                              rnd: rnd_t)
                              -> c_int;
     "mpfr_get_version" get_version() -> *const c_char;
+}
+pub const VERSION: c_int = (VERSION_MAJOR << 16) | (VERSION_MINOR << 8) |
+                           VERSION_PATCHLEVEL;
+pub const VERSION_MAJOR: c_int = 3;
+pub const VERSION_MINOR: c_int = 1;
+pub const VERSION_PATCHLEVEL: c_int = 5;
+pub const VERSION_STRING: *const c_char = b"3.1.5\0" as *const u8 as
+                                          *const c_char;
+#[inline]
+pub fn VERSION_NUM(major: c_int, minor: c_int, patchlevel: c_int) -> c_int {
+    (major << 16) | (minor << 8) | patchlevel
+}
+c_fn! {
     "mpfr_get_patches" get_patches() -> *const c_char;
     "mpfr_buildopt_tls_p" buildopt_tls_p() -> c_int;
     "mpfr_buildopt_decimal_p" buildopt_decimal_p() -> c_int;
@@ -721,56 +773,4 @@ extern_c! {
                                                          -> *mut c_void;
     "mpfr_custom_get_exp" custom_get_exp(x: mpfr_srcptr) -> exp_t;
     "mpfr_custom_move" custom_move(x: mpfr_ptr, new_position: *mut c_void);
-}
-
-#[inline]
-pub unsafe fn init_set(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int {
-    init(rop);
-    set(rop, op, rnd)
-}
-#[inline]
-pub unsafe fn init_set_ui(rop: mpfr_ptr, op: c_ulong, rnd: rnd_t) -> c_int {
-    init(rop);
-    set_ui(rop, op, rnd)
-}
-#[inline]
-pub unsafe fn init_set_si(rop: mpfr_ptr, op: c_long, rnd: rnd_t) -> c_int {
-    init(rop);
-    set_si(rop, op, rnd)
-}
-#[inline]
-pub unsafe fn init_set_d(rop: mpfr_ptr, op: f64, rnd: rnd_t) -> c_int {
-    init(rop);
-    set_d(rop, op, rnd)
-}
-#[inline]
-pub unsafe fn init_set_ld(rop: mpfr_ptr, op: f64, rnd: rnd_t) -> c_int {
-    init(rop);
-    set_ld(rop, op, rnd)
-}
-#[inline]
-pub unsafe fn init_set_z(rop: mpfr_ptr, op: mpz_srcptr, rnd: rnd_t) -> c_int {
-    init(rop);
-    set_z(rop, op, rnd)
-}
-#[inline]
-pub unsafe fn init_set_q(rop: mpfr_ptr, op: mpq_srcptr, rnd: rnd_t) -> c_int {
-    init(rop);
-    set_q(rop, op, rnd)
-}
-#[inline]
-pub unsafe fn init_set_f(rop: mpfr_ptr, op: mpf_srcptr, rnd: rnd_t) -> c_int {
-    init(rop);
-    set_f(rop, op, rnd)
-}
-pub const VERSION: c_int = (VERSION_MAJOR << 16) | (VERSION_MINOR << 8) |
-                           VERSION_PATCHLEVEL;
-pub const VERSION_MAJOR: c_int = 3;
-pub const VERSION_MINOR: c_int = 1;
-pub const VERSION_PATCHLEVEL: c_int = 5;
-pub const VERSION_STRING: *const c_char = b"3.1.5\0" as *const u8 as
-                                          *const c_char;
-#[inline]
-pub fn VERSION_NUM(major: c_int, minor: c_int, patchlevel: c_int) -> c_int {
-    (major << 16) | (minor << 8) | patchlevel
 }

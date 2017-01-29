@@ -122,7 +122,6 @@ pub struct mpc_t {
 }
 
 // Types for function declarations in this file.
-
 type mpz_srcptr = *const gmp::mpz_t;
 type mpq_srcptr = *const gmp::mpq_t;
 type mpf_srcptr = *const gmp::mpf_t;
@@ -132,9 +131,7 @@ type mpfr_ptr = *mut mpfr::mpfr_t;
 type mpc_ptr = *mut mpc_t;
 type mpc_srcptr = *const mpc_t;
 
-extern_c! {
-    "mpc"
-
+c_fn! {
     // Initialization Functions
     "mpc_init2" init2(z: mpc_ptr, prec: mpfr::prec_t);
     "mpc_init3" init3(z: mpc_ptr, prec_r: mpfr::prec_t, prec_i: mpfr::prec_t);
@@ -159,7 +156,6 @@ extern_c! {
                               op1: c_ulong,
                               op2: c_ulong,
                               rnd: rnd_t)
-
                               -> c_int;
     "mpc_set_si_si" set_si_si(rop: mpc_ptr,
                               op1: c_long,
@@ -224,10 +220,26 @@ extern_c! {
                               op2r: c_long,
                               op2i: c_long)
                               -> c_int;
+}
+#[inline]
+pub unsafe fn cmp_si(op1: mpc_srcptr, op2: c_long) -> c_int {
+    cmp_si_si(op1, op2, 0)
+}
+c_fn! {
 
     // Projection and Decomposing Functions
     "mpc_real" real(rop: mpfr_ptr, arg2: mpc_srcptr, rnd: mpfr::rnd_t) -> c_int;
     "mpc_imag" imag(rop: mpfr_ptr, arg2: mpc_srcptr, rnd: mpfr::rnd_t) -> c_int;
+}
+#[inline]
+pub unsafe fn realref(op: mpc_ptr) -> mpfr_ptr {
+    (&mut (*op).re) as mpfr_ptr
+}
+#[inline]
+pub unsafe fn imagref(op: mpc_ptr) -> mpfr_ptr {
+    (&mut (*op).im) as mpfr_ptr
+}
+c_fn! {
     "mpc_arg" arg(rop: mpfr_ptr, op: mpc_srcptr, rnd: mpfr::rnd_t) -> c_int;
     "mpc_proj" proj(rop: mpc_ptr, arg2: mpc_srcptr, rnd: rnd_t) -> c_int;
 
@@ -267,6 +279,16 @@ extern_c! {
                         op2: c_ulong,
                         rnd: rnd_t)
                         -> c_int;
+}
+#[inline]
+pub unsafe fn ui_sub(rop: mpc_ptr,
+                     op1: c_ulong,
+                     op2: mpc_srcptr,
+                     rnd: rnd_t)
+                     -> c_int {
+    ui_ui_sub(rop, op1, 0, op2, rnd)
+}
+c_fn! {
     "mpc_ui_ui_sub" ui_ui_sub(rop: mpc_ptr,
                               re1: c_ulong,
                               im1: c_ulong,
@@ -420,7 +442,6 @@ extern_c! {
     "mpc_urandom" urandom(rop: mpc_ptr, state: randstate_ptr) -> c_int;
     "mpc_get_version" get_version() -> *const c_char;
 }
-
 pub const VERSION: c_int = (VERSION_MAJOR << 16) | (VERSION_MINOR << 8) |
                            VERSION_PATCHLEVEL;
 pub const VERSION_MAJOR: c_int = 1;
@@ -431,25 +452,4 @@ pub const VERSION_STRING: *const c_char = b"1.0.3\0" as *const u8 as
 #[inline]
 pub fn VERSION_NUM(major: c_int, minor: c_int, patchlevel: c_int) -> c_int {
     (major << 16) | (minor << 8) | patchlevel
-}
-
-#[inline]
-pub unsafe fn cmp_si(op1: mpc_srcptr, op2: c_long) -> c_int {
-    cmp_si_si(op1, op2, 0)
-}
-#[inline]
-pub unsafe fn realref(op: mpc_ptr) -> mpfr_ptr {
-    (&mut (*op).re) as mpfr_ptr
-}
-#[inline]
-pub unsafe fn imagref(op: mpc_ptr) -> mpfr_ptr {
-    (&mut (*op).im) as mpfr_ptr
-}
-#[inline]
-pub unsafe fn ui_sub(rop: mpc_ptr,
-                     op1: c_ulong,
-                     op2: mpc_srcptr,
-                     rnd: rnd_t)
-                     -> c_int {
-    ui_ui_sub(rop, op1, 0, op2, rnd)
 }

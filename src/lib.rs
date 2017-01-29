@@ -72,81 +72,86 @@
 //!
 //! The bindings do not cover undocumented or obsolete functions and
 //! macros.
-//! 
+//!
 //! ## Usage
-//! 
+//!
 //! To use `gmp-mpfr-sys` in your crate, add
 //! `extern crate gmp_mpfr_sys;` to the crate root and add
 //! `gmp-mpfr-sys` as a dependency in `Cargo.toml`:
-//! 
+//!
 //! ```toml
 //! [dependencies]
 //! gmp-mpfr-sys = "0.5.1"
 //! ```
-//! 
+//!
 //! ### Building on GNU/Linux
-//! 
+//!
 //! To build on GNU/Linux, simply make sure you have `diffutils`, `gcc`
 //! and `make` installed on your system. For example on Fedora:
-//! 
+//!
 //! ```sh
 //! sudo dnf install diffutils gcc make
 //! ```
-//! 
+//!
 //! ### Building on macOS
-//! 
+//!
 //! To build on macOS, you need the command-line developer tools. An easy
 //! way to install them is to start building the crate using
 //! `cargo build`. If the tools are not installed yet, a popup should
 //! appear which should help you install them.
-//! 
+//!
 //! ### Building on Windows
-//! 
+//!
 //! You can build on Windows with the Rust GNU toolchain and an up-to-date
 //! MSYS2 installation. Some steps for a 64-bit environment are listed
 //! below, you can follow similar steps for a 32-bit environment by
 //! substituting 32 for 64. To install MSYS2:
-//! 
+//!
 //! 1. Install MSYS2 using the [installer](https://msys2.github.io/).
-//! 
+//!
 //! 2. Launch the MSYS2 MinGW 64-bit terminal from the start menu.
-//! 
+//!
 //! 3. Install the required tools.
 //!    ```sh
 //!    pacman -S pacman-mirrors
 //!    pacman -S diffutils make mingw-w64-x86_64-gcc
 //!    ```
-//!    
+//!
 //! Then, to build a crate with a dependency on this crate:
-//! 
+//!
 //! 1. Launch the MSYS MinGW 64-bit terminal from the start menu.
-//! 
+//!
 //! 2. Change to the crate directory.
-//! 
+//!
 //!    Note that building the GMP and MPFR libraries in MSYS with absolute
 //!    paths does not work very well, so relative paths are used. If your
 //!    crate is inside `C:\msys64` and the `.cargo` directory is outside
 //!    `C:\msys64`, this will not work. Please move your crate to the
 //!    same side of `C:\msys64` as `.cargo`.
-//! 
+//!
 //! 3. Build the crate using `cargo`.
 
-macro_rules! extern_c {
+macro_rules! c_fn {
     {
-        $library:tt
-        $($c:tt $name:ident
-          $(($($par:ident: $ty:ty),* $(; $dots:tt)*) $(-> $ret:ty)*)*
-          $(: $vty:ty)*
-          ;
+        $($c:tt
+          $name:ident($($par:ident: $ty:ty),* $(; $dots:tt)*) $(-> $ret:ty)*;
         )*
     } => {
-        #[link(name = $library, kind = "static")]
         extern "C" {
             $(
                 #[link_name = $c]
-                $(pub fn $name($($par: $ty),* $(, $dots)*) $(-> $ret)*)*
-                $(pub static $name: $vty)*
-                ;
+                pub fn $name($($par: $ty),* $(, $dots)*) $(-> $ret)*;
+            )*
+        }
+    };
+}
+
+macro_rules! c_static {
+    { $($c:tt $name:ident: $ty:ty;)* } => {
+        extern "C" {
+            $(
+                #[link_name = $c]
+                pub static $name: $ty;
             )*
         }
     };
