@@ -160,3 +160,55 @@ macro_rules! c_static {
 pub mod gmp;
 pub mod mpfr;
 pub mod mpc;
+
+#[cfg(test)]
+mod tests {
+    use gmp;
+    use mpc;
+    use mpfr;
+    use std::f64;
+    use std::mem;
+
+    #[test]
+    fn gmp_runs() {
+        unsafe {
+            let i = 3;
+            let mut z: gmp::mpz_t = mem::uninitialized();
+            let ptr = &mut z as *mut _;
+            gmp::mpz_init(ptr);
+            gmp::mpz_set_ui(ptr, i);
+            assert!(gmp::mpz_get_ui(ptr) == i);
+            gmp::mpz_clear(ptr);
+        }
+    }
+
+    #[test]
+    fn mpfr_runs() {
+        unsafe {
+            let d: f64 = 1.0 / 3.0;
+            let mut fr: mpfr::mpfr_t = mem::uninitialized();
+            let ptr = &mut fr as *mut _;
+            mpfr::init2(ptr, 53);
+            assert!(mpfr::set_d(ptr, d, mpfr::rnd_t::RNDN) == 0);
+            assert!(mpfr::get_d(ptr, mpfr::rnd_t::RNDN) == d);
+            mpfr::clear(ptr);
+        }
+    }
+
+    #[test]
+    fn mpc_runs() {
+        unsafe {
+            let re: f64 = 1.0 / 3.0;
+            let im: f64 = f64::NEG_INFINITY;
+            let mut c: mpc::mpc_t = mem::uninitialized();
+            let ptr = &mut c as *mut _;
+            mpc::init3(ptr, 53, 53);
+            assert!(mpc::set_d_d(ptr, re, im, mpc::RNDNN) == 0);
+            let re_ptr = mpc::realref(ptr);
+            let im_ptr = mpc::imagref(ptr);
+            assert!(mpfr::get_d(re_ptr, mpfr::rnd_t::RNDN) == re);
+            assert!(mpfr::get_d(im_ptr, mpfr::rnd_t::RNDN) == im);
+            mpc::clear(ptr);
+        }
+    }
+}
