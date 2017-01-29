@@ -131,32 +131,6 @@
 //!
 //! 3. Build the crate using `cargo`.
 
-macro_rules! c_fn {
-    {
-        $($c:tt
-          $name:ident($($par:ident: $ty:ty),* $(; $dots:tt)*) $(-> $ret:ty)*;
-        )*
-    } => {
-        extern "C" {
-            $(
-                #[link_name = $c]
-                pub fn $name($($par: $ty),* $(, $dots)*) $(-> $ret)*;
-            )*
-        }
-    };
-}
-
-macro_rules! c_static {
-    { $($c:tt $name:ident: $ty:ty;)* } => {
-        extern "C" {
-            $(
-                #[link_name = $c]
-                pub static $name: $ty;
-            )*
-        }
-    };
-}
-
 pub mod gmp;
 pub mod mpfr;
 pub mod mpc;

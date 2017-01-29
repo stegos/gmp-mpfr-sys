@@ -122,6 +122,7 @@ pub struct mpc_t {
 }
 
 // Types for function declarations in this file.
+
 type mpz_srcptr = *const gmp::mpz_t;
 type mpq_srcptr = *const gmp::mpq_t;
 type mpf_srcptr = *const gmp::mpf_t;
@@ -131,105 +132,131 @@ type mpfr_ptr = *mut mpfr::mpfr_t;
 type mpc_ptr = *mut mpc_t;
 type mpc_srcptr = *const mpc_t;
 
-c_fn! {
+extern "C" {
     // Initialization Functions
-    "mpc_init2" init2(z: mpc_ptr, prec: mpfr::prec_t);
-    "mpc_init3" init3(z: mpc_ptr, prec_r: mpfr::prec_t, prec_i: mpfr::prec_t);
-    "mpc_clear" clear(z: mpc_ptr);
-    "mpc_set_prec" set_prec(x: mpc_ptr, prec: mpfr::prec_t);
-    "mpc_get_prec" get_prec(x: mpc_srcptr) -> mpfr::prec_t;
-    "mpc_get_prec2" get_prec2(pr: *mut mpfr::prec_t,
-                              pi: *mut mpfr::prec_t,
-                              x: mpc_srcptr);
+
+    #[link_name = "mpc_init2"]
+    pub fn init2(z: mpc_ptr, prec: mpfr::prec_t);
+    #[link_name = "mpc_init3"]
+    pub fn init3(z: mpc_ptr, prec_r: mpfr::prec_t, prec_i: mpfr::prec_t);
+    #[link_name = "mpc_clear"]
+    pub fn clear(z: mpc_ptr);
+    #[link_name = "mpc_set_prec"]
+    pub fn set_prec(x: mpc_ptr, prec: mpfr::prec_t);
+    #[link_name = "mpc_get_prec"]
+    pub fn get_prec(x: mpc_srcptr) -> mpfr::prec_t;
+    #[link_name = "mpc_get_prec2"]
+    pub fn get_prec2(pr: *mut mpfr::prec_t,
+                     pi: *mut mpfr::prec_t,
+                     x: mpc_srcptr);
 
     // Assignment Functions
-    "mpc_set" set(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_set_ui" set_ui(rop: mpc_ptr, op: c_ulong, rnd: rnd_t) -> c_int;
-    "mpc_set_si" set_si(rop: mpc_ptr, op: c_long, rnd: rnd_t) -> c_int;
-    "mpc_set_d" set_d(rop: mpc_ptr, op: f64, rnd: rnd_t) -> c_int;
-    "mpc_set_ld" set_ld(rop: mpc_ptr, op: f64, rnd: rnd_t) -> c_int;
-    "mpc_set_z" set_z(rop: mpc_ptr, op: mpz_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_set_q" set_q(rop: mpc_ptr, op: mpq_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_set_f" set_f(rop: mpc_ptr, op: mpf_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_set_fr" set_fr(rop: mpc_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_set_ui_ui" set_ui_ui(rop: mpc_ptr,
-                              op1: c_ulong,
-                              op2: c_ulong,
-                              rnd: rnd_t)
-                              -> c_int;
-    "mpc_set_si_si" set_si_si(rop: mpc_ptr,
-                              op1: c_long,
-                              op2: c_long,
-                              rnd: rnd_t)
-                              -> c_int;
-    "mpc_set_d_d" set_d_d(rop: mpc_ptr,
-                          op1: f64,
-                          op2: f64,
-                          rnd: rnd_t)
-                          -> c_int;
-    "mpc_set_ld_ld" set_ld_ld(rop: mpc_ptr,
-                              op1: f64,
-                              op2: f64,
-                              rnd: rnd_t)
-                              -> c_int;
-    "mpc_set_z_z" set_z_z(rop: mpc_ptr,
-                          op1: mpz_srcptr,
-                          op2: mpz_srcptr,
-                          rnd: rnd_t)
-                          -> c_int;
-    "mpc_set_q_q" set_q_q(rop: mpc_ptr,
-                          op1: mpq_srcptr,
-                          op2: mpq_srcptr,
-                          rnd: rnd_t)
-                          -> c_int;
-    "mpc_set_f_f" set_f_f(rop: mpc_ptr,
-                          op1: mpf_srcptr,
-                          op2: mpf_srcptr,
-                          rnd: rnd_t)
-                          -> c_int;
-    "mpc_set_fr_fr" set_fr_fr(rop: mpc_ptr,
-                              op1: mpfr_srcptr,
-                              op2: mpfr_srcptr,
-                              rnd: rnd_t)
-                              -> c_int;
-    "mpc_set_nan" set_nan(rop: mpc_ptr);
-    "mpc_swap" swap(op1: mpc_ptr, op2: mpc_ptr);
+
+    #[link_name = "mpc_set"]
+    pub fn set(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_set_ui"]
+    pub fn set_ui(rop: mpc_ptr, op: c_ulong, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_set_si"]
+    pub fn set_si(rop: mpc_ptr, op: c_long, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_set_d"]
+    pub fn set_d(rop: mpc_ptr, op: f64, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_set_ld"]
+    pub fn set_ld(rop: mpc_ptr, op: f64, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_set_z"]
+    pub fn set_z(rop: mpc_ptr, op: mpz_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_set_q"]
+    pub fn set_q(rop: mpc_ptr, op: mpq_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_set_f"]
+    pub fn set_f(rop: mpc_ptr, op: mpf_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_set_fr"]
+    pub fn set_fr(rop: mpc_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_set_ui_ui"]
+    pub fn set_ui_ui(rop: mpc_ptr,
+                     op1: c_ulong,
+                     op2: c_ulong,
+                     rnd: rnd_t)
+                     -> c_int;
+    #[link_name = "mpc_set_si_si"]
+    pub fn set_si_si(rop: mpc_ptr,
+                     op1: c_long,
+                     op2: c_long,
+                     rnd: rnd_t)
+                     -> c_int;
+    #[link_name = "mpc_set_d_d"]
+    pub fn set_d_d(rop: mpc_ptr, op1: f64, op2: f64, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_set_ld_ld"]
+    pub fn set_ld_ld(rop: mpc_ptr, op1: f64, op2: f64, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_set_z_z"]
+    pub fn set_z_z(rop: mpc_ptr,
+                   op1: mpz_srcptr,
+                   op2: mpz_srcptr,
+                   rnd: rnd_t)
+                   -> c_int;
+    #[link_name = "mpc_set_q_q"]
+    pub fn set_q_q(rop: mpc_ptr,
+                   op1: mpq_srcptr,
+                   op2: mpq_srcptr,
+                   rnd: rnd_t)
+                   -> c_int;
+    #[link_name = "mpc_set_f_f"]
+    pub fn set_f_f(rop: mpc_ptr,
+                   op1: mpf_srcptr,
+                   op2: mpf_srcptr,
+                   rnd: rnd_t)
+                   -> c_int;
+    #[link_name = "mpc_set_fr_fr"]
+    pub fn set_fr_fr(rop: mpc_ptr,
+                     op1: mpfr_srcptr,
+                     op2: mpfr_srcptr,
+                     rnd: rnd_t)
+                     -> c_int;
+    #[link_name = "mpc_set_nan"]
+    pub fn set_nan(rop: mpc_ptr);
+    #[link_name = "mpc_swap"]
+    pub fn swap(op1: mpc_ptr, op2: mpc_ptr);
 
     // String Input and Output
-    "mpc_strtoc" strtoc(rop: mpc_ptr,
-                        nptr: *const c_char,
-                        endptr: *mut *mut c_char,
-                        base: c_int,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_set_str" set_str(rop: mpc_ptr,
-                          s: *const c_char,
-                          base: c_int,
-                          rnd: rnd_t)
-                          -> c_int;
-    "mpc_get_str" get_str(b: c_int,
-                          n: usize,
-                          op: mpc_srcptr,
-                          rnd: rnd_t)
-                          -> *mut c_char;
-    "mpc_free_str" free_str(rop: *mut c_char);
+
+    #[link_name = "mpc_strtoc"]
+    pub fn strtoc(rop: mpc_ptr,
+                  nptr: *const c_char,
+                  endptr: *mut *mut c_char,
+                  base: c_int,
+                  rnd: rnd_t)
+                  -> c_int;
+    #[link_name = "mpc_set_str"]
+    pub fn set_str(rop: mpc_ptr,
+                   s: *const c_char,
+                   base: c_int,
+                   rnd: rnd_t)
+                   -> c_int;
+    #[link_name = "mpc_get_str"]
+    pub fn get_str(b: c_int,
+                   n: usize,
+                   op: mpc_srcptr,
+                   rnd: rnd_t)
+                   -> *mut c_char;
+    #[link_name = "mpc_free_str"]
+    pub fn free_str(rop: *mut c_char);
 
     // Comparison Functions
-    "mpc_cmp" cmp(op1: mpc_srcptr, op2: mpc_srcptr) -> c_int;
-    "mpc_cmp_si_si" cmp_si_si(op1: mpc_srcptr,
-                              op2r: c_long,
-                              op2i: c_long)
-                              -> c_int;
+
+    #[link_name = "mpc_cmp"]
+    pub fn cmp(op1: mpc_srcptr, op2: mpc_srcptr) -> c_int;
+    #[link_name = "mpc_cmp_si_si"]
+    pub fn cmp_si_si(op1: mpc_srcptr, op2r: c_long, op2i: c_long) -> c_int;
 }
 #[inline]
 pub unsafe fn cmp_si(op1: mpc_srcptr, op2: c_long) -> c_int {
     cmp_si_si(op1, op2, 0)
 }
-c_fn! {
 
+extern "C" {
     // Projection and Decomposing Functions
-    "mpc_real" real(rop: mpfr_ptr, arg2: mpc_srcptr, rnd: mpfr::rnd_t) -> c_int;
-    "mpc_imag" imag(rop: mpfr_ptr, arg2: mpc_srcptr, rnd: mpfr::rnd_t) -> c_int;
+    #[link_name = "mpc_real"]
+    pub fn real(rop: mpfr_ptr, arg2: mpc_srcptr, rnd: mpfr::rnd_t) -> c_int;
+    #[link_name = "mpc_imag"]
+    pub fn imag(rop: mpfr_ptr, arg2: mpc_srcptr, rnd: mpfr::rnd_t) -> c_int;
 }
 #[inline]
 pub unsafe fn realref(op: mpc_ptr) -> mpfr_ptr {
@@ -239,46 +266,56 @@ pub unsafe fn realref(op: mpc_ptr) -> mpfr_ptr {
 pub unsafe fn imagref(op: mpc_ptr) -> mpfr_ptr {
     (&mut (*op).im) as mpfr_ptr
 }
-c_fn! {
-    "mpc_arg" arg(rop: mpfr_ptr, op: mpc_srcptr, rnd: mpfr::rnd_t) -> c_int;
-    "mpc_proj" proj(rop: mpc_ptr, arg2: mpc_srcptr, rnd: rnd_t) -> c_int;
+extern "C" {
+    #[link_name = "mpc_arg"]
+    pub fn arg(rop: mpfr_ptr, op: mpc_srcptr, rnd: mpfr::rnd_t) -> c_int;
+    #[link_name = "mpc_proj"]
+    pub fn proj(rop: mpc_ptr, arg2: mpc_srcptr, rnd: rnd_t) -> c_int;
 
     // Basic Arithmetic Functions
-    "mpc_add" add(rop: mpc_ptr,
+
+    #[link_name = "mpc_add"]
+    pub fn add(rop: mpc_ptr,
+               op1: mpc_srcptr,
+               op2: mpc_srcptr,
+               rnd: rnd_t)
+               -> c_int;
+    #[link_name = "mpc_add_ui"]
+    pub fn add_ui(rop: mpc_ptr,
                   op1: mpc_srcptr,
+                  op2: c_ulong,
+                  rnd: rnd_t)
+                  -> c_int;
+    #[link_name = "mpc_add_fr"]
+    pub fn add_fr(rop: mpc_ptr,
+                  op1: mpc_srcptr,
+                  op2: mpfr_srcptr,
+                  rnd: rnd_t)
+                  -> c_int;
+    #[link_name = "mpc_sub"]
+    pub fn sub(rop: mpc_ptr,
+               op1: mpc_srcptr,
+               op2: mpc_srcptr,
+               rnd: rnd_t)
+               -> c_int;
+    #[link_name = "mpc_sub_fr"]
+    pub fn sub_fr(rop: mpc_ptr,
+                  op1: mpc_srcptr,
+                  op2: mpfr_srcptr,
+                  rnd: rnd_t)
+                  -> c_int;
+    #[link_name = "mpc_fr_sub"]
+    pub fn fr_sub(rop: mpc_ptr,
+                  op1: mpfr_srcptr,
                   op2: mpc_srcptr,
                   rnd: rnd_t)
                   -> c_int;
-    "mpc_add_ui" add_ui(rop: mpc_ptr,
-                        op1: mpc_srcptr,
-                        op2: c_ulong,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_add_fr" add_fr(rop: mpc_ptr,
-                        op1: mpc_srcptr,
-                        op2: mpfr_srcptr,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_sub" sub(rop: mpc_ptr,
+    #[link_name = "mpc_sub_ui"]
+    pub fn sub_ui(rop: mpc_ptr,
                   op1: mpc_srcptr,
-                  op2: mpc_srcptr,
+                  op2: c_ulong,
                   rnd: rnd_t)
                   -> c_int;
-    "mpc_sub_fr" sub_fr(rop: mpc_ptr,
-                        op1: mpc_srcptr,
-                        op2: mpfr_srcptr,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_fr_sub" fr_sub(rop: mpc_ptr,
-                        op1: mpfr_srcptr,
-                        op2: mpc_srcptr,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_sub_ui" sub_ui(rop: mpc_ptr,
-                        op1: mpc_srcptr,
-                        op2: c_ulong,
-                        rnd: rnd_t)
-                        -> c_int;
 }
 #[inline]
 pub unsafe fn ui_sub(rop: mpc_ptr,
@@ -288,159 +325,205 @@ pub unsafe fn ui_sub(rop: mpc_ptr,
                      -> c_int {
     ui_ui_sub(rop, op1, 0, op2, rnd)
 }
-c_fn! {
-    "mpc_ui_ui_sub" ui_ui_sub(rop: mpc_ptr,
-                              re1: c_ulong,
-                              im1: c_ulong,
-                              op2: mpc_srcptr,
-                              rnd: rnd_t)
-                              -> c_int;
-    "mpc_neg" neg(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_mul" mul(rop: mpc_ptr,
+extern "C" {
+    #[link_name = "mpc_ui_ui_sub"]
+    pub fn ui_ui_sub(rop: mpc_ptr,
+                     re1: c_ulong,
+                     im1: c_ulong,
+                     op2: mpc_srcptr,
+                     rnd: rnd_t)
+                     -> c_int;
+    #[link_name = "mpc_neg"]
+    pub fn neg(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_mul"]
+    pub fn mul(rop: mpc_ptr,
+               op1: mpc_srcptr,
+               op2: mpc_srcptr,
+               rnd: rnd_t)
+               -> c_int;
+    #[link_name = "mpc_mul_ui"]
+    pub fn mul_ui(rop: mpc_ptr,
                   op1: mpc_srcptr,
+                  op2: c_ulong,
+                  rnd: rnd_t)
+                  -> c_int;
+    #[link_name = "mpc_mul_si"]
+    pub fn mul_si(rop: mpc_ptr,
+                  op1: mpc_srcptr,
+                  op2: c_long,
+                  rnd: rnd_t)
+                  -> c_int;
+    #[link_name = "mpc_mul_fr"]
+    pub fn mul_fr(rop: mpc_ptr,
+                  op1: mpc_srcptr,
+                  op2: mpfr_srcptr,
+                  rnd: rnd_t)
+                  -> c_int;
+    #[link_name = "mpc_mul_i"]
+    pub fn mul_i(rop: mpc_ptr,
+                 op: mpc_srcptr,
+                 sgn: c_int,
+                 rnd: rnd_t)
+                 -> c_int;
+    #[link_name = "mpc_sqr"]
+    pub fn sqr(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_fma"]
+    pub fn fma(rop: mpc_ptr,
+               op1: mpc_srcptr,
+               op2: mpc_srcptr,
+               op3: mpc_srcptr,
+               rnd: rnd_t)
+               -> c_int;
+    #[link_name = "mpc_div"]
+    pub fn div(rop: mpc_ptr,
+               op1: mpc_srcptr,
+               op2: mpc_srcptr,
+               rnd: rnd_t)
+               -> c_int;
+    #[link_name = "mpc_div_ui"]
+    pub fn div_ui(rop: mpc_ptr,
+                  op1: mpc_srcptr,
+                  op2: c_ulong,
+                  rnd: rnd_t)
+                  -> c_int;
+    #[link_name = "mpc_div_fr"]
+    pub fn div_fr(rop: mpc_ptr,
+                  op1: mpc_srcptr,
+                  op2: mpfr_srcptr,
+                  rnd: rnd_t)
+                  -> c_int;
+    #[link_name = "mpc_ui_div"]
+    pub fn ui_div(rop: mpc_ptr,
+                  op1: c_ulong,
                   op2: mpc_srcptr,
                   rnd: rnd_t)
                   -> c_int;
-    "mpc_mul_ui" mul_ui(rop: mpc_ptr,
-                        op1: mpc_srcptr,
-                        op2: c_ulong,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_mul_si" mul_si(rop: mpc_ptr,
-                        op1: mpc_srcptr,
-                        op2: c_long,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_mul_fr" mul_fr(rop: mpc_ptr,
-                        op1: mpc_srcptr,
-                        op2: mpfr_srcptr,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_mul_i" mul_i(rop: mpc_ptr,
-                      op: mpc_srcptr,
-                      sgn: c_int,
-                      rnd: rnd_t)
-                      -> c_int;
-    "mpc_sqr" sqr(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_fma" fma(rop: mpc_ptr,
-                  op1: mpc_srcptr,
-                  op2: mpc_srcptr,
-                  op3: mpc_srcptr,
-                  rnd: rnd_t)
-                  -> c_int;
-    "mpc_div" div(rop: mpc_ptr,
-                  op1: mpc_srcptr,
+    #[link_name = "mpc_fr_div"]
+    pub fn fr_div(rop: mpc_ptr,
+                  op1: mpfr_srcptr,
                   op2: mpc_srcptr,
                   rnd: rnd_t)
                   -> c_int;
-    "mpc_div_ui" div_ui(rop: mpc_ptr,
-                        op1: mpc_srcptr,
-                        op2: c_ulong,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_div_fr" div_fr(rop: mpc_ptr,
-                        op1: mpc_srcptr,
-                        op2: mpfr_srcptr,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_ui_div" ui_div(rop: mpc_ptr,
-                        op1: c_ulong,
-                        op2: mpc_srcptr,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_fr_div" fr_div(rop: mpc_ptr,
-                        op1: mpfr_srcptr,
-                        op2: mpc_srcptr,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_conj" conj(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_abs" abs(rop: mpfr_ptr, op: mpc_srcptr, rnd: mpfr::rnd_t) -> c_int;
-    "mpc_norm" norm(rop: mpfr_ptr, op: mpc_srcptr, rnd: mpfr::rnd_t) -> c_int;
-    "mpc_mul_2ui" mul_2ui(rop: mpc_ptr,
-                          op1: mpc_srcptr,
-                          op2: c_ulong,
-                          rnd: rnd_t)
-                          -> c_int;
-    "mpc_mul_2si" mul_2si(rop: mpc_ptr,
-                          op1: mpc_srcptr,
-                          op2: c_long,
-                          rnd: rnd_t)
-                          -> c_int;
-    "mpc_div_2ui" div_2ui(rop: mpc_ptr,
-                          op1: mpc_srcptr,
-                          op2: c_ulong,
-                          rnd: rnd_t)
-                          -> c_int;
-    "mpc_div_2si" div_2si(rop: mpc_ptr,
-                          op1: mpc_srcptr,
-                          op2: c_long,
-                          rnd: rnd_t)
-                          -> c_int;
+    #[link_name = "mpc_conj"]
+    pub fn conj(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_abs"]
+    pub fn abs(rop: mpfr_ptr, op: mpc_srcptr, rnd: mpfr::rnd_t) -> c_int;
+    #[link_name = "mpc_norm"]
+    pub fn norm(rop: mpfr_ptr, op: mpc_srcptr, rnd: mpfr::rnd_t) -> c_int;
+    #[link_name = "mpc_mul_2ui"]
+    pub fn mul_2ui(rop: mpc_ptr,
+                   op1: mpc_srcptr,
+                   op2: c_ulong,
+                   rnd: rnd_t)
+                   -> c_int;
+    #[link_name = "mpc_mul_2si"]
+    pub fn mul_2si(rop: mpc_ptr,
+                   op1: mpc_srcptr,
+                   op2: c_long,
+                   rnd: rnd_t)
+                   -> c_int;
+    #[link_name = "mpc_div_2ui"]
+    pub fn div_2ui(rop: mpc_ptr,
+                   op1: mpc_srcptr,
+                   op2: c_ulong,
+                   rnd: rnd_t)
+                   -> c_int;
+    #[link_name = "mpc_div_2si"]
+    pub fn div_2si(rop: mpc_ptr,
+                   op1: mpc_srcptr,
+                   op2: c_long,
+                   rnd: rnd_t)
+                   -> c_int;
 
     // Power Functions and Logarithms
-    "mpc_sqrt" sqrt(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_pow" pow(rop: mpc_ptr,
+
+    #[link_name = "mpc_sqrt"]
+    pub fn sqrt(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_pow"]
+    pub fn pow(rop: mpc_ptr,
+               op1: mpc_srcptr,
+               op2: mpc_srcptr,
+               rnd: rnd_t)
+               -> c_int;
+    #[link_name = "mpc_pow_d"]
+    pub fn pow_d(rop: mpc_ptr, op1: mpc_srcptr, op2: f64, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_pow_ld"]
+    pub fn pow_ld(rop: mpc_ptr,
                   op1: mpc_srcptr,
-                  op2: mpc_srcptr,
+                  op2: f64,
                   rnd: rnd_t)
                   -> c_int;
-    "mpc_pow_d" pow_d(rop: mpc_ptr,
-                      op1: mpc_srcptr,
-                      op2: f64,
-                      rnd: rnd_t)
-                      -> c_int;
-    "mpc_pow_ld" pow_ld(rop: mpc_ptr,
-                        op1: mpc_srcptr,
-                        op2: f64,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_pow_si" pow_si(rop: mpc_ptr,
-                        op1: mpc_srcptr,
-                        op2: c_long,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_pow_ui" pow_ui(rop: mpc_ptr,
-                        op1: mpc_srcptr,
-                        op2: c_ulong,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_pow_z" pow_z(rop: mpc_ptr,
-                      op1: mpc_srcptr,
-                      op2: mpz_srcptr,
-                      rnd: rnd_t)
-                      -> c_int;
-    "mpc_pow_fr" pow_fr(rop: mpc_ptr,
-                        op1: mpc_srcptr,
-                        op2: mpfr_srcptr,
-                        rnd: rnd_t)
-                        -> c_int;
-    "mpc_exp" exp(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_log" log(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_log10" log10(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_pow_si"]
+    pub fn pow_si(rop: mpc_ptr,
+                  op1: mpc_srcptr,
+                  op2: c_long,
+                  rnd: rnd_t)
+                  -> c_int;
+    #[link_name = "mpc_pow_ui"]
+    pub fn pow_ui(rop: mpc_ptr,
+                  op1: mpc_srcptr,
+                  op2: c_ulong,
+                  rnd: rnd_t)
+                  -> c_int;
+    #[link_name = "mpc_pow_z"]
+    pub fn pow_z(rop: mpc_ptr,
+                 op1: mpc_srcptr,
+                 op2: mpz_srcptr,
+                 rnd: rnd_t)
+                 -> c_int;
+    #[link_name = "mpc_pow_fr"]
+    pub fn pow_fr(rop: mpc_ptr,
+                  op1: mpc_srcptr,
+                  op2: mpfr_srcptr,
+                  rnd: rnd_t)
+                  -> c_int;
+    #[link_name = "mpc_exp"]
+    pub fn exp(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_log"]
+    pub fn log(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_log10"]
+    pub fn log10(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
 
     // Trigonometric Functions
-    "mpc_sin" sin(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_cos" cos(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_sin_cos" sin_cos(rop_sin: mpc_ptr,
-                          rop_cos: mpc_ptr,
-                          op: mpc_srcptr,
-                          rnd_sin: rnd_t,
-                          rnd_cos: rnd_t)
-                          -> c_int;
-    "mpc_tan" tan(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_sinh" sinh(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_cosh" cosh(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_tanh" tanh(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_asin" asin(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_acos" acos(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_atan" atan(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_asinh" asinh(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_acosh" acosh(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
-    "mpc_atanh" atanh(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+
+    #[link_name = "mpc_sin"]
+    pub fn sin(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_cos"]
+    pub fn cos(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_sin_cos"]
+    pub fn sin_cos(rop_sin: mpc_ptr,
+                   rop_cos: mpc_ptr,
+                   op: mpc_srcptr,
+                   rnd_sin: rnd_t,
+                   rnd_cos: rnd_t)
+                   -> c_int;
+    #[link_name = "mpc_tan"]
+    pub fn tan(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_sinh"]
+    pub fn sinh(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_cosh"]
+    pub fn cosh(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_tanh"]
+    pub fn tanh(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_asin"]
+    pub fn asin(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_acos"]
+    pub fn acos(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_atan"]
+    pub fn atan(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_asinh"]
+    pub fn asinh(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_acosh"]
+    pub fn acosh(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    #[link_name = "mpc_atanh"]
+    pub fn atanh(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
 
     // Miscellaneous Functions
-    "mpc_urandom" urandom(rop: mpc_ptr, state: randstate_ptr) -> c_int;
-    "mpc_get_version" get_version() -> *const c_char;
+
+    #[link_name = "mpc_urandom"]
+    pub fn urandom(rop: mpc_ptr, state: randstate_ptr) -> c_int;
+    #[link_name = "mpc_get_version"]
+    pub fn get_version() -> *const c_char;
 }
 pub const VERSION: c_int = (VERSION_MAJOR << 16) | (VERSION_MINOR << 8) |
                            VERSION_PATCHLEVEL;
