@@ -11,8 +11,6 @@ The `gmp-mpfr-sys` crate provides Rust low-level bindings for
 
 The source of the three libraries is included in the package.
 
-## License
-
 This crate is free software: you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
@@ -74,20 +72,16 @@ macros.
 
 ## Usage
 
-Add this to your `Cargo.toml`:
+To use `gmp-mpfr-sys` in your crate, add `extern crate gmp_mpfr_sys;`
+to the crate root and add `gmp-mpfr-sys` as a dependency in
+`Cargo.toml`:
 
 ```toml
 [dependencies]
-gmp-mpfr-sys = "0.5"
+gmp-mpfr-sys = "0.5.1"
 ```
 
-and this to your crate root:
-
-```rust
-extern crate gmp_mpfr_sys;
-```
-
-## Building on GNU/Linux
+### Building on GNU/Linux
 
 To build on GNU/Linux, simply make sure you have `diffutils`, `gcc`
 and `make` installed on your system. For example on Fedora:
@@ -96,14 +90,14 @@ and `make` installed on your system. For example on Fedora:
 sudo dnf install diffutils gcc make
 ```
 
-## Building on macOS
+### Building on macOS
 
 To build on macOS, you need the command-line developer tools. An easy
 way to install them is to start building the crate using
 `cargo build`. If the tools are not installed yet, a popup should
 appear which should help you install them.
 
-## Building on Windows
+### Building on Windows
 
 You can build on Windows with the Rust GNU toolchain and an up-to-date
 MSYS2 installation. Some steps for a 64-bit environment are listed
