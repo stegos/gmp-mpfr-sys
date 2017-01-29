@@ -736,6 +736,7 @@ c_fn! {
                                        n: size_t,
                                        d: limb_t);
 }
+#[inline]
 pub unsafe fn mpn_divexact_by3(rp: mp_ptr, sp: mp_srcptr, n: size_t) -> limb_t {
     mpn_divexact_by3c(rp, sp, n, 0)
 }
