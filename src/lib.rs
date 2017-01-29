@@ -167,7 +167,23 @@ mod tests {
     use mpc;
     use mpfr;
     use std::f64;
+    use std::ffi::CStr;
     use std::mem;
+
+    #[test]
+    fn check_versions() {
+        unsafe {
+            let gmp_ver = CStr::from_ptr(gmp::version);
+            let mpfr_ver = CStr::from_ptr(mpfr::get_version());
+            let mpc_ver = CStr::from_ptr(mpc::get_version());
+            println!("GMP version {}", gmp_ver.to_str().unwrap());
+            println!("MPFR version {}", mpfr_ver.to_str().unwrap());
+            println!("MPC version {}", mpc_ver.to_str().unwrap());
+            assert!(gmp_ver.to_bytes() == b"6.1.2");
+            assert!(mpfr_ver.to_bytes() == b"3.1.5");
+            assert!(mpc_ver.to_bytes() == b"1.0.3");
+        }
+    }
 
     #[test]
     fn gmp_runs() {
