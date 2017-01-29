@@ -18,43 +18,9 @@
 
 use std::os::raw::{c_char, c_int, c_long, c_uchar, c_uint, c_ulong, c_void};
 
-macro_rules! c_static {
-    { $($c:tt $name:ident: $ty:ty;)* } => {
-        $(
-            #[link(name = "gmp", kind = "static")]
-            extern "C" {
-                #[link_name = $c]
-                pub static $name: $ty;
-            }
-        )*
-    };
-}
-
-macro_rules! c_fn {
-    {
-        $($c:tt $name:ident
-          ($($par:ident: $ty:ty),* $(; $dots:tt)*) $(-> $ret:ty)*;
-        )*
-    } => {
-        $(
-            #[link(name = "gmp", kind = "static")]
-            extern "C" {
-                #[link_name = $c]
-                pub fn $name($($par: $ty),* $(, $dots)*) $(-> $ret)*;
-            }
-        )*
-    };
-}
-
-c_static! {
-    "__gmp_bits_per_limb" bits_per_limb: c_int;
-}
 pub const VERSION: c_int = 6;
 pub const VERSION_MINOR: c_int = 1;
 pub const VERSION_PATCHLEVEL: c_int = 2;
-c_static! {
-    "__gmp_version" version: *const c_char;
-}
 
 pub type exp_t = c_long;
 pub type limb_t = c_ulong;
@@ -99,6 +65,17 @@ pub struct randstate_t {
     algdata: *mut c_void,
 }
 
+// Custom Allocation
+pub type allocate_function = Option<extern "C" fn(alloc_size: usize)
+                                                  -> *mut c_void>;
+pub type reallocate_function = Option<unsafe extern "C" fn(ptr: *mut c_void,
+                                                           old_size: usize,
+                                                           new_size: usize)
+                                                           -> *mut c_void>;
+pub type free_function = Option<unsafe extern "C" fn(ptr: *mut c_void,
+                                                     size: usize)>;
+
+
 // Types for function declarations in this file.
 
 type mpz_srcptr = *const mpz_t;
@@ -112,9 +89,15 @@ type mp_srcptr = *const limb_t;
 type randstate_srcptr = *const randstate_t;
 type randstate_ptr = *mut randstate_t;
 
-// Integers
+extern_c! {
+    "gmp"
 
-c_fn! {
+    // static variables
+    "__gmp_bits_per_limb" bits_per_limb: c_int;
+    "__gmp_version" version: *const c_char;
+
+    // Integers
+
     // Initialization Functions
     "__gmpz_init" mpz_init(x: mpz_ptr);
     "__gmpz_inits" mpz_inits(x: mpz_ptr; ...);
@@ -259,12 +242,6 @@ c_fn! {
                                          n: mpz_srcptr,
                                          b: bitcnt_t);
     "__gmpz_mod" mpz_mod(r: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
-}
-#[inline]
-pub unsafe fn mpz_mod_ui(r: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong {
-    mpz_fdiv_r_ui(r, n, d)
-}
-c_fn! {
     "__gmpz_divexact" mpz_divexact(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
     "__gmpz_divexact_ui" mpz_divexact_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong);
     "__gmpz_divisible_p" mpz_divisible_p(n: mpz_srcptr, d: mpz_srcptr) -> c_int;
@@ -336,16 +313,6 @@ c_fn! {
                                op2: mpz_srcptr)
                                -> c_int;
     "__gmpz_jacobi" mpz_jacobi(a: mpz_srcptr, b: mpz_srcptr) -> c_int;
-}
-#[inline]
-pub unsafe fn mpz_legendre(a: mpz_srcptr, p: mpz_srcptr) -> c_int {
-    mpz_jacobi(a, p)
-}
-#[inline]
-pub unsafe fn mpz_kronecker(a: mpz_srcptr, b: mpz_srcptr) -> c_int {
-    mpz_jacobi(a, b)
-}
-c_fn! {
     "__gmpz_kronecker_si" mpz_kronecker_si(a: mpz_srcptr, b: c_long) -> c_int;
     "__gmpz_kronecker_ui" mpz_kronecker_ui(a: mpz_srcptr, b: c_ulong) -> c_int;
     "__gmpz_si_kronecker" mpz_si_kronecker(a: c_long, b: mpz_srcptr) -> c_int;
@@ -375,18 +342,6 @@ c_fn! {
     "__gmpz_cmpabs" mpz_cmpabs(op1: mpz_srcptr, op2: mpz_srcptr) -> c_int;
     "__gmpz_cmpabs_d" mpz_cmpabs_d(op1: mpz_srcptr, op2: f64) -> c_int;
     "__gmpz_cmpabs_ui" mpz_cmpabs_ui(op1: mpz_srcptr, op2: c_ulong) -> c_int;
-}
-#[inline]
-pub unsafe fn mpz_sgn(op: mpz_srcptr) -> c_int {
-    if (*op).size < 0 {
-        -1
-    } else if (*op).size > 0 {
-        1
-    } else {
-        0
-    }
-}
-c_fn! {
     "__gmpz_and" mpz_and(rop: mpz_ptr, op1: mpz_srcptr, op2: mpz_srcptr);
     "__gmpz_ior" mpz_ior(rop: mpz_ptr, op1: mpz_srcptr, op2: mpz_srcptr);
     "__gmpz_xor" mpz_xor(rop: mpz_ptr, op1: mpz_srcptr, op2: mpz_srcptr);
@@ -440,17 +395,6 @@ c_fn! {
     "__gmpz_fits_sint_p" mpz_fits_sint_p(op: mpz_srcptr) -> c_int;
     "__gmpz_fits_ushort_p" mpz_fits_ushort_p(op: mpz_srcptr) -> c_int;
     "__gmpz_fits_sshort_p" mpz_fits_sshort_p(op: mpz_srcptr) -> c_int;
-}
-#[inline]
-pub unsafe fn mpz_odd_p(op: mpz_srcptr) -> c_int {
-    (*(*op).d) as c_int & if (*op).size != 0 { 1 } else { 0 }
-}
-
-#[inline]
-pub unsafe fn mpz_even_p(op: mpz_srcptr) -> c_int {
-    !mpz_odd_p(op)
-}
-c_fn! {
     "__gmpz_sizeinbase" mpz_sizeinbase(arg1: mpz_srcptr, arg2: c_int) -> usize;
 
     // Special Functions
@@ -529,40 +473,16 @@ c_fn! {
                                num2: c_long,
                                den2: c_ulong)
                                -> c_int;
-}
-#[inline]
-pub unsafe fn mpq_sgn(op: mpq_srcptr) -> c_int {
-    if (*op).num.size < 0 {
-        -1
-    } else if (*op).num.size > 0 {
-        1
-    } else {
-        0
-    }
-}
-c_fn! {
     "__gmpq_equal" mpq_equal(op1: mpq_srcptr, op2: mpq_srcptr) -> c_int;
 
     // Applying Integer Functions to Rationals
-}
-#[inline]
-pub unsafe fn mpq_numref(op: mpq_ptr) -> mpz_ptr {
-    (&mut (*op).num) as mpz_ptr
-}
-#[inline]
-pub unsafe fn mpq_denref(op: mpq_ptr) -> mpz_ptr {
-    (&mut (*op).den) as mpz_ptr
-}
-c_fn! {
     "__gmpq_get_num" mpq_get_num(numerator: mpz_ptr, rational: mpq_srcptr);
     "__gmpq_get_den" mpq_get_den(denominator: mpz_ptr, rational: mpq_srcptr);
     "__gmpq_set_den" mpq_set_den(rational: mpq_ptr, numerator: mpz_srcptr);
     "__gmpq_set_num" mpq_set_num(rational: mpq_ptr, denominator: mpz_srcptr);
-}
 
-// Floating-point numbers
+    // Floating-point numbers
 
-c_fn! {
     // Initialization Functions
     "__gmpf_set_default_prec" mpf_set_default_prec(prec: bitcnt_t);
     "__gmpf_get_default_prec" mpf_get_default_prec() -> bitcnt_t;
@@ -646,18 +566,6 @@ c_fn! {
     "__gmpf_reldiff" mpf_reldiff(rop: mpf_ptr,
                                  op1: mpf_srcptr,
                                  op2: mpf_srcptr);
-}
-#[inline]
-pub unsafe fn mpf_sgn(op: mpf_srcptr) -> c_int {
-    if (*op).size < 0 {
-        -1
-    } else if (*op).size > 0 {
-        1
-    } else {
-        0
-    }
-}
-c_fn! {
 
     // Miscellaneous Functions
     "__gmpf_ceil" mpf_ceil(rop: mpf_ptr, op: mpf_srcptr);
@@ -674,11 +582,8 @@ c_fn! {
                                    state: randstate_ptr,
                                    nbits: bitcnt_t);
     "__gmpf_random2" mpf_random2(rop: mpf_ptr, max_size: size_t, exp: exp_t);
-}
 
-// Low-Level Functions
-
-c_fn! {
+    // Low-Level Functions
     "__gmpn_add_n" mpn_add_n(rp: mp_ptr,
                              s1p: mp_srcptr,
                              s2p: mp_srcptr,
@@ -751,25 +656,10 @@ c_fn! {
                                    s2n: size_t,
                                    s3limb: limb_t)
                                    -> limb_t;
-}
-#[inline]
-pub unsafe fn mpn_divmod_1(r1p: mp_ptr,
-                           s2p: mp_srcptr,
-                           s2n: size_t,
-                           s3limb: limb_t)
-                           -> limb_t {
-    mpn_divrem_1(r1p, 0, s2p, s2n, s3limb)
-}
-c_fn! {
     "__gmpn_divexact_1" mpn_divexact_1(rp: mp_ptr,
                                        sp: mp_srcptr,
                                        n: size_t,
                                        d: limb_t);
-}
-pub unsafe fn mpn_divexact_by3(rp: mp_ptr, sp: mp_srcptr, n: size_t) -> limb_t {
-    mpn_divexact_by3c(rp, sp, n, 0)
-}
-c_fn! {
     "__gmpn_divexact_by3c" mpn_divexact_by3c(rp: mp_ptr,
                                              sp: mp_srcptr,
                                              n: size_t,
@@ -960,11 +850,9 @@ c_fn! {
                                        tp: mp_ptr)
                                        -> c_int;
     "__gmpn_sec_invert_itch" mpn_sec_invert_itch(n: size_t) -> size_t;
-}
 
-// Random Numbers
+    // Random Numbers
 
-c_fn! {
     // Random State Initialization
     "__gmp_randinit_default" randinit_default(state: randstate_ptr);
     "__gmp_randinit_mt" randinit_mt(state: randstate_ptr);
@@ -989,10 +877,8 @@ c_fn! {
     "__gmp_urandomm_ui" urandomm_ui(state: randstate_ptr,
                                     n: c_ulong)
                                     -> c_ulong;
-}
 
-// Formatted Output
-c_fn! {
+    // Formatted Output
     "__gmp_printf" printf(fmt: *const c_char; ...) -> c_int;
     "__gmp_sprintf" sprintf(buf: *mut c_char, fmt: *const c_char; ...) -> c_int;
     "__gmp_snprintf" snprintf(buf: *mut c_char,
@@ -1004,24 +890,10 @@ c_fn! {
                               fmt: *const c_char;
                               ...)
                               -> c_int;
-}
 
-// Formatted Input
-c_fn! {
+    // Formatted Input
     "__gmp_scanf" scanf(fmt: *const c_char; ...) -> c_int;
     "__gmp_sscanf" sscanf(s: *const c_char, fmt: *const c_char; ...) -> c_int;
-}
-
-// Custom Allocation
-pub type allocate_function = Option<extern "C" fn(alloc_size: usize)
-                                                  -> *mut c_void>;
-pub type reallocate_function = Option<unsafe extern "C" fn(ptr: *mut c_void,
-                                                           old_size: usize,
-                                                           new_size: usize)
-                                                           -> *mut c_void>;
-pub type free_function = Option<unsafe extern "C" fn(ptr: *mut c_void,
-                                                     size: usize)>;
-c_fn! {
     "__gmp_set_memory_functions" set_memory_functions(
         alloc_func_ptr: allocate_function,
         realloc_func_ptr: reallocate_function,
@@ -1032,4 +904,76 @@ c_fn! {
         realloc_func_ptr: *mut reallocate_function,
         free_func_ptr: *mut free_function
     );
+}
+
+#[inline]
+pub unsafe fn mpz_mod_ui(r: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong {
+    mpz_fdiv_r_ui(r, n, d)
+}
+#[inline]
+pub unsafe fn mpz_legendre(a: mpz_srcptr, p: mpz_srcptr) -> c_int {
+    mpz_jacobi(a, p)
+}
+#[inline]
+pub unsafe fn mpz_kronecker(a: mpz_srcptr, b: mpz_srcptr) -> c_int {
+    mpz_jacobi(a, b)
+}
+#[inline]
+pub unsafe fn mpz_sgn(op: mpz_srcptr) -> c_int {
+    if (*op).size < 0 {
+        -1
+    } else if (*op).size > 0 {
+        1
+    } else {
+        0
+    }
+}
+#[inline]
+pub unsafe fn mpz_odd_p(op: mpz_srcptr) -> c_int {
+    (*(*op).d) as c_int & if (*op).size != 0 { 1 } else { 0 }
+}
+
+#[inline]
+pub unsafe fn mpz_even_p(op: mpz_srcptr) -> c_int {
+    !mpz_odd_p(op)
+}
+#[inline]
+pub unsafe fn mpq_sgn(op: mpq_srcptr) -> c_int {
+    if (*op).num.size < 0 {
+        -1
+    } else if (*op).num.size > 0 {
+        1
+    } else {
+        0
+    }
+}
+#[inline]
+pub unsafe fn mpq_numref(op: mpq_ptr) -> mpz_ptr {
+    (&mut (*op).num) as mpz_ptr
+}
+#[inline]
+pub unsafe fn mpq_denref(op: mpq_ptr) -> mpz_ptr {
+    (&mut (*op).den) as mpz_ptr
+}
+#[inline]
+pub unsafe fn mpf_sgn(op: mpf_srcptr) -> c_int {
+    if (*op).size < 0 {
+        -1
+    } else if (*op).size > 0 {
+        1
+    } else {
+        0
+    }
+}
+#[inline]
+pub unsafe fn mpn_divmod_1(r1p: mp_ptr,
+                           s2p: mp_srcptr,
+                           s2n: size_t,
+                           s3limb: limb_t)
+                           -> limb_t {
+    mpn_divrem_1(r1p, 0, s2p, s2n, s3limb)
+}
+#[inline]
+pub unsafe fn mpn_divexact_by3(rp: mp_ptr, sp: mp_srcptr, n: size_t) -> limb_t {
+    mpn_divexact_by3c(rp, sp, n, 0)
 }

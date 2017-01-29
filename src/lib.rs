@@ -71,6 +71,27 @@
 //! The bindings do not cover undocumented or obsolete functions and
 //! macros.
 
+macro_rules! extern_c {
+    {
+        $library:tt
+        $($c:tt $name:ident
+          $(($($par:ident: $ty:ty),* $(; $dots:tt)*) $(-> $ret:ty)*)*
+          $(: $vty:ty)*
+          ;
+        )*
+    } => {
+        #[link(name = $library, kind = "static")]
+        extern "C" {
+            $(
+                #[link_name = $c]
+                $(pub fn $name($($par: $ty),* $(, $dots)*) $(-> $ret)*)*
+                $(pub static $name: $vty)*
+                ;
+            )*
+        }
+    };
+}
+
 pub mod gmp;
 pub mod mpfr;
 pub mod mpc;
