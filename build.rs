@@ -53,7 +53,7 @@ fn main() {
     let mpfr_header = lib_dir.join("mpfr.h");
     let mpc_lib = lib_dir.join("libmpc.a");
     let mpc_header = lib_dir.join("mpc.h");
-    if !gmp_lib.is_file() || !gmp_header.is_file() || mpfr_lib.is_file() ||
+    if !gmp_lib.is_file() || !gmp_header.is_file() || !mpfr_lib.is_file() ||
        !mpfr_header.is_file() ||
        !mpc_lib.is_file() || !mpc_header.is_file() {
         create_dir(&lib_dir);
