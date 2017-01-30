@@ -78,7 +78,7 @@ to the crate root and add `gmp-mpfr-sys` as a dependency in
 
 ```toml
 [dependencies]
-gmp-mpfr-sys = "0.5.1"
+gmp-mpfr-sys = "0.5.2"
 ```
 
 ### Building on GNU/Linux
