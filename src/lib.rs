@@ -95,39 +95,45 @@
 //!
 //! ### Building on macOS
 //!
-//! To build on macOS, you need the command-line developer tools. An easy
-//! way to install them is to start building the crate using
+//! To build on macOS, you need the command-line developer tools. An
+//! easy way to install them is to start building the crate using
 //! `cargo build`. If the tools are not installed yet, a popup should
 //! appear which should help you install them.
 //!
 //! ### Building on Windows
 //!
-//! You can build on Windows with the Rust GNU toolchain and an up-to-date
-//! MSYS2 installation. Some steps for a 64-bit environment are listed
-//! below, you can follow similar steps for a 32-bit environment by
-//! substituting 32 for 64. To install MSYS2:
+//! You can build on Windows with the Rust GNU toolchain and an
+//! up-to-date MSYS2 installation. Some steps for a 64-bit environment
+//! are listed below. (32-bit: Changes for a 32-bit environment are
+//! written in brackets like this comment.)
 //!
 //! 1. Install MSYS2 using the [installer](https://msys2.github.io/).
 //!
 //! 2. Launch the MSYS2 MinGW 64-bit terminal from the start menu.
+//!    (32-bit: Launch the MSYS2 MinGW 32-bit terminal instead.)
 //!
 //! 3. Install the required tools.
+//!
 //!    ```sh
 //!    pacman -S pacman-mirrors
 //!    pacman -S diffutils make mingw-w64-x86_64-gcc
 //!    ```
 //!
+//!    (32-bit: Install `mingw-w64-i686-gcc` instead of
+//!    `mingw-w64-x86_64-gcc`.)
+//!
 //! Then, to build a crate with a dependency on this crate:
 //!
 //! 1. Launch the MSYS MinGW 64-bit terminal from the start menu.
+//!    (32-bit: Launch the MSYS2 MinGW 32-bit terminal instead.)
 //!
 //! 2. Change to the crate directory.
 //!
-//!    Note that building the GMP and MPFR libraries in MSYS with absolute
-//!    paths does not work very well, so relative paths are used. If your
-//!    crate is inside `C:\msys64` and the `.cargo` directory is outside
-//!    `C:\msys64`, this will not work. Please move your crate to the
-//!    same side of `C:\msys64` as `.cargo`.
+//!    Note that building the GMP and MPFR libraries in MSYS with
+//!    absolute paths does not work very well, so relative paths are
+//!    used. If your crate is inside `C:\msys64` and the `.cargo`
+//!    directory is outside `C:\msys64`, this will not work. Please
+//!    move your crate to the same side of `C:\msys64` as `.cargo`.
 //!
 //! 3. Build the crate using `cargo`.
 
