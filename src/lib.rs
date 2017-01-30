@@ -151,6 +151,15 @@ mod tests {
     use std::mem;
 
     #[test]
+    fn check_limb_size() {
+        let from_static = unsafe { gmp::bits_per_limb };
+        let from_type = mem::size_of::<gmp::limb_t>() * 8;
+        let from_constant = gmp::LIMB_BITS;
+        assert!(from_static as usize == from_type);
+        assert!(from_static == from_constant);
+    }
+
+    #[test]
     fn check_versions() {
         unsafe {
             let gmp_ver = CStr::from_ptr(gmp::version);
