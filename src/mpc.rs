@@ -536,3 +536,43 @@ pub const VERSION_STRING: *const c_char = b"1.0.3\0" as *const u8 as
 pub fn VERSION_NUM(major: c_int, minor: c_int, patchlevel: c_int) -> c_int {
     (major << 16) | (minor << 8) | patchlevel
 }
+
+#[cfg(test)]
+mod tests {
+    use mpc;
+    use mpfr;
+    use std::f64;
+    use std::ffi::CStr;
+    use std::mem;
+
+    #[test]
+    fn check_version() {
+        let version = "1.0.3";
+        let from_fn = unsafe { CStr::from_ptr(mpc::get_version()) };
+        let from_constants = format!("{}.{}.{}",
+                                     mpc::VERSION_MAJOR,
+                                     mpc::VERSION_MINOR,
+                                     mpc::VERSION_PATCHLEVEL);
+        let from_const_string = unsafe { CStr::from_ptr(mpc::VERSION_STRING) };
+        assert!(from_fn.to_str().unwrap() == version);
+        assert!(from_constants == version);
+        assert!(from_const_string.to_str().unwrap() == version);
+    }
+
+    #[test]
+    fn it_runs() {
+        let re: f64 = 1.0 / 3.0;
+        let im: f64 = f64::NEG_INFINITY;
+        unsafe {
+            let mut c: mpc::mpc_t = mem::uninitialized();
+            let ptr = &mut c as *mut _;
+            mpc::init3(ptr, 53, 53);
+            assert!(mpc::set_d_d(ptr, re, im, mpc::RNDNN) == 0);
+            let re_ptr = mpc::realref(ptr);
+            let im_ptr = mpc::imagref(ptr);
+            assert!(mpfr::get_d(re_ptr, mpfr::rnd_t::RNDN) == re);
+            assert!(mpfr::get_d(im_ptr, mpfr::rnd_t::RNDN) == im);
+            mpc::clear(ptr);
+        }
+    }
+}

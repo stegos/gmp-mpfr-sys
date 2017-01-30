@@ -1004,3 +1004,37 @@ extern "C" {
     #[link_name = "mpfr_custom_move"]
     pub fn custom_move(x: mpfr_ptr, new_position: *mut c_void);
 }
+
+#[cfg(test)]
+mod tests {
+    use mpfr;
+    use std::ffi::CStr;
+    use std::mem;
+
+    #[test]
+    fn check_version() {
+        let version = "3.1.5";
+        let from_fn = unsafe { CStr::from_ptr(mpfr::get_version()) };
+        let from_constants = format!("{}.{}.{}",
+                                     mpfr::VERSION_MAJOR,
+                                     mpfr::VERSION_MINOR,
+                                     mpfr::VERSION_PATCHLEVEL);
+        let from_const_string = unsafe { CStr::from_ptr(mpfr::VERSION_STRING) };
+        assert!(from_fn.to_str().unwrap() == version);
+        assert!(from_constants == version);
+        assert!(from_const_string.to_str().unwrap() == version);
+    }
+
+    #[test]
+    fn it_runs() {
+        let d: f64 = 1.0 / 3.0;
+        unsafe {
+            let mut fr: mpfr::mpfr_t = mem::uninitialized();
+            let ptr = &mut fr as *mut _;
+            mpfr::init2(ptr, 53);
+            assert!(mpfr::set_d(ptr, d, mpfr::rnd_t::RNDN) == 0);
+            assert!(mpfr::get_d(ptr, mpfr::rnd_t::RNDN) == d);
+            mpfr::clear(ptr);
+        }
+    }
+}

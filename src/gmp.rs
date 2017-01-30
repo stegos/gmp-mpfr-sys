@@ -1202,3 +1202,44 @@ extern "C" {
                                 realloc_func_ptr: *mut reallocate_function,
                                 free_func_ptr: *mut free_function);
 }
+
+#[cfg(test)]
+mod tests {
+    use gmp;
+    use std::ffi::CStr;
+    use std::mem;
+
+    #[test]
+    fn check_limb_size() {
+        let from_static = unsafe { gmp::bits_per_limb };
+        let from_type = mem::size_of::<gmp::limb_t>() * 8;
+        let from_constant = gmp::LIMB_BITS;
+        assert!(from_static as usize == from_type);
+        assert!(from_static == from_constant);
+    }
+
+    #[test]
+    fn check_version() {
+        let version = "6.1.2";
+        let from_static = unsafe { CStr::from_ptr(gmp::version) };
+        let from_constants = format!("{}.{}.{}",
+                                     gmp::VERSION,
+                                     gmp::VERSION_MINOR,
+                                     gmp::VERSION_PATCHLEVEL);
+        assert!(from_static.to_str().unwrap() == version);
+        assert!(from_constants == version);
+    }
+
+    #[test]
+    fn it_runs() {
+        let i = 3;
+        unsafe {
+            let mut z: gmp::mpz_t = mem::uninitialized();
+            let ptr = &mut z as *mut _;
+            gmp::mpz_init(ptr);
+            gmp::mpz_set_ui(ptr, i);
+            assert!(gmp::mpz_get_ui(ptr) == i);
+            gmp::mpz_clear(ptr);
+        }
+    }
+}
