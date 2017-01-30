@@ -48,11 +48,14 @@ fn main() {
 
     let lib_dir = out_dir.join("lib");
     let gmp_lib = lib_dir.join("libgmp.a");
+    let gmp_header = lib_dir.join("gmp.h");
     let mpfr_lib = lib_dir.join("libmpfr.a");
+    let mpfr_header = lib_dir.join("mpfr.h");
     let mpc_lib = lib_dir.join("libmpc.a");
-    let gmp_limb_type = out_dir.join("gmp_limb_t.rs");
-    if !gmp_lib.is_file() || !mpfr_lib.is_file() || !mpc_lib.is_file() ||
-       !gmp_limb_type.is_file() {
+    let mpc_header = lib_dir.join("mpc.h");
+    if !gmp_lib.is_file() || !gmp_header.is_file() || mpfr_lib.is_file() ||
+       !mpfr_header.is_file() ||
+       !mpc_lib.is_file() || !mpc_header.is_file() {
         create_dir(&lib_dir);
         let build_dir = out_dir.join("build");
         remove_dir(&build_dir);
@@ -60,17 +63,18 @@ fn main() {
         symlink(&build_dir,
                 &dir_relative(&build_dir, &src_dir.join(GMP_DIR)),
                 Some(&OsString::from("gmp-src")));
-        build_gmp(&build_dir, &jobs, check, &gmp_lib, &gmp_limb_type);
+        build_gmp(&build_dir, &jobs, check, &gmp_lib, &gmp_header);
         symlink(&build_dir,
                 &dir_relative(&build_dir, &src_dir.join(MPFR_DIR)),
                 Some(&OsString::from("mpfr-src")));
-        build_mpfr(&build_dir, &jobs, check, &mpfr_lib);
+        build_mpfr(&build_dir, &jobs, check, &mpfr_lib, &mpfr_header);
         symlink(&build_dir,
                 &dir_relative(&build_dir, &src_dir.join(MPC_DIR)),
                 Some(&OsString::from("mpc-src")));
-        build_mpc(&build_dir, &jobs, check, &mpc_lib);
+        build_mpc(&build_dir, &jobs, check, &mpc_lib, &mpc_header);
         remove_dir(&build_dir);
     }
+    determine_limb_t(&gmp_header, &out_dir.join("mp_limb_t.rs"));
     write_cargo_info(&lib_dir);
 }
 
@@ -78,7 +82,7 @@ fn build_gmp(top_build_dir: &Path,
              jobs: &OsStr,
              check: bool,
              lib: &Path,
-             limb_type: &Path) {
+             header: &Path) {
     let build_dir = top_build_dir.join("gmp-build");
     create_dir(&build_dir);
     println!("$ cd \"{}\"", build_dir.display());
@@ -87,12 +91,15 @@ fn build_gmp(top_build_dir: &Path,
     make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join(".libs").join("libgmp.a");
     copy_file(&build_lib, &lib);
+    let build_header = build_dir.join("gmp.h");
+    copy_file(&build_header, &header);
+}
 
+fn determine_limb_t(header: &Path, out_file: &Path) {
     let mut uses_long_long = None;
-    let header_path = build_dir.join("gmp.h");
-    let mut header = open(&header_path);
+    let mut reader = open(&header);
     let mut buf = String::new();
-    while read_line(&mut header, &mut buf, &header_path) > 0 {
+    while read_line(&mut reader, &mut buf, &header) > 0 {
         if buf.contains("#undef _LONG_LONG_LIMB") {
             uses_long_long = Some(false);
             break;
@@ -103,24 +110,27 @@ fn build_gmp(top_build_dir: &Path,
         }
         buf.clear();
     }
-    drop(header);
+    drop(reader);
     let uses_long_long = uses_long_long.unwrap_or_else(|| {
-        panic!("Cannot determine _LONG_LONG_LIMB from {}",
-               header_path.display())
+        panic!("Cannot determine _LONG_LONG_LIMB from {}", header.display())
     });
 
-    let mut rs = create(limb_type);
+    let mut rs = create(out_file);
     let line = if uses_long_long {
         "pub type limb_t = ::std::os::raw::c_ulonglong;\n"
     } else {
         "pub type limb_t = ::std::os::raw::c_ulong;\n"
     };
-    write(&mut rs, line, limb_type);
-    flush(&mut rs, limb_type);
+    write(&mut rs, line, out_file);
+    flush(&mut rs, out_file);
     drop(rs);
 }
 
-fn build_mpfr(top_build_dir: &Path, jobs: &OsStr, check: bool, lib: &Path) {
+fn build_mpfr(top_build_dir: &Path,
+              jobs: &OsStr,
+              check: bool,
+              lib: &Path,
+              header: &Path) {
     let build_dir = top_build_dir.join("mpfr-build");
     create_dir(&build_dir);
     println!("$ cd {}", build_dir.display());
@@ -131,9 +141,15 @@ fn build_mpfr(top_build_dir: &Path, jobs: &OsStr, check: bool, lib: &Path) {
     make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join("src").join(".libs").join("libmpfr.a");
     copy_file(&build_lib, &lib);
+    let src_header = top_build_dir.join("mpfr-src").join("src").join("mpfr.h");
+    copy_file(&src_header, &header);
 }
 
-fn build_mpc(top_build_dir: &Path, jobs: &OsStr, check: bool, lib: &Path) {
+fn build_mpc(top_build_dir: &Path,
+             jobs: &OsStr,
+             check: bool,
+             lib: &Path,
+             header: &Path) {
     let build_dir = top_build_dir.join("mpc-build");
     create_dir(&build_dir);
     println!("$ cd {}", build_dir.display());
@@ -149,6 +165,8 @@ fn build_mpc(top_build_dir: &Path, jobs: &OsStr, check: bool, lib: &Path) {
     make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join("src").join(".libs").join("libmpc.a");
     copy_file(&build_lib, &lib);
+    let src_header = top_build_dir.join("mpc-src").join("src").join("mpc.h");
+    copy_file(&src_header, &header);
 }
 
 fn write_cargo_info(lib_dir: &Path) {
