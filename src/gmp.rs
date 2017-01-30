@@ -31,7 +31,7 @@ extern "C" {
 }
 
 pub type exp_t = c_long;
-pub type limb_t = c_ulong;
+include!(concat!(env!("OUT_DIR"), "/gmp_limb_t.rs"));
 pub type size_t = c_long;
 pub type bitcnt_t = c_ulong;
 

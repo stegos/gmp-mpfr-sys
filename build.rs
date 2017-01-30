@@ -30,6 +30,8 @@
 use std::env;
 use std::ffi::{OsStr, OsString};
 use std::fs;
+use std::fs::File;
+use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -48,7 +50,9 @@ fn main() {
     let gmp_lib = lib_dir.join("libgmp.a");
     let mpfr_lib = lib_dir.join("libmpfr.a");
     let mpc_lib = lib_dir.join("libmpc.a");
-    if !gmp_lib.is_file() || !mpfr_lib.is_file() || !mpc_lib.is_file() {
+    let gmp_limb_type = out_dir.join("gmp_limb_t.rs");
+    if !gmp_lib.is_file() || !mpfr_lib.is_file() || !mpc_lib.is_file() ||
+       !gmp_limb_type.is_file() {
         create_dir(&lib_dir);
         let build_dir = out_dir.join("build");
         remove_dir(&build_dir);
@@ -56,7 +60,7 @@ fn main() {
         symlink(&build_dir,
                 &dir_relative(&build_dir, &src_dir.join(GMP_DIR)),
                 Some(&OsString::from("gmp-src")));
-        build_gmp(&build_dir, &jobs, check, &gmp_lib);
+        build_gmp(&build_dir, &jobs, check, &gmp_lib, &gmp_limb_type);
         symlink(&build_dir,
                 &dir_relative(&build_dir, &src_dir.join(MPFR_DIR)),
                 Some(&OsString::from("mpfr-src")));
@@ -70,7 +74,11 @@ fn main() {
     write_cargo_info(&lib_dir);
 }
 
-fn build_gmp(top_build_dir: &Path, jobs: &OsStr, check: bool, lib: &Path) {
+fn build_gmp(top_build_dir: &Path,
+             jobs: &OsStr,
+             check: bool,
+             lib: &Path,
+             limb_type: &Path) {
     let build_dir = top_build_dir.join("gmp-build");
     create_dir(&build_dir);
     println!("$ cd \"{}\"", build_dir.display());
@@ -79,6 +87,37 @@ fn build_gmp(top_build_dir: &Path, jobs: &OsStr, check: bool, lib: &Path) {
     make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join(".libs").join("libgmp.a");
     copy_file(&build_lib, &lib);
+
+    let mut uses_long_long = None;
+    let header_path = build_dir.join("gmp.h");
+    let mut header = open(&header_path);
+    let mut buf = String::new();
+    while read_line(&mut header, &mut buf, &header_path) > 0 {
+        if buf.contains("#undef _LONG_LONG_LIMB") {
+            uses_long_long = Some(false);
+            break;
+        }
+        if buf.contains("#define _LONG_LONG_LIMB 1") {
+            uses_long_long = Some(true);
+            break;
+        }
+        buf.clear();
+    }
+    drop(header);
+    let uses_long_long = uses_long_long.unwrap_or_else(|| {
+        panic!("Cannot determine _LONG_LONG_LIMB from {}",
+               header_path.display())
+    });
+
+    let mut rs = create(limb_type);
+    let line = if uses_long_long {
+        "pub type limb_t = ::std::os::raw::c_ulonglong;\n"
+    } else {
+        "pub type limb_t = ::std::os::raw::c_ulong;\n"
+    };
+    write(&mut rs, line, limb_type);
+    flush(&mut rs, limb_type);
+    drop(rs);
 }
 
 fn build_mpfr(top_build_dir: &Path, jobs: &OsStr, check: bool, lib: &Path) {
@@ -225,4 +264,34 @@ fn execute(mut command: Command) {
             panic!("Program failed: {:?}", command);
         }
     }
+}
+
+fn open(name: &Path) -> BufReader<File> {
+    let file = File::open(name)
+        .unwrap_or_else(|_| panic!("Cannot open file: {}", name.display()));
+    BufReader::new(file)
+}
+
+fn create(name: &Path) -> BufWriter<File> {
+    let file = File::create(name)
+        .unwrap_or_else(|_| panic!("Cannot create file: {}", name.display()));
+    BufWriter::new(file)
+}
+
+fn read_line(reader: &mut BufReader<File>,
+             buf: &mut String,
+             name: &Path)
+             -> usize {
+    reader.read_line(buf)
+        .unwrap_or_else(|_| panic!("Cannot read from: {}", name.display()))
+}
+
+fn write(writer: &mut BufWriter<File>, buf: &str, name: &Path) {
+    writer.write(buf.as_bytes())
+        .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
+}
+
+fn flush(writer: &mut BufWriter<File>, name: &Path) {
+    writer.flush()
+        .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
 }
