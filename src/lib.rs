@@ -30,9 +30,8 @@
 //! published by the Free Software Foundation, either version 3 of the
 //! License, or (at your option) any later version.
 //!
-//! See [LICENSE-LGPL](https://www.gnu.org/licenses/lgpl-3.0.en.html)
-//! and [LICENSE-GPL](https://www.gnu.org/licenses/gpl-3.0.html) for
-//! details.
+//! See the [LGPL](https://www.gnu.org/licenses/lgpl-3.0.en.html) and
+//! [GPL](https://www.gnu.org/licenses/gpl-3.0.html) for details.
 //!
 //! This crate provides a low-level interface to GMP, MPFR and MPC. If you
 //! want a high-level API, consider using the following crates:
