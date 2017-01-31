@@ -24,13 +24,13 @@ for details.
 This crate provides a low-level interface to GMP, MPFR and MPC. If you
 want a high-level API, consider using the following crates:
 
-* [`rugint`](https://tspiteri.gitlab.io/gmp-mpfr/rugint/)
+* [`rugint`](https://gitlab.com/tspiteri/rugint)
   provides arbitrary-precision integers based on GMP.
-* [`rugrat`](https://tspiteri.gitlab.io/gmp-mpfr/rugrat/)
+* [`rugrat`](https://gitlab.com/tspiteri/rugrat)
   provides arbitrary-precision rational number based on GMP.
-* [`rugflo`](https://tspiteri.gitlab.io/gmp-mpfr/rugflo/)
+* [`rugflo`](https://gitlab.com/tspiteri/rugflo)
   provides arbitrary-precision floating-point numbers based on MPFR.
-* [`rugcom`](https://tspiteri.gitlab.io/gmp-mpfr/rugcom/)
+* [`rugcom`](https://gitlab.com/tspiteri/rugcom)
   provides arbitrary-precision complex numbers based on MPC.
 
 If you want to use the low-level bindings, you can see the
@@ -40,11 +40,11 @@ documentation of the C libraries themselves:
 * [MPFR](http://www.mpfr.org/mpfr-current/mpfr.html)
 * [MPC](http://www.multiprecision.org/index.php?prog=mpc&page=html)
 
-Some of the information in this page, together with the list of all
-functions and constants, can be found on
-[docs.rs](https://docs.rs/gmp-mpfr-sys/). Note that the list of
-functions and constants is not documented; refer to the documentation
-of the C libaries for details.
+Some
+[documentation](https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/) is
+available, including a list of all functions and constants. Note that
+the list of functions and constants is not documented further; refer
+to the documentation of the C libaries for details.
 
 ## Notes
 
