@@ -34,7 +34,7 @@ extern "C" {
 
 #[cfg(gmp_limb_bits_32)]
 pub const LIMB_BITS: c_int = 32;
-#[cfg(_gmplimb_bits_64)]
+#[cfg(gmp_limb_bits_64)]
 pub const LIMB_BITS: c_int = 64;
 #[cfg(not(any(gmp_limb_bits_32, gmp_limb_bits_64)))]
 include!(concat!(env!("OUT_DIR"), "/mp_limb_t.rs"));
