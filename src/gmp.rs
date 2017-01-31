@@ -17,6 +17,8 @@
 #![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
 
 use std::os::raw::{c_char, c_int, c_long, c_uchar, c_uint, c_ulong, c_void};
+#[cfg(gmp_long_long_limb)]
+use std::os::raw::c_ulonglong;
 
 extern "C" {
     #[link_name = "__gmp_bits_per_limb"]
@@ -30,8 +32,18 @@ extern "C" {
     pub static version: *const c_char;
 }
 
-pub type exp_t = c_long;
+#[cfg(gmp_limb_bits_32)]
+pub const LIMB_BITS: c_int = 32;
+#[cfg(_gmplimb_bits_64)]
+pub const LIMB_BITS: c_int = 64;
+#[cfg(not(any(gmp_limb_bits_32, gmp_limb_bits_64)))]
 include!(concat!(env!("OUT_DIR"), "/mp_limb_t.rs"));
+
+pub type exp_t = c_long;
+#[cfg(long_long_limb)]
+pub type limb_t = c_ulonglong;
+#[cfg(not(long_long_limb))]
+pub type limb_t = c_ulong;
 pub type size_t = c_long;
 pub type bitcnt_t = c_ulong;
 

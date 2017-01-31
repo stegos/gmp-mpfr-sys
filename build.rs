@@ -96,16 +96,16 @@ fn build_gmp(top_build_dir: &Path,
 }
 
 fn determine_limb_t(header: &Path, out_file: &Path) {
-    let mut limb_t = None;
+    let mut long_long_limb = None;
     let mut limb_bits = None;
     let mut reader = open(&header);
     let mut buf = String::new();
     while read_line(&mut reader, &mut buf, &header) > 0 {
         if buf.contains("#undef _LONG_LONG_LIMB") {
-            limb_t = Some("c_ulong");
+            long_long_limb = Some(false);
         }
         if buf.contains("#define _LONG_LONG_LIMB 1") {
-            limb_t = Some("c_ulonglong");
+            long_long_limb = Some(true);
         }
         let s = "#define GMP_LIMB_BITS";
         if let Some(start) = buf.find(s) {
@@ -114,21 +114,31 @@ fn determine_limb_t(header: &Path, out_file: &Path) {
         buf.clear();
     }
     drop(reader);
-    let limb_t = limb_t.unwrap_or_else(|| {
+    let long_long_limb = long_long_limb.unwrap_or_else(|| {
         panic!("Cannot determine _LONG_LONG_LIMB from {}", header.display())
     });
     let limb_bits = limb_bits.unwrap_or_else(|| {
         panic!("Cannot determine GMP_LIMB_BITS from {}", header.display())
     });
-
-    let mut rs = create(out_file);
-    let content = format!("pub type limb_t = ::std::os::raw::{};\n\
-                           pub const LIMB_BITS: c_int = {};\n",
-                          limb_t,
-                          limb_bits);
-    write(&mut rs, &content, out_file);
-    flush(&mut rs, out_file);
-    drop(rs);
+    if long_long_limb {
+        println!("cargo:rustc-cfg=gmp_long_long_limb");
+    }
+    match limb_bits {
+        32 => {
+            println!("cargo:rustc-cfg=gmp_limb_bits_32");
+        }
+        64 => {
+            println!("cargo:rustc-cfg=gmp_limb_bits_64");
+        }
+        _ => {
+            let mut rs = create(out_file);
+            let content = format!("pub const LIMB_BITS: c_int = {};\n",
+                                  limb_bits);
+            write(&mut rs, &content, out_file);
+            flush(&mut rs, out_file);
+            drop(rs);
+        }
+    }
 }
 
 fn build_mpfr(top_build_dir: &Path,
