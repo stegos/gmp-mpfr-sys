@@ -42,9 +42,9 @@ documentation of the C libraries themselves:
 
 Some
 [documentation](https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/) is
-available, including a list of all functions and constants. Note that
-the list of functions and constants is not documented further; refer
-to the documentation of the C libaries for details.
+available, including a list of all functions and constants. The list
+of functions and constants contains links to the respective
+documentation items in the C libraries.
 
 ## Notes
 

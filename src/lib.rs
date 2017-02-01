@@ -48,6 +48,9 @@
 //! If you want to use the low-level bindings, you can refer to the
 //! documentation of the C libraries themselves:
 //!
+//! The list of functions and constants in this crate contains links
+//! to the respective documentation items in the C libraries.
+//!
 //! * [GMP](https://gmplib.org/manual/)
 //! * [MPFR](http://www.mpfr.org/mpfr-current/mpfr.html)
 //! * [MPC](http://www.multiprecision.org/index.php?prog=mpc&page=html)
