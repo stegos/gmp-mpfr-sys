@@ -21,8 +21,14 @@ for details.
 
 ## Documentation
 
-This crate provides a low-level interface to GMP, MPFR and MPC. If you
-want a high-level API, consider using the following crates:
+This crate provides a low-level interface to GMP, MPFR and MPC in
+three modules.
+
+* [`gmp`] provides external FFI bindings to GMP.
+* [`mpfr`] provides external FFI bindings to MPFR.
+* [`mpc`] provides external FFI bindings to MPC.
+
+If you want a high-level API, consider using the following crates:
 
 * [`rugint`](https://gitlab.com/tspiteri/rugint)
   provides arbitrary-precision integers based on GMP.

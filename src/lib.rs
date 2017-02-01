@@ -33,8 +33,14 @@
 //! See the [LGPL](https://www.gnu.org/licenses/lgpl-3.0.en.html) and
 //! [GPL](https://www.gnu.org/licenses/gpl-3.0.html) for details.
 //!
-//! This crate provides a low-level interface to GMP, MPFR and MPC. If you
-//! want a high-level API, consider using the following crates:
+//! This crate provides a low-level interface to GMP, MPFR and MPC in
+//! three modules.
+//!
+//! * [`gmp`](gmp/index.html) provides external FFI bindings to GMP.
+//! * [`mpfr`](mpfr/index.html) provides external FFI bindings to MPFR.
+//! * [`mpc`](mpc/index.html) provides external FFI bindings to MPC.
+//!
+//! If you want a high-level API, consider using the following crates:
 //!
 //! * [`rugint`](https://tspiteri.gitlab.io/gmp-mpfr/rugint/)
 //!   provides arbitrary-precision integers based on GMP.
