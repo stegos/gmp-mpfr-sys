@@ -24,9 +24,9 @@ for details.
 This crate provides a low-level interface to GMP, MPFR and MPC in
 three modules.
 
-* [`gmp`] provides external FFI bindings to GMP.
-* [`mpfr`] provides external FFI bindings to MPFR.
-* [`mpc`] provides external FFI bindings to MPC.
+* `gmp` provides external FFI bindings to GMP.
+* `mpfr` provides external FFI bindings to MPFR.
+* `mpc` provides external FFI bindings to MPC.
 
 If you want a high-level API, consider using the following crates:
 
