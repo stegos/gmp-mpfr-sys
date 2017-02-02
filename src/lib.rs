@@ -33,8 +33,16 @@
 //! See the [LGPL](https://www.gnu.org/licenses/lgpl-3.0.en.html) and
 //! [GPL](https://www.gnu.org/licenses/gpl-3.0.html) for details.
 //!
+//!
+//! ## Modules
+//!
 //! This crate provides a low-level interface to GMP, MPFR and MPC in
-//! three modules.
+//! three modules. The documentation of the three modules contains
+//! links for each function, constant and type into the respective
+//! documentation of [GMP](https://gmplib.org/manual/),
+//! [MPFR](http://www.mpfr.org/mpfr-current/mpfr.html) and
+//! [MPC](http://www.multiprecision.org/index.php?prog=mpc&page=html).
+//! The three modules of this crate are:
 //!
 //! * [`gmp`](gmp/index.html) provides external FFI bindings to GMP.
 //! * [`mpfr`](mpfr/index.html) provides external FFI bindings to MPFR.
@@ -50,16 +58,6 @@
 //!   provides arbitrary-precision floating-point numbers based on MPFR.
 //! * [`rugcom`](https://tspiteri.gitlab.io/gmp-mpfr/rugcom/)
 //!   provides arbitrary-precision complex numbers based on MPC.
-//!
-//! If you want to use the low-level bindings, you can refer to the
-//! documentation of the C libraries themselves:
-//!
-//! The list of functions and constants in this crate contains links
-//! to the respective documentation items in the C libraries.
-//!
-//! * [GMP](https://gmplib.org/manual/)
-//! * [MPFR](http://www.mpfr.org/mpfr-current/mpfr.html)
-//! * [MPC](http://www.multiprecision.org/index.php?prog=mpc&page=html)
 //!
 //! ## Notes
 //!

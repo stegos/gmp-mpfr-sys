@@ -22,35 +22,32 @@ for details.
 ## Documentation
 
 This crate provides a low-level interface to GMP, MPFR and MPC in
-three modules.
+three modules. The
+[documentation](https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/) of
+the three modules contains links for each function, constant and type
+into the respective documentation of
+[GMP](https://gmplib.org/manual/),
+[MPFR](http://www.mpfr.org/mpfr-current/mpfr.html) and
+[MPC](http://www.multiprecision.org/index.php?prog=mpc&page=html).
+The three modules of this crate are:
 
-* `gmp` provides external FFI bindings to GMP.
-* `mpfr` provides external FFI bindings to MPFR.
-* `mpc` provides external FFI bindings to MPC.
+* [`gmp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/gmp/)
+  provides external FFI bindings to GMP.
+* [`mpfr`](https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/mpfr/)
+  provides external FFI bindings to MPFR.
+* [`mpc`](https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/mpc/)
+  provides external FFI bindings to MPC.
 
 If you want a high-level API, consider using the following crates:
 
-* [`rugint`](https://gitlab.com/tspiteri/rugint)
+* [`rugint`](https://tspiteri.gitlab.io/gmp-mpfr/rugint/)
   provides arbitrary-precision integers based on GMP.
-* [`rugrat`](https://gitlab.com/tspiteri/rugrat)
+* [`rugrat`](https://tspiteri.gitlab.io/gmp-mpfr/rugrat/)
   provides arbitrary-precision rational number based on GMP.
-* [`rugflo`](https://gitlab.com/tspiteri/rugflo)
+* [`rugflo`](https://tspiteri.gitlab.io/gmp-mpfr/rugflo/)
   provides arbitrary-precision floating-point numbers based on MPFR.
-* [`rugcom`](https://gitlab.com/tspiteri/rugcom)
+* [`rugcom`](https://tspiteri.gitlab.io/gmp-mpfr/rugcom/)
   provides arbitrary-precision complex numbers based on MPC.
-
-If you want to use the low-level bindings, you can see the
-documentation of the C libraries themselves:
-
-* [GMP](https://gmplib.org/manual/)
-* [MPFR](http://www.mpfr.org/mpfr-current/mpfr.html)
-* [MPC](http://www.multiprecision.org/index.php?prog=mpc&page=html)
-
-Some
-[documentation](https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/) is
-available, including a list of all functions and constants. The list
-of functions and constants contains links to the respective
-documentation items in the C libraries.
 
 ## Notes
 
