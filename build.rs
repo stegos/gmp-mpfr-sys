@@ -98,6 +98,7 @@ fn build_gmp(top_build_dir: &Path,
 fn determine_limb_t(header: &Path, out_file: &Path) {
     let mut long_long_limb = None;
     let mut limb_bits = None;
+    let mut nail_bits = None;
     let mut reader = open(&header);
     let mut buf = String::new();
     while read_line(&mut reader, &mut buf, &header) > 0 {
@@ -111,6 +112,10 @@ fn determine_limb_t(header: &Path, out_file: &Path) {
         if let Some(start) = buf.find(s) {
             limb_bits = buf[(start + s.len())..].trim().parse::<i32>().ok();
         }
+        let s = "#define GMP_NAIL_BITS";
+        if let Some(start) = buf.find(s) {
+            nail_bits = buf[(start + s.len())..].trim().parse::<i32>().ok();
+        }
         buf.clear();
     }
     drop(reader);
@@ -120,9 +125,13 @@ fn determine_limb_t(header: &Path, out_file: &Path) {
     let limb_bits = limb_bits.unwrap_or_else(|| {
         panic!("Cannot determine GMP_LIMB_BITS from {}", header.display())
     });
+    let nail_bits = nail_bits.unwrap_or_else(|| {
+        panic!("Cannot determine GMP_NAIL_BITS from {}", header.display())
+    });
     if long_long_limb {
         println!("cargo:rustc-cfg=gmp_long_long_limb");
     }
+    let mut file_content = String::new();
     match limb_bits {
         32 => {
             println!("cargo:rustc-cfg=gmp_limb_bits_32");
@@ -130,14 +139,26 @@ fn determine_limb_t(header: &Path, out_file: &Path) {
         64 => {
             println!("cargo:rustc-cfg=gmp_limb_bits_64");
         }
-        _ => {
-            let mut rs = create(out_file);
-            let content = format!("pub const LIMB_BITS: c_int = {};\n",
-                                  limb_bits);
-            write(&mut rs, &content, out_file);
-            flush(&mut rs, out_file);
-            drop(rs);
+        n => {
+            use std::fmt::Write;
+            let _ =
+                write!(file_content, "pub const LIMB_BITS: c_int = {};\n", n);
         }
+    }
+    match nail_bits {
+        0 => {
+            println!("cargo:rustc-cfg=gmp_nail_bits_0");
+        }
+        n => {
+            use std::fmt::Write;
+            let _ =
+                write!(file_content, "pub const NAIL_BITS: c_int = {};\n", n);
+        }
+    }
+    if !file_content.is_empty() {
+        let mut rs = create(out_file);
+        write(&mut rs, &file_content, out_file);
+        flush(&mut rs, out_file);
     }
 }
 

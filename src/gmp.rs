@@ -37,14 +37,25 @@ extern "C" {
     pub static version: *const c_char;
 }
 
+/// See: [`GMP_NAIL_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fNAIL_005fBITS)
+#[cfg(gmp_nail_bits_0)]
+pub const NAIL_BITS: c_int = 0;
+/// See: [`GMP_NUMB_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fNUMB_005fBITS)
+pub const NUMB_BITS: c_int = LIMB_BITS - NAIL_BITS;
 /// See: [`GMP_LIMB_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fLIMB_005fBITS)
 #[cfg(gmp_limb_bits_32)]
 pub const LIMB_BITS: c_int = 32;
 /// See: [`GMP_LIMB_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fLIMB_005fBITS)
 #[cfg(gmp_limb_bits_64)]
 pub const LIMB_BITS: c_int = 64;
-#[cfg(not(any(gmp_limb_bits_32, gmp_limb_bits_64)))]
+#[cfg(not(all(gmp_nail_bits_0, any(gmp_limb_bits_32, gmp_limb_bits_64))))]
 include!(concat!(env!("OUT_DIR"), "/mp_limb_t.rs"));
+/// See: [`GMP_LIMB_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fNAIL_005fMASK)
+pub const NAIL_MASK: limb_t = !NUMB_MASK;
+/// See: [`GMP_LIMB_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fNUMB_005fMASK)
+pub const NUMB_MASK: limb_t = (!(0 as limb_t)) >> NAIL_BITS;
+/// See: [`GMP_LIMB_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fNUMB_005fMAX)
+pub const NUMB_MAX: limb_t = NUMB_MASK;
 
 /// See: [`mp_exp_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-mp_005fexp_005ft)
 pub type exp_t = c_long;
