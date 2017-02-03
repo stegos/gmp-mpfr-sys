@@ -70,10 +70,10 @@ pub const NUMB_MAX: limb_t = NUMB_MASK;
 /// See: [`mp_exp_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-mp_005fexp_005ft)
 pub type exp_t = c_long;
 /// See: [`mp_limb_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-mp_005flimb_005ft)
-#[cfg(long_long_limb)]
+#[cfg(gmp_long_long_limb)]
 pub type limb_t = c_ulonglong;
 /// See: [`mp_limb_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-mp_005flimb_005ft)
-#[cfg(not(long_long_limb))]
+#[cfg(not(gmp_long_long_limb))]
 pub type limb_t = c_ulong;
 /// See: [`mp_size_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-mp_005fsize_005ft)
 pub type size_t = c_long;
