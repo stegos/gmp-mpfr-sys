@@ -74,7 +74,7 @@ fn main() {
         build_mpc(&build_dir, &jobs, check, &mpc_lib, &mpc_header);
         remove_dir(&build_dir);
     }
-    determine_limb_t(&gmp_header, &out_dir.join("mp_limb_t.rs"));
+    process_gmp_header(&gmp_header, &out_dir.join("gmp_h.rs"));
     write_cargo_info(&lib_dir);
 }
 
@@ -95,10 +95,14 @@ fn build_gmp(top_build_dir: &Path,
     copy_file(&build_header, &header);
 }
 
-fn determine_limb_t(header: &Path, out_file: &Path) {
-    let mut long_long_limb = None;
+fn process_gmp_header(header: &Path, out_file: &Path) {
+    use std::fmt::Write;
+
     let mut limb_bits = None;
     let mut nail_bits = None;
+    let mut long_long_limb = None;
+    let mut cc = None;
+    let mut cflags = None;
     let mut reader = open(&header);
     let mut buf = String::new();
     while read_line(&mut reader, &mut buf, &header) > 0 {
@@ -116,22 +120,39 @@ fn determine_limb_t(header: &Path, out_file: &Path) {
         if let Some(start) = buf.find(s) {
             nail_bits = buf[(start + s.len())..].trim().parse::<i32>().ok();
         }
+        let s = "#define __GMP_CC";
+        if let Some(start) = buf.find(s) {
+            cc = Some(buf[(start + s.len())..]
+                .trim()
+                .trim_matches('"')
+                .to_string());
+        }
+        let s = "#define __GMP_CFLAGS";
+        if let Some(start) = buf.find(s) {
+            cflags = Some(buf[(start + s.len())..]
+                .trim()
+                .trim_matches('"')
+                .to_string());
+        }
         buf.clear();
     }
     drop(reader);
-    let long_long_limb = long_long_limb.unwrap_or_else(|| {
-        panic!("Cannot determine _LONG_LONG_LIMB from {}", header.display())
-    });
     let limb_bits = limb_bits.unwrap_or_else(|| {
         panic!("Cannot determine GMP_LIMB_BITS from {}", header.display())
     });
     let nail_bits = nail_bits.unwrap_or_else(|| {
         panic!("Cannot determine GMP_NAIL_BITS from {}", header.display())
     });
-    if long_long_limb {
-        println!("cargo:rustc-cfg=gmp_long_long_limb");
-    }
-    let mut file_content = String::new();
+    let long_long_limb = long_long_limb.unwrap_or_else(|| {
+        panic!("Cannot determine _LONG_LONG_LIMB from {}", header.display())
+    });
+    let cc = cc.unwrap_or_else(|| {
+        panic!("Cannot determine __GMP_CC from {}", header.display())
+    });
+    let cflags = cflags.unwrap_or_else(|| {
+        panic!("Cannot determine __GMP_CFLAGS from {}", header.display())
+    });
+    let mut content = String::new();
     match limb_bits {
         32 => {
             println!("cargo:rustc-cfg=gmp_limb_bits_32");
@@ -140,9 +161,7 @@ fn determine_limb_t(header: &Path, out_file: &Path) {
             println!("cargo:rustc-cfg=gmp_limb_bits_64");
         }
         n => {
-            use std::fmt::Write;
-            let _ =
-                write!(file_content, "pub const LIMB_BITS: c_int = {};\n", n);
+            let _ = write!(content, "const GMP_LIMB_BITS: c_int = {};\n", n);
         }
     }
     match nail_bits {
@@ -150,16 +169,23 @@ fn determine_limb_t(header: &Path, out_file: &Path) {
             println!("cargo:rustc-cfg=gmp_nail_bits_0");
         }
         n => {
-            use std::fmt::Write;
-            let _ =
-                write!(file_content, "pub const NAIL_BITS: c_int = {};\n", n);
+            let _ = write!(content, "const GMP_NAIL_BITS: c_int = {};\n", n);
         }
     }
-    if !file_content.is_empty() {
-        let mut rs = create(out_file);
-        write(&mut rs, &file_content, out_file);
-        flush(&mut rs, out_file);
+    if long_long_limb {
+        println!("cargo:rustc-cfg=gmp_long_long_limb");
     }
+    let _ = write!(content,
+                   "const GMP_CC: *const c_char =b\"{}\\0\" as *const u8 as \
+                    *const c_char;\n",
+                   cc);
+    let _ = write!(content,
+                   "const GMP_CFLAGS: *const c_char =b\"{}\\0\" as *const u8 \
+                    as *const c_char;\n",
+                   cflags);
+    let mut rs = create(out_file);
+    write(&mut rs, &content, out_file);
+    flush(&mut rs, out_file);
 }
 
 fn build_mpfr(top_build_dir: &Path,
