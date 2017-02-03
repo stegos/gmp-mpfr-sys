@@ -176,12 +176,12 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
         println!("cargo:rustc-cfg=gmp_long_long_limb");
     }
     let _ = write!(content,
-                   "const GMP_CC: *const c_char =b\"{}\\0\" as *const u8 as \
+                   "const GMP_CC: *const c_char = b\"{}\\0\" as *const u8 as \
                     *const c_char;\n",
                    cc);
     let _ = write!(content,
-                   "const GMP_CFLAGS: *const c_char =b\"{}\\0\" as *const u8 \
-                    as *const c_char;\n",
+                   "const GMP_CFLAGS: *const c_char = b\"{}\\0\" as *const \
+                    u8 as *const c_char;\n",
                    cflags);
     let mut rs = create(out_file);
     write(&mut rs, &content, out_file);
