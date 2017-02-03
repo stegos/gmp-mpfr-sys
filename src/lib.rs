@@ -39,9 +39,9 @@
 //! This crate provides a low-level interface to GMP, MPFR and MPC in
 //! three modules. The documentation of the three modules contains
 //! links for each function, constant and type into the respective
-//! documentation of [GMP](https://gmplib.org/manual/),
-//! [MPFR](http://www.mpfr.org/mpfr-current/mpfr.html) and
-//! [MPC](http://www.multiprecision.org/index.php?prog=mpc&page=html).
+//! documentation of [GMP](https://tspiteri.gitlab.io/gmp-mpfr/gmp/),
+//! [MPFR](https://tspiteri.gitlab.io.gmp-mpfr/mpfr/) and
+//! [MPC](https://tspiteri.gitlab.io.gmp-mpfr/mpc/).
 //! The three modules of this crate are:
 //!
 //! * [`gmp`](gmp/index.html) provides external FFI bindings to GMP.
