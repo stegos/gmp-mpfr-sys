@@ -147,9 +147,6 @@ extern "C" {
     /// See: [`mpc_set_d`](https://tspiteri.gitlab.io/gmp-mpfr/mpc/index.html#index-mpc_005fset_005fd)
     #[link_name = "mpc_set_d"]
     pub fn set_d(rop: mpc_ptr, op: f64, rnd: rnd_t) -> c_int;
-    /// See: [`mpc_set_ld`](https://tspiteri.gitlab.io/gmp-mpfr/mpc/index.html#index-mpc_005fset_005fld)
-    #[link_name = "mpc_set_ld"]
-    pub fn set_ld(rop: mpc_ptr, op: f64, rnd: rnd_t) -> c_int;
     /// See: [`mpc_set_z`](https://tspiteri.gitlab.io/gmp-mpfr/mpc/index.html#index-mpc_005fset_005fz)
     #[link_name = "mpc_set_z"]
     pub fn set_z(rop: mpc_ptr, op: mpz_srcptr, rnd: rnd_t) -> c_int;
@@ -179,9 +176,6 @@ extern "C" {
     /// See: [`mpc_set_d_d`](https://tspiteri.gitlab.io/gmp-mpfr/mpc/index.html#index-mpc_005fset_005fd_005fd)
     #[link_name = "mpc_set_d_d"]
     pub fn set_d_d(rop: mpc_ptr, op1: f64, op2: f64, rnd: rnd_t) -> c_int;
-    /// See: [`mpc_set_ld_ld`](https://tspiteri.gitlab.io/gmp-mpfr/mpc/index.html#index-mpc_005fset_005fld_005fld)
-    #[link_name = "mpc_set_ld_ld"]
-    pub fn set_ld_ld(rop: mpc_ptr, op1: f64, op2: f64, rnd: rnd_t) -> c_int;
     /// See: [`mpc_set_z_z`](https://tspiteri.gitlab.io/gmp-mpfr/mpc/index.html#index-mpc_005fset_005fz_005fz)
     #[link_name = "mpc_set_z_z"]
     pub fn set_z_z(rop: mpc_ptr,
@@ -494,13 +488,6 @@ extern "C" {
     /// See: [`mpc_pow_d`](https://tspiteri.gitlab.io/gmp-mpfr/mpc/index.html#index-mpc_005fpow_005fd)
     #[link_name = "mpc_pow_d"]
     pub fn pow_d(rop: mpc_ptr, op1: mpc_srcptr, op2: f64, rnd: rnd_t) -> c_int;
-    /// See: [`mpc_pow_ld`](https://tspiteri.gitlab.io/gmp-mpfr/mpc/index.html#index-mpc_005fpow_005fld)
-    #[link_name = "mpc_pow_ld"]
-    pub fn pow_ld(rop: mpc_ptr,
-                  op1: mpc_srcptr,
-                  op2: f64,
-                  rnd: rnd_t)
-                  -> c_int;
     /// See: [`mpc_pow_si`](https://tspiteri.gitlab.io/gmp-mpfr/mpc/index.html#index-mpc_005fpow_005fsi)
     #[link_name = "mpc_pow_si"]
     pub fn pow_si(rop: mpc_ptr,

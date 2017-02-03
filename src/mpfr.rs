@@ -125,9 +125,6 @@ extern "C" {
     /// See: [`mpfr_set_d`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/index.html#index-mpfr_005fset_005fd)
     #[link_name = "mpfr_set_d"]
     pub fn set_d(rop: mpfr_ptr, op: f64, rnd: rnd_t) -> c_int;
-    /// See: [`mpfr_set_ld`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/index.html#index-mpfr_005fset_005fld)
-    #[link_name = "mpfr_set_ld"]
-    pub fn set_ld(rop: mpfr_ptr, op: f64, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_set_z`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/index.html#index-mpfr_005fset_005fz)
     #[link_name = "mpfr_set_z"]
     pub fn set_z(rop: mpfr_ptr, op: mpz_srcptr, rnd: rnd_t) -> c_int;
@@ -213,12 +210,6 @@ pub unsafe fn init_set_d(rop: mpfr_ptr, op: f64, rnd: rnd_t) -> c_int {
     init(rop);
     set_d(rop, op, rnd)
 }
-/// See: [`mpfr_init_set_ld`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/index.html#index-mpfr_005finit_005fset_005fld)
-#[inline]
-pub unsafe fn init_set_ld(rop: mpfr_ptr, op: f64, rnd: rnd_t) -> c_int {
-    init(rop);
-    set_ld(rop, op, rnd)
-}
 /// See: [`mpfr_init_set_z`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/index.html#index-mpfr_005finit_005fset_005fz)
 #[inline]
 pub unsafe fn init_set_z(rop: mpfr_ptr, op: mpz_srcptr, rnd: rnd_t) -> c_int {
@@ -254,9 +245,6 @@ extern "C" {
     /// See: [`mpfr_get_d`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/index.html#index-mpfr_005fget_005fd)
     #[link_name = "mpfr_get_d"]
     pub fn get_d(op: mpfr_srcptr, rnd: rnd_t) -> f64;
-    /// See: [`mpfr_get_ld`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/index.html#index-mpfr_005fget_005fld)
-    #[link_name = "mpfr_get_ld"]
-    pub fn get_ld(op: mpfr_srcptr, rnd: rnd_t) -> f64;
     /// See: [`mpfr_get_si`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/index.html#index-mpfr_005fget_005fsi)
     #[link_name = "mpfr_get_si"]
     pub fn get_si(op: mpfr_srcptr, rnd: rnd_t) -> c_long;
@@ -266,9 +254,6 @@ extern "C" {
     /// See: [`mpfr_get_d_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/index.html#index-mpfr_005fget_005fd_005f2exp)
     #[link_name = "mpfr_get_d_2exp"]
     pub fn get_d_2exp(exp: *mut c_long, op: mpfr_srcptr, rnd: rnd_t) -> f64;
-    /// See: [`mpfr_get_ld_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/index.html#index-mpfr_005fget_005fld_005f2exp)
-    #[link_name = "mpfr_get_ld_2exp"]
-    pub fn get_ld_2exp(exp: *mut c_long, op: mpfr_srcptr, rnd: rnd_t) -> f64;
     /// See: [`mpfr_frexp`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/index.html#index-mpfr_005ffrexp)
     #[link_name = "mpfr_frexp"]
     pub fn frexp(exp: *mut exp_t,
@@ -661,9 +646,6 @@ extern "C" {
     /// See: [`mpfr_cmp_d`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/index.html#index-mpfr_005fcmp_005fd)
     #[link_name = "mpfr_cmp_d"]
     pub fn cmp_d(op1: mpfr_srcptr, op2: f64) -> c_int;
-    /// See: [`mpfr_cmp_ld`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/index.html#index-mpfr_005fcmp_005fld)
-    #[link_name = "mpfr_cmp_ld"]
-    pub fn cmp_ld(op1: mpfr_srcptr, op2: f64) -> c_int;
     /// See: [`mpfr_cmp_z`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/index.html#index-mpfr_005fcmp_005fz)
     #[link_name = "mpfr_cmp_z"]
     pub fn cmp_z(op1: mpfr_srcptr, op2: mpz_srcptr) -> c_int;
