@@ -95,8 +95,8 @@ pub struct mpz_t {
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct mpq_t {
-    pub num: mpz_t,
-    pub den: mpz_t,
+    num: mpz_t,
+    den: mpz_t,
 }
 
 /// See: [`mpf_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-mpf_005ft)
