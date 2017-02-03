@@ -23,7 +23,7 @@ use std::os::raw::c_ulonglong;
 include!(concat!(env!("OUT_DIR"), "/gmp_h.rs"));
 
 extern "C" {
-    /// See: [`GMP_LIMB_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Useful-Macros-and-Constants.html#index-mp_005fbits_005fper_005flimb)
+    /// See: [`mp_bits_per_limb`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Useful-Macros-and-Constants.html#index-mp_005fbits_005fper_005flimb)
     #[link_name = "__gmp_bits_per_limb"]
     pub static bits_per_limb: c_int;
 }
