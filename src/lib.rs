@@ -91,7 +91,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! gmp-mpfr-sys = "0.5.2"
+//! gmp-mpfr-sys = "0.6.0"
 //! ```
 //!
 //! ### Building on GNU/Linux
