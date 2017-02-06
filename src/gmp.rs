@@ -23,24 +23,24 @@ use std::os::raw::c_ulonglong;
 include!(concat!(env!("OUT_DIR"), "/gmp_h.rs"));
 
 extern "C" {
-    /// See: [`mp_bits_per_limb`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Useful-Macros-and-Constants.html#index-mp_005fbits_005fper_005flimb)
+    /// See: [`mp_bits_per_limb`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-mp_005fbits_005fper_005flimb)
     #[link_name = "__gmp_bits_per_limb"]
     pub static bits_per_limb: c_int;
 }
-/// See: [`__GNU_MP_VERSION`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Useful-Macros-and-Constants.html#index-_005f_005fGNU_005fMP_005fVERSION)
+/// See: [`__GNU_MP_VERSION`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-_005f_005fGNU_005fMP_005fVERSION)
 pub const VERSION: c_int = 6;
-/// See: [`__GNU_MP_VERSION_MINOR`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Useful-Macros-and-Constants.html#index-_005f_005fGNU_005fMP_005fVERSION_005fMINOR)
+/// See: [`__GNU_MP_VERSION_MINOR`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-_005f_005fGNU_005fMP_005fVERSION_005fMINOR)
 pub const VERSION_MINOR: c_int = 1;
-/// See: [`__GNU_MP_VERSION_PATCHLEVEL`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Useful-Macros-and-Constants.html#index-_005f_005fGNU_005fMP_005fVERSION_005fPATCHLEVEL)
+/// See: [`__GNU_MP_VERSION_PATCHLEVEL`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-_005f_005fGNU_005fMP_005fVERSION_005fPATCHLEVEL)
 pub const VERSION_PATCHLEVEL: c_int = 2;
 extern "C" {
-/// See: [`gmp_version`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Useful-Macros-and-Constants.html#index-gmp_005fversion)
+/// See: [`gmp_version`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-gmp_005fversion)
     #[link_name = "__gmp_version"]
     pub static version: *const c_char;
 }
-/// See: [`__GMP_CC`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Useful-Macros-and-Constants.html#index-_005f_005fGMP_005fCC)
+/// See: [`__GMP_CC`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-_005f_005fGMP_005fCC)
 pub const CC: *const c_char = GMP_CC;
-/// See: [`__GMP_CFLAGS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Useful-Macros-and-Constants.html#index-_005f_005fGMP_005fCFLAGS)
+/// See: [`__GMP_CFLAGS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-_005f_005fGMP_005fCFLAGS)
 pub const CFLAGS: *const c_char = GMP_CFLAGS;
 
 /// See: [`GMP_NAIL_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fNAIL_005fBITS)
@@ -67,21 +67,21 @@ pub const NUMB_MASK: limb_t = (!(0 as limb_t)) >> NAIL_BITS;
 /// See: [`GMP_NUMB_MAX`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fNUMB_005fMAX)
 pub const NUMB_MAX: limb_t = NUMB_MASK;
 
-/// See: [`mp_exp_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-mp_005fexp_005ft)
+/// See: [`mp_exp_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-mp_005fexp_005ft)
 pub type exp_t = c_long;
-/// See: [`mp_limb_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-mp_005flimb_005ft)
+/// See: [`mp_limb_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-mp_005flimb_005ft)
 #[cfg(gmp_long_long_limb)]
 pub type limb_t = c_ulonglong;
-/// See: [`mp_limb_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-mp_005flimb_005ft)
+/// See: [`mp_limb_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-mp_005flimb_005ft)
 #[cfg(not(gmp_long_long_limb))]
 pub type limb_t = c_ulong;
-/// See: [`mp_size_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-mp_005fsize_005ft)
+/// See: [`mp_size_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-mp_005fsize_005ft)
 pub type size_t = c_long;
-/// See: [`mp_bitcnt_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-mp_005fbitcnt_005ft)
+/// See: [`mp_bitcnt_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-mp_005fbitcnt_005ft)
 pub type bitcnt_t = c_ulong;
 
-/// See: [`mpz_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-mpz_005ft)
-/// and [Integer Internals](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Internals.html#Integer-Internals)
+/// See: [`mpz_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-mpz_005ft)
+/// and [Integer Internals](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Internals.html#Integer-Internals)
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct mpz_t {
@@ -90,8 +90,8 @@ pub struct mpz_t {
     pub d: *mut limb_t,
 }
 
-/// See: [`mpq_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-mpq_005ft)
-/// and [Rational Internals](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Internals.html#Rational-Internals)
+/// See: [`mpq_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-mpq_005ft)
+/// and [Rational Internals](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Internals.html#Rational-Internals)
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct mpq_t {
@@ -99,8 +99,8 @@ pub struct mpq_t {
     den: mpz_t,
 }
 
-/// See: [`mpf_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-mpf_005ft)
-/// and [Float Internals](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Internals.html#Float-Internals)
+/// See: [`mpf_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-mpf_005ft)
+/// and [Float Internals](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Internals.html#Float-Internals)
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct mpf_t {
@@ -116,7 +116,7 @@ enum randalg_t {
     _DEFAULT = 0,
 }
 
-/// See: [`gmp_randstate_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Nomenclature-and-Types.html#index-gmp_005frandstate_005ft)
+/// See: [`gmp_randstate_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-gmp_005frandstate_005ft)
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct randstate_t {
@@ -143,67 +143,67 @@ type randstate_ptr = *mut randstate_t;
 extern "C" {
     // Initialization Functions
 
-    /// See: [`mpz_init`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Integers.html#index-mpz_005finit)
+    /// See: [`mpz_init`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005finit)
     #[link_name = "__gmpz_init"]
     pub fn mpz_init(x: mpz_ptr);
     #[link_name = "__gmpz_inits"]
-    /// See: [`mpz_inits`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Integers.html#index-mpz_005finits)
+    /// See: [`mpz_inits`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005finits)
     pub fn mpz_inits(x: mpz_ptr, ...);
     #[link_name = "__gmpz_init2"]
-    /// See: [`mpz_init2`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Integers.html#index-mpz_005finit2)
+    /// See: [`mpz_init2`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005finit2)
     pub fn mpz_init2(x: mpz_ptr, n: bitcnt_t);
     #[link_name = "__gmpz_clear"]
-    /// See: [`mpz_clear`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Integers.html#index-mpz_005fclear)
+    /// See: [`mpz_clear`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fclear)
     pub fn mpz_clear(x: mpz_ptr);
     #[link_name = "__gmpz_clears"]
-    /// See: [`mpz_clears`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Integers.html#index-mpz_005fclears)
+    /// See: [`mpz_clears`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fclears)
     pub fn mpz_clears(x: mpz_ptr, ...);
     #[link_name = "__gmpz_realloc2"]
-    /// See: [`mpz_realloc2`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Integers.html#index-mpz_005frealloc2)
+    /// See: [`mpz_realloc2`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005frealloc2)
     pub fn mpz_realloc2(x: mpz_ptr, n: bitcnt_t);
 
     // Assignment Functions
 
-    /// See: [`mpz_set`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Integers.html#index-mpz_005fset)
+    /// See: [`mpz_set`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fset)
     #[link_name = "__gmpz_set"]
     pub fn mpz_set(rop: mpz_ptr, op: mpz_srcptr);
     #[link_name = "__gmpz_set_ui"]
-    /// See: [`mpz_set_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Integers.html#index-mpz_005fset_005fui)
+    /// See: [`mpz_set_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fset_005fui)
     pub fn mpz_set_ui(rop: mpz_ptr, op: c_ulong);
     #[link_name = "__gmpz_set_si"]
-    /// See: [`mpz_set_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Integers.html#index-mpz_005fset_005fsi)
+    /// See: [`mpz_set_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fset_005fsi)
     pub fn mpz_set_si(rop: mpz_ptr, op: c_long);
     #[link_name = "__gmpz_set_d"]
-    /// See: [`mpz_set_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Integers.html#index-mpz_005fset_005fd)
+    /// See: [`mpz_set_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fset_005fd)
     pub fn mpz_set_d(rop: mpz_ptr, op: f64);
     #[link_name = "__gmpz_set_q"]
-    /// See: [`mpz_set_q`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Integers.html#index-mpz_005fset_005fq)
+    /// See: [`mpz_set_q`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fset_005fq)
     pub fn mpz_set_q(rop: mpz_ptr, op: mpq_srcptr);
     #[link_name = "__gmpz_set_f"]
-    /// See: [`mpz_set_f`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Integers.html#index-mpz_005fset_005ff)
+    /// See: [`mpz_set_f`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fset_005ff)
     pub fn mpz_set_f(rop: mpz_ptr, op: mpf_srcptr);
     #[link_name = "__gmpz_set_str"]
-    /// See: [`mpz_set_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Integers.html#index-mpz_005fset_005fstr)
+    /// See: [`mpz_set_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fset_005fstr)
     pub fn mpz_set_str(rop: mpz_ptr, str: *const c_char, base: c_int) -> c_int;
     #[link_name = "__gmpz_swap"]
-    /// See: [`mpz_swap`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Integers.html#index-mpz_005fswap)
+    /// See: [`mpz_swap`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fswap)
     pub fn mpz_swap(rop1: mpz_ptr, rop2: mpz_ptr);
 
     // Combined Initialization and Assignment Functions
 
-    /// See: [`mpz_init_set`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Simultaneous-Integer-Init-_0026-Assign.html#index-mpz_005finit_005fset)
+    /// See: [`mpz_init_set`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005finit_005fset)
     #[link_name = "__gmpz_init_set"]
     pub fn mpz_init_set(rop: mpz_ptr, op: mpz_srcptr);
-    /// See: [`mpz_init_set_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Simultaneous-Integer-Init-_0026-Assign.html#index-mpz_005finit_005fset_005fui)
+    /// See: [`mpz_init_set_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005finit_005fset_005fui)
     #[link_name = "__gmpz_init_set_ui"]
     pub fn mpz_init_set_ui(rop: mpz_ptr, op: c_ulong);
-    /// See: [`mpz_init_set_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Simultaneous-Integer-Init-_0026-Assign.html#index-mpz_005finit_005fset_005fsi)
+    /// See: [`mpz_init_set_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005finit_005fset_005fsi)
     #[link_name = "__gmpz_init_set_si"]
     pub fn mpz_init_set_si(rop: mpz_ptr, op: c_long);
-    /// See: [`mpz_init_set_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Simultaneous-Integer-Init-_0026-Assign.html#index-mpz_005finit_005fset_005fd)
+    /// See: [`mpz_init_set_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005finit_005fset_005fd)
     #[link_name = "__gmpz_init_set_d"]
     pub fn mpz_init_set_d(rop: mpz_ptr, op: f64);
-    /// See: [`mpz_init_set_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Simultaneous-Integer-Init-_0026-Assign.html#index-mpz_005finit_005fset_005fstr)
+    /// See: [`mpz_init_set_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005finit_005fset_005fstr)
     #[link_name = "__gmpz_init_set_str"]
     pub fn mpz_init_set_str(rop: mpz_ptr,
                             str: *const c_char,
@@ -212,19 +212,19 @@ extern "C" {
 
     // Conversion Functions
 
-    /// See: [`mpz_get_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Converting-Integers.html#index-mpz_005fget_005fui)
+    /// See: [`mpz_get_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fget_005fui)
     #[link_name = "__gmpz_get_ui"]
     pub fn mpz_get_ui(op: mpz_srcptr) -> c_ulong;
-    /// See: [`mpz_get_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Converting-Integers.html#index-mpz_005fget_005fsi)
+    /// See: [`mpz_get_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fget_005fsi)
     #[link_name = "__gmpz_get_si"]
     pub fn mpz_get_si(op: mpz_srcptr) -> c_long;
-    /// See: [`mpz_get_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Converting-Integers.html#index-mpz_005fget_005fd)
+    /// See: [`mpz_get_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fget_005fd)
     #[link_name = "__gmpz_get_d"]
     pub fn mpz_get_d(op: mpz_srcptr) -> f64;
-    /// See: [`mpz_get_d_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Converting-Integers.html#index-mpz_005fget_005fd_005f2exp)
+    /// See: [`mpz_get_d_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fget_005fd_005f2exp)
     #[link_name = "__gmpz_get_d_2exp"]
     pub fn mpz_get_d_2exp(exp: *mut c_long, op: mpz_srcptr) -> f64;
-    /// See: [`mpz_get_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Converting-Integers.html#index-mpz_005fget_005fstr)
+    /// See: [`mpz_get_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fget_005fstr)
     #[link_name = "__gmpz_get_str"]
     pub fn mpz_get_str(str: *mut c_char,
                        base: c_int,
@@ -233,182 +233,182 @@ extern "C" {
 
     // Arithmetic Functions
 
-    /// See: [`mpz_add`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005fadd)
+    /// See: [`mpz_add`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fadd)
     #[link_name = "__gmpz_add"]
     pub fn mpz_add(rop: mpz_ptr, op1: mpz_srcptr, op2: mpz_srcptr);
-    /// See: [`mpz_add_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005fadd_005fui)
+    /// See: [`mpz_add_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fadd_005fui)
     #[link_name = "__gmpz_add_ui"]
     pub fn mpz_add_ui(rop: mpz_ptr, op1: mpz_srcptr, op2: c_ulong);
-    /// See: [`mpz_sub`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005fsub)
+    /// See: [`mpz_sub`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fsub)
     #[link_name = "__gmpz_sub"]
     pub fn mpz_sub(rop: mpz_ptr, op1: mpz_srcptr, op2: mpz_srcptr);
-    /// See: [`mpz_sub_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005fsub_005fui)
+    /// See: [`mpz_sub_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fsub_005fui)
     #[link_name = "__gmpz_sub_ui"]
     pub fn mpz_sub_ui(rop: mpz_ptr, op1: mpz_srcptr, op2: c_ulong);
-    /// See: [`mpz_ui_sub`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005fui_005fsub)
+    /// See: [`mpz_ui_sub`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fui_005fsub)
     #[link_name = "__gmpz_ui_sub"]
     pub fn mpz_ui_sub(rop: mpz_ptr, op1: c_ulong, op2: mpz_srcptr);
-    /// See: [`mpz_mul`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005fmul)
+    /// See: [`mpz_mul`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fmul)
     #[link_name = "__gmpz_mul"]
     pub fn mpz_mul(rop: mpz_ptr, op1: mpz_srcptr, op2: mpz_srcptr);
-    /// See: [`mpz_mul_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005fmul_005fsi)
+    /// See: [`mpz_mul_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fmul_005fsi)
     #[link_name = "__gmpz_mul_si"]
     pub fn mpz_mul_si(rop: mpz_ptr, op1: mpz_srcptr, op2: c_long);
-    /// See: [`mpz_mul_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005fmul_005fui)
+    /// See: [`mpz_mul_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fmul_005fui)
     #[link_name = "__gmpz_mul_ui"]
     pub fn mpz_mul_ui(rop: mpz_ptr, op1: mpz_srcptr, op2: c_ulong);
-    /// See: [`mpz_addmul`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005faddmul)
+    /// See: [`mpz_addmul`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005faddmul)
     #[link_name = "__gmpz_addmul"]
     pub fn mpz_addmul(rop: mpz_ptr, op1: mpz_srcptr, op2: mpz_srcptr);
-    /// See: [`mpz_addmul_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005faddmul_005fui)
+    /// See: [`mpz_addmul_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005faddmul_005fui)
     #[link_name = "__gmpz_addmul_ui"]
     pub fn mpz_addmul_ui(rop: mpz_ptr, op1: mpz_srcptr, op2: c_ulong);
-    /// See: [`mpz_submul`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005fsubmul)
+    /// See: [`mpz_submul`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fsubmul)
     #[link_name = "__gmpz_submul"]
     pub fn mpz_submul(rop: mpz_ptr, op1: mpz_srcptr, op2: mpz_srcptr);
-    /// See: [`mpz_submul_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005fsubmul_005fui)
+    /// See: [`mpz_submul_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fsubmul_005fui)
     #[link_name = "__gmpz_submul_ui"]
     pub fn mpz_submul_ui(rop: mpz_ptr, op1: mpz_srcptr, op2: c_ulong);
-    /// See: [`mpz_mul_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005fmul_005f2exp)
+    /// See: [`mpz_mul_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fmul_005f2exp)
     #[link_name = "__gmpz_mul_2exp"]
     pub fn mpz_mul_2exp(rop: mpz_ptr, op1: mpz_srcptr, op2: bitcnt_t);
-    /// See: [`mpz_neg`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005fneg)
+    /// See: [`mpz_neg`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fneg)
     #[link_name = "__gmpz_neg"]
     pub fn mpz_neg(rop: mpz_ptr, op: mpz_srcptr);
-    /// See: [`mpz_abs`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Arithmetic.html#index-mpz_005fabs)
+    /// See: [`mpz_abs`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fabs)
     #[link_name = "__gmpz_abs"]
     pub fn mpz_abs(rop: mpz_ptr, op: mpz_srcptr);
 
     // Division Functions
 
-    /// See: [`mpz_cdiv_q`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fcdiv_005fq)
+    /// See: [`mpz_cdiv_q`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcdiv_005fq)
     #[link_name = "__gmpz_cdiv_q"]
     pub fn mpz_cdiv_q(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
-    /// See: [`mpz_cdiv_r`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fcdiv_005fr)
+    /// See: [`mpz_cdiv_r`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcdiv_005fr)
     #[link_name = "__gmpz_cdiv_r"]
     pub fn mpz_cdiv_r(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
-    /// See: [`mpz_cdiv_qr`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fcdiv_005fqr)
+    /// See: [`mpz_cdiv_qr`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcdiv_005fqr)
     #[link_name = "__gmpz_cdiv_qr"]
     pub fn mpz_cdiv_qr(q: mpz_ptr, r: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
-    /// See: [`mpz_cdiv_q_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fcdiv_005fq_005fui)
+    /// See: [`mpz_cdiv_q_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcdiv_005fq_005fui)
     #[link_name = "__gmpz_cdiv_q_ui"]
     pub fn mpz_cdiv_q_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
-    /// See: [`mpz_cdiv_r_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fcdiv_005fr_005fui)
+    /// See: [`mpz_cdiv_r_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcdiv_005fr_005fui)
     #[link_name = "__gmpz_cdiv_r_ui"]
     pub fn mpz_cdiv_r_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
-    /// See: [`mpz_cdiv_qr_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fcdiv_005fqr_005fui)
+    /// See: [`mpz_cdiv_qr_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcdiv_005fqr_005fui)
     #[link_name = "__gmpz_cdiv_qr_ui"]
     pub fn mpz_cdiv_qr_ui(q: mpz_ptr,
                           r: mpz_ptr,
                           n: mpz_srcptr,
                           d: c_ulong)
                           -> c_ulong;
-    /// See: [`mpz_cdiv_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fcdiv_005fui)
+    /// See: [`mpz_cdiv_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcdiv_005fui)
     #[link_name = "__gmpz_cdiv_ui"]
     pub fn mpz_cdiv_ui(n: mpz_srcptr, d: c_ulong) -> c_ulong;
-    /// See: [`mpz_cdiv_q_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fcdiv_005fq_005f2exp)
+    /// See: [`mpz_cdiv_q_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcdiv_005fq_005f2exp)
     #[link_name = "__gmpz_cdiv_q_2exp"]
     pub fn mpz_cdiv_q_2exp(q: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
-    /// See: [`mpz_cdiv_r_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fcdiv_005fr_005f2exp)
+    /// See: [`mpz_cdiv_r_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcdiv_005fr_005f2exp)
     #[link_name = "__gmpz_cdiv_r_2exp"]
     pub fn mpz_cdiv_r_2exp(q: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
-    /// See: [`mpz_fdiv_q`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ffdiv_005fq)
+    /// See: [`mpz_fdiv_q`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fq)
     #[link_name = "__gmpz_fdiv_q"]
     pub fn mpz_fdiv_q(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
-    /// See: [`mpz_fdiv_r`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ffdiv_005fr)
+    /// See: [`mpz_fdiv_r`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fr)
     #[link_name = "__gmpz_fdiv_r"]
     pub fn mpz_fdiv_r(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
-    /// See: [`mpz_fdiv_qr`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ffdiv_005fqr)
+    /// See: [`mpz_fdiv_qr`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fqr)
     #[link_name = "__gmpz_fdiv_qr"]
     pub fn mpz_fdiv_qr(q: mpz_ptr, r: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
-    /// See: [`mpz_fdiv_q_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ffdiv_005fq_005fui)
+    /// See: [`mpz_fdiv_q_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fq_005fui)
     #[link_name = "__gmpz_fdiv_q_ui"]
     pub fn mpz_fdiv_q_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
-    /// See: [`mpz_fdiv_r_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ffdiv_005fr_005fui)
+    /// See: [`mpz_fdiv_r_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fr_005fui)
     #[link_name = "__gmpz_fdiv_r_ui"]
     pub fn mpz_fdiv_r_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
-    /// See: [`mpz_fdiv_qr_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ffdiv_005fqr_005fui)
+    /// See: [`mpz_fdiv_qr_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fqr_005fui)
     #[link_name = "__gmpz_fdiv_qr_ui"]
     pub fn mpz_fdiv_qr_ui(q: mpz_ptr,
                           r: mpz_ptr,
                           n: mpz_srcptr,
                           d: c_ulong)
                           -> c_ulong;
-    /// See: [`mpz_fdiv_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ffdiv_005fui)
+    /// See: [`mpz_fdiv_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fui)
     #[link_name = "__gmpz_fdiv_ui"]
     pub fn mpz_fdiv_ui(n: mpz_srcptr, d: c_ulong) -> c_ulong;
-    /// See: [`mpz_fdiv_q_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ffdiv_005fq_005f2exp)
+    /// See: [`mpz_fdiv_q_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fq_005f2exp)
     #[link_name = "__gmpz_fdiv_q_2exp"]
     pub fn mpz_fdiv_q_2exp(q: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
-    /// See: [`mpz_fdiv_r_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ffdiv_005fr_005f2exp)
+    /// See: [`mpz_fdiv_r_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fr_005f2exp)
     #[link_name = "__gmpz_fdiv_r_2exp"]
     pub fn mpz_fdiv_r_2exp(q: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
-    /// See: [`mpz_tdiv_q`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ftdiv_005fq)
+    /// See: [`mpz_tdiv_q`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fq)
     #[link_name = "__gmpz_tdiv_q"]
     pub fn mpz_tdiv_q(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
-    /// See: [`mpz_tdiv_r`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ftdiv_005fr)
+    /// See: [`mpz_tdiv_r`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fr)
     #[link_name = "__gmpz_tdiv_r"]
     pub fn mpz_tdiv_r(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
-    /// See: [`mpz_tdiv_qr`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ftdiv_005fqr)
+    /// See: [`mpz_tdiv_qr`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fqr)
     #[link_name = "__gmpz_tdiv_qr"]
     pub fn mpz_tdiv_qr(q: mpz_ptr, r: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
-    /// See: [`mpz_tdiv_q_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ftdiv_005fq_005fui)
+    /// See: [`mpz_tdiv_q_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fq_005fui)
     #[link_name = "__gmpz_tdiv_q_ui"]
     pub fn mpz_tdiv_q_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
-    /// See: [`mpz_tdiv_r_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ftdiv_005fr_005fui)
+    /// See: [`mpz_tdiv_r_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fr_005fui)
     #[link_name = "__gmpz_tdiv_r_ui"]
     pub fn mpz_tdiv_r_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
-    /// See: [`mpz_tdiv_qr_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ftdiv_005fqr_005fui)
+    /// See: [`mpz_tdiv_qr_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fqr_005fui)
     #[link_name = "__gmpz_tdiv_qr_ui"]
     pub fn mpz_tdiv_qr_ui(q: mpz_ptr,
                           r: mpz_ptr,
                           n: mpz_srcptr,
                           d: c_ulong)
                           -> c_ulong;
-    /// See: [`mpz_tdiv_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ftdiv_005fui)
+    /// See: [`mpz_tdiv_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fui)
     #[link_name = "__gmpz_tdiv_ui"]
     pub fn mpz_tdiv_ui(n: mpz_srcptr, d: c_ulong) -> c_ulong;
-    /// See: [`mpz_tdiv_q_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ftdiv_005fq_005f2exp)
+    /// See: [`mpz_tdiv_q_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fq_005f2exp)
     #[link_name = "__gmpz_tdiv_q_2exp"]
     pub fn mpz_tdiv_q_2exp(q: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
-    /// See: [`mpz_tdiv_r_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005ftdiv_005fr_005f2exp)
+    /// See: [`mpz_tdiv_r_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fr_005f2exp)
     #[link_name = "__gmpz_tdiv_r_2exp"]
     pub fn mpz_tdiv_r_2exp(q: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
-    /// See: [`mpz_mod`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fmod)
+    /// See: [`mpz_mod`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fmod)
     #[link_name = "__gmpz_mod"]
     pub fn mpz_mod(r: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
 }
-/// See: [`mpz_mod_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fmod_005fui)
+/// See: [`mpz_mod_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fmod_005fui)
 #[inline]
 pub unsafe fn mpz_mod_ui(r: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong {
     mpz_fdiv_r_ui(r, n, d)
 }
 extern "C" {
-    /// See: [`mpz_divexact`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fdivexact)
+    /// See: [`mpz_divexact`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fdivexact)
     #[link_name = "__gmpz_divexact"]
     pub fn mpz_divexact(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
-    /// See: [`mpz_divexact_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fdivexact_005fui)
+    /// See: [`mpz_divexact_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fdivexact_005fui)
     #[link_name = "__gmpz_divexact_ui"]
     pub fn mpz_divexact_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong);
-    /// See: [`mpz_divisible_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fdivisible_005fp)
+    /// See: [`mpz_divisible_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fdivisible_005fp)
     #[link_name = "__gmpz_divisible_p"]
     pub fn mpz_divisible_p(n: mpz_srcptr, d: mpz_srcptr) -> c_int;
-    /// See: [`mpz_divisible_ui_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fdivisible_005fui_005fp)
+    /// See: [`mpz_divisible_ui_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fdivisible_005fui_005fp)
     #[link_name = "__gmpz_divisible_ui_p"]
     pub fn mpz_divisible_ui_p(n: mpz_srcptr, d: c_ulong) -> c_int;
-    /// See: [`mpz_divisible_2exp_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fdivisible_005f2exp_005fp)
+    /// See: [`mpz_divisible_2exp_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fdivisible_005f2exp_005fp)
     #[link_name = "__gmpz_divisible_2exp_p"]
     pub fn mpz_divisible_2exp_p(n: mpz_srcptr, b: bitcnt_t) -> c_int;
-    /// See: [`mpz_congruent_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fcongruent_005fp)
+    /// See: [`mpz_congruent_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcongruent_005fp)
     #[link_name = "__gmpz_congruent_p"]
     pub fn mpz_congruent_p(n: mpz_srcptr,
                            c: mpz_srcptr,
                            d: mpz_srcptr)
                            -> c_int;
-    /// See: [`mpz_congruent_ui_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fcongruent_005fui_005fp)
+    /// See: [`mpz_congruent_ui_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcongruent_005fui_005fp)
     #[link_name = "__gmpz_congruent_ui_p"]
     pub fn mpz_congruent_ui_p(n: mpz_srcptr, c: c_ulong, d: c_ulong) -> c_int;
-    /// See: [`mpz_congruent_2exp_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Division.html#index-mpz_005fcongruent_005f2exp_005fp)
+    /// See: [`mpz_congruent_2exp_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcongruent_005f2exp_005fp)
     #[link_name = "__gmpz_congruent_2exp_p"]
     pub fn mpz_congruent_2exp_p(n: mpz_srcptr,
                                 c: mpz_srcptr,
@@ -417,171 +417,171 @@ extern "C" {
 
     // Exponentiation Functions
 
-    /// See: [`mpz_powm`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Exponentiation.html#index-mpz_005fpowm)
+    /// See: [`mpz_powm`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fpowm)
     #[link_name = "__gmpz_powm"]
     pub fn mpz_powm(rop: mpz_ptr,
                     base: mpz_srcptr,
                     exp: mpz_srcptr,
                     modu: mpz_srcptr);
-    /// See: [`mpz_powm_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Exponentiation.html#index-mpz_005fpowm_005fui)
+    /// See: [`mpz_powm_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fpowm_005fui)
     #[link_name = "__gmpz_powm_ui"]
     pub fn mpz_powm_ui(rop: mpz_ptr,
                        base: mpz_srcptr,
                        exp: c_ulong,
                        modu: mpz_srcptr);
-    /// See: [`mpz_powm_sec`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Exponentiation.html#index-mpz_005fpowm_005fsec)
+    /// See: [`mpz_powm_sec`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fpowm_005fsec)
     #[link_name = "__gmpz_powm_sec"]
     pub fn mpz_powm_sec(rop: mpz_ptr,
                         base: mpz_srcptr,
                         exp: mpz_srcptr,
                         modu: mpz_srcptr);
-    /// See: [`mpz_pow_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Exponentiation.html#index-mpz_005fpow_005fui)
+    /// See: [`mpz_pow_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fpow_005fui)
     #[link_name = "__gmpz_pow_ui"]
     pub fn mpz_pow_ui(rop: mpz_ptr, base: mpz_srcptr, exp: c_ulong);
-    /// See: [`mpz_ui_pow_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Exponentiation.html#index-mpz_005fui_005fpow_005fui)
+    /// See: [`mpz_ui_pow_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fui_005fpow_005fui)
     #[link_name = "__gmpz_ui_pow_ui"]
     pub fn mpz_ui_pow_ui(rop: mpz_ptr, base: c_ulong, exp: c_ulong);
 
     // Root Extraction Functions
 
-    /// See: [`mpz_root`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Roots.html#index-mpz_005froot)
+    /// See: [`mpz_root`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005froot)
     #[link_name = "__gmpz_root"]
     pub fn mpz_root(rop: mpz_ptr, op: mpz_srcptr, n: c_ulong) -> c_int;
-    /// See: [`mpz_rootrem`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Roots.html#index-mpz_005frootrem)
+    /// See: [`mpz_rootrem`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005frootrem)
     #[link_name = "__gmpz_rootrem"]
     pub fn mpz_rootrem(root: mpz_ptr,
                        rem: mpz_ptr,
                        op: mpz_srcptr,
                        n: c_ulong);
-    /// See: [`mpz_sqrt`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Roots.html#index-mpz_005fsqrt)
+    /// See: [`mpz_sqrt`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fsqrt)
     #[link_name = "__gmpz_sqrt"]
     pub fn mpz_sqrt(rop: mpz_ptr, op: mpz_srcptr);
-    /// See: [`mpz_sqrtrem`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Roots.html#index-mpz_005fsqrtrem)
+    /// See: [`mpz_sqrtrem`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fsqrtrem)
     #[link_name = "__gmpz_sqrtrem"]
     pub fn mpz_sqrtrem(rop1: mpz_ptr, rop2: mpz_ptr, op: mpz_srcptr);
-    /// See: [`mpz_perfect_power_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Roots.html#index-mpz_005fperfect_005fpower_005fp)
+    /// See: [`mpz_perfect_power_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fperfect_005fpower_005fp)
     #[link_name = "__gmpz_perfect_power_p"]
     pub fn mpz_perfect_power_p(op: mpz_srcptr) -> c_int;
-    /// See: [`mpz_perfect_square_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Roots.html#index-mpz_005fperfect_005fsquare_005fp)
+    /// See: [`mpz_perfect_square_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fperfect_005fsquare_005fp)
     #[link_name = "__gmpz_perfect_square_p"]
     pub fn mpz_perfect_square_p(op: mpz_srcptr) -> c_int;
 
     // Number Theoretic Functions
 
-    /// See: [`mpz_probab_prime_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fprobab_005fprime_005fp)
+    /// See: [`mpz_probab_prime_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fprobab_005fprime_005fp)
     #[link_name = "__gmpz_probab_prime_p"]
     pub fn mpz_probab_prime_p(n: mpz_srcptr, reps: c_int) -> c_int;
-    /// See: [`mpz_nextprime`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fnextprime)
+    /// See: [`mpz_nextprime`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fnextprime)
     #[link_name = "__gmpz_nextprime"]
     pub fn mpz_nextprime(rop: mpz_ptr, op: mpz_srcptr);
-    /// See: [`mpz_gcd`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fgcd)
+    /// See: [`mpz_gcd`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fgcd)
     #[link_name = "__gmpz_gcd"]
     pub fn mpz_gcd(rop: mpz_ptr, op1: mpz_srcptr, op2: mpz_srcptr);
-    /// See: [`mpz_gcd_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fgcd_005fui)
+    /// See: [`mpz_gcd_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fgcd_005fui)
     #[link_name = "__gmpz_gcd_ui"]
     pub fn mpz_gcd_ui(rop: mpz_ptr, op1: mpz_srcptr, op2: c_ulong) -> c_ulong;
-    /// See: [`mpz_gcdext`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fgcdext)
+    /// See: [`mpz_gcdext`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fgcdext)
     #[link_name = "__gmpz_gcdext"]
     pub fn mpz_gcdext(g: mpz_ptr,
                       s: mpz_ptr,
                       t: mpz_ptr,
                       a: mpz_srcptr,
                       b: mpz_srcptr);
-    /// See: [`mpz_lcm`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005flcm)
+    /// See: [`mpz_lcm`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005flcm)
     #[link_name = "__gmpz_lcm"]
     pub fn mpz_lcm(rop: mpz_ptr, op1: mpz_srcptr, op2: mpz_srcptr);
-    /// See: [`mpz_lcm_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005flcm_005fui)
+    /// See: [`mpz_lcm_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005flcm_005fui)
     #[link_name = "__gmpz_lcm_ui"]
     pub fn mpz_lcm_ui(rop: mpz_ptr, op1: mpz_srcptr, op2: c_ulong);
-    /// See: [`mpz_invert`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005finvert)
+    /// See: [`mpz_invert`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005finvert)
     #[link_name = "__gmpz_invert"]
     pub fn mpz_invert(rop: mpz_ptr, op1: mpz_srcptr, op2: mpz_srcptr) -> c_int;
-    /// See: [`mpz_jacobi`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fjacobi)
+    /// See: [`mpz_jacobi`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fjacobi)
     #[link_name = "__gmpz_jacobi"]
     pub fn mpz_jacobi(a: mpz_srcptr, b: mpz_srcptr) -> c_int;
 }
-/// See: [`mpz_legendre`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005flegendre)
+/// See: [`mpz_legendre`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005flegendre)
 #[inline]
 pub unsafe fn mpz_legendre(a: mpz_srcptr, p: mpz_srcptr) -> c_int {
     mpz_jacobi(a, p)
 }
-/// See: [`mpz_kronecker`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fkronecker)
+/// See: [`mpz_kronecker`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fkronecker)
 #[inline]
 pub unsafe fn mpz_kronecker(a: mpz_srcptr, b: mpz_srcptr) -> c_int {
     mpz_jacobi(a, b)
 }
 extern "C" {
-    /// See: [`mpz_kronecker_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fkronecker_005fsi)
+    /// See: [`mpz_kronecker_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fkronecker_005fsi)
     #[link_name = "__gmpz_kronecker_si"]
     pub fn mpz_kronecker_si(a: mpz_srcptr, b: c_long) -> c_int;
-    /// See: [`mpz_kronecker_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fkronecker_005fui)
+    /// See: [`mpz_kronecker_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fkronecker_005fui)
     #[link_name = "__gmpz_kronecker_ui"]
     pub fn mpz_kronecker_ui(a: mpz_srcptr, b: c_ulong) -> c_int;
-    /// See: [`mpz_si_kronecker`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fsi_005fkronecker)
+    /// See: [`mpz_si_kronecker`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fsi_005fkronecker)
     #[link_name = "__gmpz_si_kronecker"]
     pub fn mpz_si_kronecker(a: c_long, b: mpz_srcptr) -> c_int;
-    /// See: [`mpz_ui_kronecker`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fui_005fkronecker)
+    /// See: [`mpz_ui_kronecker`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fui_005fkronecker)
     #[link_name = "__gmpz_ui_kronecker"]
     pub fn mpz_ui_kronecker(a: c_ulong, b: mpz_srcptr) -> c_int;
-    /// See: [`mpz_remove`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fremove)
+    /// See: [`mpz_remove`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fremove)
     #[link_name = "__gmpz_remove"]
     pub fn mpz_remove(rop: mpz_ptr, op: mpz_srcptr, f: mpz_srcptr) -> bitcnt_t;
-    /// See: [`mpz_fac_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005ffac_005fui)
+    /// See: [`mpz_fac_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffac_005fui)
     #[link_name = "__gmpz_fac_ui"]
     pub fn mpz_fac_ui(rop: mpz_ptr, n: c_ulong);
-    /// See: [`mpz_2fac_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005f2fac_005fui)
+    /// See: [`mpz_2fac_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005f2fac_005fui)
     #[link_name = "__gmpz_2fac_ui"]
     pub fn mpz_2fac_ui(rop: mpz_ptr, n: c_ulong);
-    /// See: [`mpz_mfac_uiui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fmfac_005fuiui)
+    /// See: [`mpz_mfac_uiui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fmfac_005fuiui)
     #[link_name = "__gmpz_mfac_uiui"]
     pub fn mpz_mfac_uiui(rop: mpz_ptr, n: c_ulong, m: c_ulong);
-    /// See: [`mpz_primorial_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fprimorial_005fui)
+    /// See: [`mpz_primorial_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fprimorial_005fui)
     #[link_name = "__gmpz_primorial_ui"]
     pub fn mpz_primorial_ui(r: mpz_ptr, n: c_ulong);
-    /// See: [`mpz_bin_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fbin_005fui)
+    /// See: [`mpz_bin_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fbin_005fui)
     #[link_name = "__gmpz_bin_ui"]
     pub fn mpz_bin_ui(rop: mpz_ptr, n: mpz_srcptr, k: c_ulong);
-    /// See: [`mpz_bin_uiui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005fbin_005fuiui)
+    /// See: [`mpz_bin_uiui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fbin_005fuiui)
     #[link_name = "__gmpz_bin_uiui"]
     pub fn mpz_bin_uiui(rop: mpz_ptr, n: c_ulong, k: c_ulong);
-    /// See: [`mpz_fib_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005ffib_005fui)
+    /// See: [`mpz_fib_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffib_005fui)
     #[link_name = "__gmpz_fib_ui"]
     pub fn mpz_fib_ui(f_n: mpz_ptr, n: c_ulong);
-    /// See: [`mpz_fib2_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005ffib2_005fui)
+    /// See: [`mpz_fib2_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffib2_005fui)
     #[link_name = "__gmpz_fib2_ui"]
     pub fn mpz_fib2_ui(f_n: mpz_ptr, fnsub1: mpz_ptr, n: c_ulong);
-    /// See: [`mpz_lucnum_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005flucnum_005fui)
+    /// See: [`mpz_lucnum_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005flucnum_005fui)
     #[link_name = "__gmpz_lucnum_ui"]
     pub fn mpz_lucnum_ui(ln: mpz_ptr, n: c_ulong);
-    /// See: [`mpz_lucnum2_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Number-Theoretic-Functions.html#index-mpz_005flucnum2_005fui)
+    /// See: [`mpz_lucnum2_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005flucnum2_005fui)
     #[link_name = "__gmpz_lucnum2_ui"]
     pub fn mpz_lucnum2_ui(ln: mpz_ptr, lnsub1: mpz_ptr, n: c_ulong);
 
     // Comparison Functions
 
-    /// See: [`mpz_cmp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Comparisons.html#index-mpz_005fcmp)
+    /// See: [`mpz_cmp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcmp)
     #[link_name = "__gmpz_cmp"]
     pub fn mpz_cmp(op1: mpz_srcptr, op2: mpz_srcptr) -> c_int;
-    /// See: [`mpz_cmp_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Comparisons.html#index-mpz_005fcmp_005fd)
+    /// See: [`mpz_cmp_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcmp_005fd)
     #[link_name = "__gmpz_cmp_d"]
     pub fn mpz_cmp_d(op1: mpz_srcptr, op2: f64) -> c_int;
-    /// See: [`mpz_cmp_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Comparisons.html#index-mpz_005fcmp_005fsi)
+    /// See: [`mpz_cmp_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcmp_005fsi)
     #[link_name = "__gmpz_cmp_si"]
     pub fn mpz_cmp_si(op1: mpz_srcptr, op2: c_long) -> c_int;
-    /// See: [`mpz_cmp_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Comparisons.html#index-mpz_005fcmp_005fui)
+    /// See: [`mpz_cmp_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcmp_005fui)
     #[link_name = "__gmpz_cmp_ui"]
     pub fn mpz_cmp_ui(op1: mpz_srcptr, op2: c_ulong) -> c_int;
-    /// See: [`mpz_cmpabs`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Comparisons.html#index-mpz_005fcmpabs)
+    /// See: [`mpz_cmpabs`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcmpabs)
     #[link_name = "__gmpz_cmpabs"]
     pub fn mpz_cmpabs(op1: mpz_srcptr, op2: mpz_srcptr) -> c_int;
-    /// See: [`mpz_cmpabs_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Comparisons.html#index-mpz_005fcmpabs_005fd)
+    /// See: [`mpz_cmpabs_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcmpabs_005fd)
     #[link_name = "__gmpz_cmpabs_d"]
     pub fn mpz_cmpabs_d(op1: mpz_srcptr, op2: f64) -> c_int;
-    /// See: [`mpz_cmpabs_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Comparisons.html#index-mpz_005fcmpabs_005fui)
+    /// See: [`mpz_cmpabs_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcmpabs_005fui)
     #[link_name = "__gmpz_cmpabs_ui"]
     pub fn mpz_cmpabs_ui(op1: mpz_srcptr, op2: c_ulong) -> c_int;
 }
-/// See: [`mpz_sgn`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Comparisons.html#index-mpz_005fsgn)
+/// See: [`mpz_sgn`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fsgn)
 #[inline]
 pub unsafe fn mpz_sgn(op: mpz_srcptr) -> c_int {
     if (*op).size < 0 {
@@ -593,61 +593,61 @@ pub unsafe fn mpz_sgn(op: mpz_srcptr) -> c_int {
     }
 }
 extern "C" {
-    /// See: [`mpz_and`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Logic-and-Bit-Fiddling.html#index-mpz_005fand)
+    /// See: [`mpz_and`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fand)
     #[link_name = "__gmpz_and"]
     pub fn mpz_and(rop: mpz_ptr, op1: mpz_srcptr, op2: mpz_srcptr);
-    /// See: [`mpz_ior`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Logic-and-Bit-Fiddling.html#index-mpz_005fior)
+    /// See: [`mpz_ior`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fior)
     #[link_name = "__gmpz_ior"]
     pub fn mpz_ior(rop: mpz_ptr, op1: mpz_srcptr, op2: mpz_srcptr);
-    /// See: [`mpz_xor`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Logic-and-Bit-Fiddling.html#index-mpz_005fxor)
+    /// See: [`mpz_xor`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fxor)
     #[link_name = "__gmpz_xor"]
     pub fn mpz_xor(rop: mpz_ptr, op1: mpz_srcptr, op2: mpz_srcptr);
-    /// See: [`mpz_com`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Logic-and-Bit-Fiddling.html#index-mpz_005fcom)
+    /// See: [`mpz_com`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcom)
     #[link_name = "__gmpz_com"]
     pub fn mpz_com(rop: mpz_ptr, op: mpz_srcptr);
-    /// See: [`mpz_popcount`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Logic-and-Bit-Fiddling.html#index-mpz_005fpopcount)
+    /// See: [`mpz_popcount`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fpopcount)
     #[link_name = "__gmpz_popcount"]
     pub fn mpz_popcount(op: mpz_srcptr) -> bitcnt_t;
-    /// See: [`mpz_hamdist`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Logic-and-Bit-Fiddling.html#index-mpz_005fhamdist)
+    /// See: [`mpz_hamdist`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fhamdist)
     #[link_name = "__gmpz_hamdist"]
     pub fn mpz_hamdist(op1: mpz_srcptr, op2: mpz_srcptr) -> bitcnt_t;
-    /// See: [`mpz_scan0`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Logic-and-Bit-Fiddling.html#index-mpz_005fscan0)
+    /// See: [`mpz_scan0`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fscan0)
     #[link_name = "__gmpz_scan0"]
     pub fn mpz_scan0(op: mpz_srcptr, starting_bit: bitcnt_t) -> bitcnt_t;
-    /// See: [`mpz_scan1`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Logic-and-Bit-Fiddling.html#index-mpz_005fscan1)
+    /// See: [`mpz_scan1`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fscan1)
     #[link_name = "__gmpz_scan1"]
     pub fn mpz_scan1(op: mpz_srcptr, starting_bit: bitcnt_t) -> bitcnt_t;
-    /// See: [`mpz_setbit`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Logic-and-Bit-Fiddling.html#index-mpz_005fsetbit)
+    /// See: [`mpz_setbit`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fsetbit)
     #[link_name = "__gmpz_setbit"]
     pub fn mpz_setbit(rop: mpz_ptr, bit_index: bitcnt_t);
-    /// See: [`mpz_clrbit`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Logic-and-Bit-Fiddling.html#index-mpz_005fclrbit)
+    /// See: [`mpz_clrbit`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fclrbit)
     #[link_name = "__gmpz_clrbit"]
     pub fn mpz_clrbit(rop: mpz_ptr, bit_index: bitcnt_t);
-    /// See: [`mpz_combit`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Logic-and-Bit-Fiddling.html#index-mpz_005fcombit)
+    /// See: [`mpz_combit`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fcombit)
     #[link_name = "__gmpz_combit"]
     pub fn mpz_combit(rop: mpz_ptr, bit_index: bitcnt_t);
-    /// See: [`mpz_tstbit`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Logic-and-Bit-Fiddling.html#index-mpz_005ftstbit)
+    /// See: [`mpz_tstbit`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ftstbit)
     #[link_name = "__gmpz_tstbit"]
     pub fn mpz_tstbit(rop: mpz_srcptr, bit_index: bitcnt_t) -> c_int;
 
     // Random Number Functions
 
-    /// See: [`mpz_urandomb`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Random-Numbers.html#index-mpz_005furandomb)
+    /// See: [`mpz_urandomb`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005furandomb)
     #[link_name = "__gmpz_urandomb"]
     pub fn mpz_urandomb(rop: mpz_ptr, state: randstate_ptr, n: bitcnt_t);
-    /// See: [`mpz_urandomm`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Random-Numbers.html#index-mpz_005furandomm)
+    /// See: [`mpz_urandomm`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005furandomm)
     #[link_name = "__gmpz_urandomm"]
     pub fn mpz_urandomm(rop: mpz_ptr, state: randstate_ptr, n: mpz_srcptr);
-    /// See: [`mpz_rrandomb`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Random-Numbers.html#index-mpz_005frrandomb)
+    /// See: [`mpz_rrandomb`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005frrandomb)
     #[link_name = "__gmpz_rrandomb"]
     pub fn mpz_rrandomb(rop: mpz_ptr, state: randstate_ptr, n: bitcnt_t);
-    /// See: [`mpz_random2`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Random-Numbers.html#index-mpz_005frandom2)
+    /// See: [`mpz_random2`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005frandom2)
     #[link_name = "__gmpz_random2"]
     pub fn mpz_random2(rop: mpz_ptr, max_size: size_t);
 
     // Integer Import and Export
 
-    /// See: [`mpz_import`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Import-and-Export.html#index-mpz_005fimport)
+    /// See: [`mpz_import`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fimport)
     #[link_name = "__gmpz_import"]
     pub fn mpz_import(rop: mpz_ptr,
                       count: usize,
@@ -656,7 +656,7 @@ extern "C" {
                       endian: c_int,
                       nails: usize,
                       op: *const c_void);
-    /// See: [`mpz_export`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Import-and-Export.html#index-mpz_005fexport)
+    /// See: [`mpz_export`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fexport)
     #[link_name = "__gmpz_export"]
     pub fn mpz_export(rop: *mut c_void,
                       countp: *mut usize,
@@ -669,64 +669,64 @@ extern "C" {
 
     // Miscellaneous Functions
 
-    /// See: [`mpz_fits_ulong_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Integer-Functions.html#index-mpz_005ffits_005fulong_005fp)
+    /// See: [`mpz_fits_ulong_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffits_005fulong_005fp)
     #[link_name = "__gmpz_fits_ulong_p"]
     pub fn mpz_fits_ulong_p(op: mpz_srcptr) -> c_int;
-    /// See: [`mpz_fits_slong_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Integer-Functions.html#index-mpz_005ffits_005fslong_005fp)
+    /// See: [`mpz_fits_slong_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffits_005fslong_005fp)
     #[link_name = "__gmpz_fits_slong_p"]
     pub fn mpz_fits_slong_p(op: mpz_srcptr) -> c_int;
-    /// See: [`mpz_fits_uint_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Integer-Functions.html#index-mpz_005ffits_005fuint_005fp)
+    /// See: [`mpz_fits_uint_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffits_005fuint_005fp)
     #[link_name = "__gmpz_fits_uint_p"]
     pub fn mpz_fits_uint_p(op: mpz_srcptr) -> c_int;
-    /// See: [`mpz_fits_sint_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Integer-Functions.html#index-mpz_005ffits_005fsint_005fp)
+    /// See: [`mpz_fits_sint_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffits_005fsint_005fp)
     #[link_name = "__gmpz_fits_sint_p"]
     pub fn mpz_fits_sint_p(op: mpz_srcptr) -> c_int;
-    /// See: [`mpz_fits_ushort_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Integer-Functions.html#index-mpz_005ffits_005fushort_005fp)
+    /// See: [`mpz_fits_ushort_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffits_005fushort_005fp)
     #[link_name = "__gmpz_fits_ushort_p"]
     pub fn mpz_fits_ushort_p(op: mpz_srcptr) -> c_int;
-    /// See: [`mpz_fits_sshort_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Integer-Functions.html#index-mpz_005ffits_005fsshort_005fp)
+    /// See: [`mpz_fits_sshort_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005ffits_005fsshort_005fp)
     #[link_name = "__gmpz_fits_sshort_p"]
     pub fn mpz_fits_sshort_p(op: mpz_srcptr) -> c_int;
 }
-/// See: [`mpz_odd_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Integer-Functions.html#index-mpz_005fodd_005fp)
+/// See: [`mpz_odd_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fodd_005fp)
 #[inline]
 pub unsafe fn mpz_odd_p(op: mpz_srcptr) -> c_int {
     (*(*op).d) as c_int & if (*op).size != 0 { 1 } else { 0 }
 }
-/// See: [`mpz_even_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Integer-Functions.html#index-mpz_005feven_005fp)
+/// See: [`mpz_even_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005feven_005fp)
 #[inline]
 pub unsafe fn mpz_even_p(op: mpz_srcptr) -> c_int {
     !mpz_odd_p(op)
 }
 extern "C" {
-    /// See: [`mpz_sizeinbase`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Integer-Functions.html#index-mpz_005fsizeinbase)
+    /// See: [`mpz_sizeinbase`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fsizeinbase)
     #[link_name = "__gmpz_sizeinbase"]
     pub fn mpz_sizeinbase(arg1: mpz_srcptr, arg2: c_int) -> usize;
 
     // Special Functions
 
-    /// See: [`_mpz_realloc`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Special-Functions.html#index-_005fmpz_005frealloc)
+    /// See: [`_mpz_realloc`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-_005fmpz_005frealloc)
     #[link_name = "__gmpz_realloc"]
     pub fn _mpz_realloc(integer: mpz_ptr, new_alloc: size_t) -> *mut c_void;
-    /// See: [`mpz_getlimbn`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Special-Functions.html#index-mpz_005fgetlimbn)
+    /// See: [`mpz_getlimbn`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fgetlimbn)
     #[link_name = "__gmpz_getlimbn"]
     pub fn mpz_getlimbn(op: mpz_srcptr, n: size_t) -> limb_t;
-    /// See: [`mpz_size`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Special-Functions.html#index-mpz_005fsize)
+    /// See: [`mpz_size`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fsize)
     #[link_name = "__gmpz_size"]
     pub fn mpz_size(op: mpz_srcptr) -> usize;
-    /// See: [`mpz_limbs_read`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Special-Functions.html#index-mpz_005flimbs_005fread)
+    /// See: [`mpz_limbs_read`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005flimbs_005fread)
     #[link_name = "__gmpz_limbs_read"]
     pub fn mpz_limbs_read(x: mpz_srcptr) -> mp_srcptr;
-    /// See: [`mpz_limbs_write`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Special-Functions.html#index-mpz_005flimbs_005fwrite)
+    /// See: [`mpz_limbs_write`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005flimbs_005fwrite)
     #[link_name = "__gmpz_limbs_write"]
     pub fn mpz_limbs_write(x: mpz_ptr, n: size_t) -> mp_ptr;
-    /// See: [`mpz_limbs_modify`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Special-Functions.html#index-mpz_005flimbs_005fmodify)
+    /// See: [`mpz_limbs_modify`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005flimbs_005fmodify)
     #[link_name = "__gmpz_limbs_modify"]
     pub fn mpz_limbs_modify(x: mpz_ptr, n: size_t) -> mp_ptr;
-    /// See: [`mpz_limbs_finish`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Special-Functions.html#index-mpz_005flimbs_005ffinish)
+    /// See: [`mpz_limbs_finish`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005flimbs_005ffinish)
     #[link_name = "__gmpz_limbs_finish"]
     pub fn mpz_limbs_finish(x: mpz_ptr, s: size_t);
-    /// See: [`mpz_roinit_n`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Special-Functions.html#index-mpz_005froinit_005fn)
+    /// See: [`mpz_roinit_n`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005froinit_005fn)
     #[link_name = "__gmpz_roinit_n"]
     pub fn mpz_roinit_n(x: mpz_ptr, xp: mp_srcptr, xs: size_t) -> mpz_srcptr;
 }
@@ -740,49 +740,49 @@ extern "C" {
 
     // Initialization and Assignment Functions
 
-    /// See: [`mpq_init`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Rationals.html#index-mpq_005finit)
+    /// See: [`mpq_init`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005finit)
     #[link_name = "__gmpq_init"]
     pub fn mpq_init(x: mpq_ptr);
-    /// See: [`mpq_inits`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Rationals.html#index-mpq_005finits)
+    /// See: [`mpq_inits`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005finits)
     #[link_name = "__gmpq_inits"]
     pub fn mpq_inits(x: mpq_ptr, ...);
-    /// See: [`mpq_clear`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Rationals.html#index-mpq_005fclear)
+    /// See: [`mpq_clear`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fclear)
     #[link_name = "__gmpq_clear"]
     pub fn mpq_clear(x: mpq_ptr);
-    /// See: [`mpq_clears`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Rationals.html#index-mpq_005fclears)
+    /// See: [`mpq_clears`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fclears)
     #[link_name = "__gmpq_clears"]
     pub fn mpq_clears(x: mpq_ptr, ...);
-    /// See: [`mpq_set`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Rationals.html#index-mpq_005fset)
+    /// See: [`mpq_set`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fset)
     #[link_name = "__gmpq_set"]
     pub fn mpq_set(rop: mpq_ptr, op: mpq_srcptr);
-    /// See: [`mpq_set_z`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Rationals.html#index-mpq_005fset_005fz)
+    /// See: [`mpq_set_z`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fset_005fz)
     #[link_name = "__gmpq_set_z"]
     pub fn mpq_set_z(rop: mpq_ptr, op: mpz_srcptr);
-    /// See: [`mpq_set_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Rationals.html#index-mpq_005fset_005fui)
+    /// See: [`mpq_set_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fset_005fui)
     #[link_name = "__gmpq_set_ui"]
     pub fn mpq_set_ui(rop: mpq_ptr, op1: c_ulong, op2: c_ulong);
-    /// See: [`mpq_set_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Rationals.html#index-mpq_005fset_005fsi)
+    /// See: [`mpq_set_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fset_005fsi)
     #[link_name = "__gmpq_set_si"]
     pub fn mpq_set_si(rop: mpq_ptr, op1: c_long, op2: c_ulong);
-    /// See: [`mpq_set_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Rationals.html#index-mpq_005fset_005fstr)
+    /// See: [`mpq_set_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fset_005fstr)
     #[link_name = "__gmpq_set_str"]
     pub fn mpq_set_str(rop: mpq_ptr, str: *const c_char, base: c_int) -> c_int;
-    /// See: [`mpq_swap`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Rationals.html#index-mpq_005fswap)
+    /// See: [`mpq_swap`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fswap)
     #[link_name = "__gmpq_swap"]
     pub fn mpq_swap(rop1: mpq_ptr, rop2: mpq_ptr);
 
     // Conversion Functions
 
-    /// See: [`mpq_get_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Conversions.html#index-mpq_005fget_005fd)
+    /// See: [`mpq_get_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fget_005fd)
     #[link_name = "__gmpq_get_d"]
     pub fn mpq_get_d(op: mpq_srcptr) -> f64;
-    /// See: [`mpq_set_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Conversions.html#index-mpq_005fset_005fd)
+    /// See: [`mpq_set_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fset_005fd)
     #[link_name = "__gmpq_set_d"]
     pub fn mpq_set_d(rop: mpq_ptr, op: f64);
-    /// See: [`mpq_set_f`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Conversions.html#index-mpq_005fset_005ff)
+    /// See: [`mpq_set_f`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fset_005ff)
     #[link_name = "__gmpq_set_f"]
     pub fn mpq_set_f(rop: mpq_ptr, op: mpf_srcptr);
-    /// See: [`mpq_get_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Conversions.html#index-mpq_005fget_005fstr)
+    /// See: [`mpq_get_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fget_005fstr)
     #[link_name = "__gmpq_get_str"]
     pub fn mpq_get_str(str: *mut c_char,
                        base: c_int,
@@ -791,56 +791,56 @@ extern "C" {
 
     // Arithmetic Functions
 
-    /// See: [`mpq_add`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Arithmetic.html#index-mpq_005fadd)
+    /// See: [`mpq_add`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fadd)
     #[link_name = "__gmpq_add"]
     pub fn mpq_add(sum: mpq_ptr, addend1: mpq_srcptr, addend2: mpq_srcptr);
-    /// See: [`mpq_sub`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Arithmetic.html#index-mpq_005fsub)
+    /// See: [`mpq_sub`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fsub)
     #[link_name = "__gmpq_sub"]
     pub fn mpq_sub(difference: mpq_ptr,
                    minuend: mpq_srcptr,
                    subtrahend: mpq_srcptr);
-    /// See: [`mpq_mul`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Arithmetic.html#index-mpq_005fmul)
+    /// See: [`mpq_mul`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fmul)
     #[link_name = "__gmpq_mul"]
     pub fn mpq_mul(product: mpq_ptr,
                    multiplier: mpq_srcptr,
                    multiplicand: mpq_srcptr);
-    /// See: [`mpq_mul_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Arithmetic.html#index-mpq_005fmul_005f2exp)
+    /// See: [`mpq_mul_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fmul_005f2exp)
     #[link_name = "__gmpq_mul_2exp"]
     pub fn mpq_mul_2exp(rop: mpq_ptr, op1: mpq_srcptr, op2: bitcnt_t);
-    /// See: [`mpq_div`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Arithmetic.html#index-mpq_005fdiv)
+    /// See: [`mpq_div`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fdiv)
     #[link_name = "__gmpq_div"]
     pub fn mpq_div(quotient: mpq_ptr,
                    dividend: mpq_srcptr,
                    divisor: mpq_srcptr);
-    /// See: [`mpq_div_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Arithmetic.html#index-mpq_005fdiv_005f2exp)
+    /// See: [`mpq_div_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fdiv_005f2exp)
     #[link_name = "__gmpq_div_2exp"]
     pub fn mpq_div_2exp(rop: mpq_ptr, op1: mpq_srcptr, op2: bitcnt_t);
-    /// See: [`mpq_neg`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Arithmetic.html#index-mpq_005fneg)
+    /// See: [`mpq_neg`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fneg)
     #[link_name = "__gmpq_neg"]
     pub fn mpq_neg(negated_operand: mpq_ptr, operand: mpq_srcptr);
-    /// See: [`mpq_abs`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Arithmetic.html#index-mpq_005fabs)
+    /// See: [`mpq_abs`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fabs)
     #[link_name = "__gmpq_abs"]
     pub fn mpq_abs(rop: mpq_ptr, op: mpq_srcptr);
-    /// See: [`mpq_inv`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Arithmetic.html#index-mpq_005finv)
+    /// See: [`mpq_inv`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005finv)
     #[link_name = "__gmpq_inv"]
     pub fn mpq_inv(inverted_number: mpq_ptr, number: mpq_srcptr);
 
     // Comparison Functions
 
-    /// See: [`mpq_cmp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Comparing-Rationals.html#index-mpq_005fcmp)
+    /// See: [`mpq_cmp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fcmp)
     #[link_name = "__gmpq_cmp"]
     pub fn mpq_cmp(op1: mpq_srcptr, op2: mpq_srcptr) -> c_int;
-    /// See: [`mpq_cmp_z`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Comparing-Rationals.html#index-mpq_005fcmp_005fz)
+    /// See: [`mpq_cmp_z`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fcmp_005fz)
     #[link_name = "__gmpq_cmp_z"]
     pub fn mpq_cmp_z(op1: mpq_srcptr, op2: mpz_srcptr) -> c_int;
-    /// See: [`mpq_cmp_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Comparing-Rationals.html#index-mpq_005fcmp_005fui)
+    /// See: [`mpq_cmp_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fcmp_005fui)
     #[link_name = "__gmpq_cmp_ui"]
     pub fn mpq_cmp_ui(op1: mpq_srcptr, num2: c_ulong, den2: c_ulong) -> c_int;
-    /// See: [`mpq_cmp_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Comparing-Rationals.html#index-mpq_005fcmp_005fsi)
+    /// See: [`mpq_cmp_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fcmp_005fsi)
     #[link_name = "__gmpq_cmp_si"]
     pub fn mpq_cmp_si(op1: mpq_srcptr, num2: c_long, den2: c_ulong) -> c_int;
 }
-/// See: [`mpq_sgn`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Comparing-Rationals.html#index-mpq_005fsgn)
+/// See: [`mpq_sgn`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fsgn)
 #[inline]
 pub unsafe fn mpq_sgn(op: mpq_srcptr) -> c_int {
     if (*op).num.size < 0 {
@@ -852,34 +852,34 @@ pub unsafe fn mpq_sgn(op: mpq_srcptr) -> c_int {
     }
 }
 extern "C" {
-    /// See: [`mpq_equal`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Comparing-Rationals.html#index-mpq_005fequal)
+    /// See: [`mpq_equal`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fequal)
     #[link_name = "__gmpq_equal"]
     pub fn mpq_equal(op1: mpq_srcptr, op2: mpq_srcptr) -> c_int;
 }
 
 // Applying Integer Functions to Rationals
 
-/// See: [`mpq_numref`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Applying-Integer-Functions.html#index-mpq_005fnumref)
+/// See: [`mpq_numref`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fnumref)
 #[inline]
 pub unsafe fn mpq_numref(op: mpq_ptr) -> mpz_ptr {
     (&mut (*op).num) as mpz_ptr
 }
-/// See: [`mpq_denref`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Applying-Integer-Functions.html#index-mpq_005fdenref)
+/// See: [`mpq_denref`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fdenref)
 #[inline]
 pub unsafe fn mpq_denref(op: mpq_ptr) -> mpz_ptr {
     (&mut (*op).den) as mpz_ptr
 }
 extern "C" {
-    /// See: [`mpq_get_num`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Applying-Integer-Functions.html#index-mpq_005fget_005fnum)
+    /// See: [`mpq_get_num`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fget_005fnum)
     #[link_name = "__gmpq_get_num"]
     pub fn mpq_get_num(numerator: mpz_ptr, rational: mpq_srcptr);
-    /// See: [`mpq_get_den`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Applying-Integer-Functions.html#index-mpq_005fget_005fden)
+    /// See: [`mpq_get_den`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fget_005fden)
     #[link_name = "__gmpq_get_den"]
     pub fn mpq_get_den(denominator: mpz_ptr, rational: mpq_srcptr);
-    /// See: [`mpq_set_den`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Applying-Integer-Functions.html#index-mpq_005fset_005fden)
+    /// See: [`mpq_set_den`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fset_005fden)
     #[link_name = "__gmpq_set_den"]
     pub fn mpq_set_den(rational: mpq_ptr, numerator: mpz_srcptr);
-    /// See: [`mpq_set_num`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Applying-Integer-Functions.html#index-mpq_005fset_005fnum)
+    /// See: [`mpq_set_num`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fset_005fnum)
     #[link_name = "__gmpq_set_num"]
     pub fn mpq_set_num(rational: mpq_ptr, denominator: mpz_srcptr);
 }
@@ -889,79 +889,79 @@ extern "C" {
 extern "C" {
     // Initialization Functions
 
-    /// See: [`mpf_set_default_prec`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Floats.html#index-mpf_005fset_005fdefault_005fprec)
+    /// See: [`mpf_set_default_prec`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fset_005fdefault_005fprec)
     #[link_name = "__gmpf_set_default_prec"]
     pub fn mpf_set_default_prec(prec: bitcnt_t);
-    /// See: [`mpf_get_default_prec`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Floats.html#index-mpf_005fget_005fdefault_005fprec)
+    /// See: [`mpf_get_default_prec`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fget_005fdefault_005fprec)
     #[link_name = "__gmpf_get_default_prec"]
     pub fn mpf_get_default_prec() -> bitcnt_t;
-    /// See: [`mpf_init`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Floats.html#index-mpf_005finit)
+    /// See: [`mpf_init`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005finit)
     #[link_name = "__gmpf_init"]
     pub fn mpf_init(x: mpf_ptr);
-    /// See: [`mpf_init2`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Floats.html#index-mpf_005finit2)
+    /// See: [`mpf_init2`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005finit2)
     #[link_name = "__gmpf_init2"]
     pub fn mpf_init2(x: mpf_ptr, prec: bitcnt_t);
-    /// See: [`mpf_inits`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Floats.html#index-mpf_005finits)
+    /// See: [`mpf_inits`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005finits)
     #[link_name = "__gmpf_inits"]
     pub fn mpf_inits(x: mpf_ptr, ...);
-    /// See: [`mpf_clear`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Floats.html#index-mpf_005fclear)
+    /// See: [`mpf_clear`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fclear)
     #[link_name = "__gmpf_clear"]
     pub fn mpf_clear(x: mpf_ptr);
-    /// See: [`mpf_clears`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Floats.html#index-mpf_005fclears)
+    /// See: [`mpf_clears`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fclears)
     #[link_name = "__gmpf_clears"]
     pub fn mpf_clears(x: mpf_ptr, ...);
-    /// See: [`mpf_get_prec`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Floats.html#index-mpf_005fget_005fprec)
+    /// See: [`mpf_get_prec`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fget_005fprec)
     #[link_name = "__gmpf_get_prec"]
     pub fn mpf_get_prec(op: mpf_srcptr) -> bitcnt_t;
-    /// See: [`mpf_set_prec`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Floats.html#index-mpf_005fset_005fprec)
+    /// See: [`mpf_set_prec`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fset_005fprec)
     #[link_name = "__gmpf_set_prec"]
     pub fn mpf_set_prec(rop: mpf_ptr, prec: bitcnt_t);
-    /// See: [`mpf_set_prec_raw`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Floats.html#index-mpf_005fset_005fprec_005fraw)
+    /// See: [`mpf_set_prec_raw`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fset_005fprec_005fraw)
     #[link_name = "__gmpf_set_prec_raw"]
     pub fn mpf_set_prec_raw(rop: mpf_ptr, prec: bitcnt_t);
 
     // Assignment Functions
 
-    /// See: [`mpf_set`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Floats.html#index-mpf_005fset)
+    /// See: [`mpf_set`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fset)
     #[link_name = "__gmpf_set"]
     pub fn mpf_set(rop: mpf_ptr, op: mpf_srcptr);
-    /// See: [`mpf_set_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Floats.html#index-mpf_005fset_005fui)
+    /// See: [`mpf_set_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fset_005fui)
     #[link_name = "__gmpf_set_ui"]
     pub fn mpf_set_ui(rop: mpf_ptr, op: c_ulong);
-    /// See: [`mpf_set_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Floats.html#index-mpf_005fset_005fsi)
+    /// See: [`mpf_set_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fset_005fsi)
     #[link_name = "__gmpf_set_si"]
     pub fn mpf_set_si(rop: mpf_ptr, op: c_long);
-    /// See: [`mpf_set_default_prec`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Initializing-Floats.html#index-mpf_005fset_005fdefault_005fprec)
+    /// See: [`mpf_set_default_prec`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fset_005fdefault_005fprec)
     #[link_name = "__gmpf_set_d"]
     pub fn mpf_set_d(rop: mpf_ptr, op: f64);
-    /// See: [`mpf_set_z`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Floats.html#index-mpf_005fset_005fz)
+    /// See: [`mpf_set_z`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fset_005fz)
     #[link_name = "__gmpf_set_z"]
     pub fn mpf_set_z(rop: mpf_ptr, op: mpz_srcptr);
-    /// See: [`mpf_set_q`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Floats.html#index-mpf_005fset_005fq)
+    /// See: [`mpf_set_q`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fset_005fq)
     #[link_name = "__gmpf_set_q"]
     pub fn mpf_set_q(rop: mpf_ptr, op: mpq_srcptr);
-    /// See: [`mpf_set_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Floats.html#index-mpf_005fset_005fstr)
+    /// See: [`mpf_set_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fset_005fstr)
     #[link_name = "__gmpf_set_str"]
     pub fn mpf_set_str(rop: mpf_ptr, str: *const c_char, base: c_int) -> c_int;
-    /// See: [`mpf_swap`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Assigning-Floats.html#index-mpf_005fswap)
+    /// See: [`mpf_swap`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fswap)
     #[link_name = "__gmpf_swap"]
     pub fn mpf_swap(rop1: mpf_ptr, rop2: mpf_ptr);
 
     // Combined Initialization and Assignment Functions
 
-    /// See: [`mpf_init_set`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Simultaneous-Float-Init-_0026-Assign.html#index-mpf_005finit_005fset)
+    /// See: [`mpf_init_set`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005finit_005fset)
     #[link_name = "__gmpf_init_set"]
     pub fn mpf_init_set(rop: mpf_ptr, op: mpf_srcptr);
-    /// See: [`mpf_init_set_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Simultaneous-Float-Init-_0026-Assign.html#index-mpf_005finit_005fset_005fui)
+    /// See: [`mpf_init_set_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005finit_005fset_005fui)
     #[link_name = "__gmpf_init_set_ui"]
     pub fn mpf_init_set_ui(rop: mpf_ptr, op: c_ulong);
-    /// See: [`mpf_init_set_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Simultaneous-Float-Init-_0026-Assign.html#index-mpf_005finit_005fset_005fsi)
+    /// See: [`mpf_init_set_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005finit_005fset_005fsi)
     #[link_name = "__gmpf_init_set_si"]
     pub fn mpf_init_set_si(rop: mpf_ptr, op: c_long);
-    /// See: [`mpf_init_set_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Simultaneous-Float-Init-_0026-Assign.html#index-mpf_005finit_005fset_005fd)
+    /// See: [`mpf_init_set_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005finit_005fset_005fd)
     #[link_name = "__gmpf_init_set_d"]
     pub fn mpf_init_set_d(rop: mpf_ptr, op: f64);
-    /// See: [`mpf_init_set_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Simultaneous-Float-Init-_0026-Assign.html#index-mpf_005finit_005fset_005fstr)
+    /// See: [`mpf_init_set_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005finit_005fset_005fstr)
     #[link_name = "__gmpf_init_set_str"]
     pub fn mpf_init_set_str(rop: mpf_ptr,
                             str: *const c_char,
@@ -970,19 +970,19 @@ extern "C" {
 
     // Conversion Functions
 
-    /// See: [`mpf_get_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Converting-Floats.html#index-mpf_005fget_005fd)
+    /// See: [`mpf_get_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fget_005fd)
     #[link_name = "__gmpf_get_d"]
     pub fn mpf_get_d(op: mpf_srcptr) -> f64;
-    /// See: [`mpf_get_d_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Converting-Floats.html#index-mpf_005fget_005fd_005f2exp)
+    /// See: [`mpf_get_d_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fget_005fd_005f2exp)
     #[link_name = "__gmpf_get_d_2exp"]
     pub fn mpf_get_d_2exp(exp: *mut c_long, op: mpf_srcptr) -> f64;
-    /// See: [`mpf_get_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Converting-Floats.html#index-mpf_005fget_005fsi)
+    /// See: [`mpf_get_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fget_005fsi)
     #[link_name = "__gmpf_get_si"]
     pub fn mpf_get_si(op: mpf_srcptr) -> c_long;
-    /// See: [`mpf_get_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Converting-Floats.html#index-mpf_005fget_005fui)
+    /// See: [`mpf_get_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fget_005fui)
     #[link_name = "__gmpf_get_ui"]
     pub fn mpf_get_ui(op: mpf_srcptr) -> c_ulong;
-    /// See: [`mpf_get_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Converting-Floats.html#index-mpf_005fget_005fstr)
+    /// See: [`mpf_get_str`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fget_005fstr)
     #[link_name = "__gmpf_get_str"]
     pub fn mpf_get_str(str: *mut c_char,
                        expptr: *mut exp_t,
@@ -993,55 +993,55 @@ extern "C" {
 
     // Arithmetic Functions
 
-    /// See: [`mpf_add`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fadd)
+    /// See: [`mpf_add`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fadd)
     #[link_name = "__gmpf_add"]
     pub fn mpf_add(rop: mpf_ptr, op1: mpf_srcptr, op2: mpf_srcptr);
-    /// See: [`mpf_add_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fadd_005fui)
+    /// See: [`mpf_add_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fadd_005fui)
     #[link_name = "__gmpf_add_ui"]
     pub fn mpf_add_ui(rop: mpf_ptr, op1: mpf_srcptr, op2: c_ulong);
-    /// See: [`mpf_sub`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fsub)
+    /// See: [`mpf_sub`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fsub)
     #[link_name = "__gmpf_sub"]
     pub fn mpf_sub(rop: mpf_ptr, op1: mpf_srcptr, op2: mpf_srcptr);
-    /// See: [`mpf_ui_sub`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fui_005fsub)
+    /// See: [`mpf_ui_sub`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fui_005fsub)
     #[link_name = "__gmpf_ui_sub"]
     pub fn mpf_ui_sub(rop: mpf_ptr, op1: c_ulong, op2: mpf_srcptr);
-    /// See: [`mpf_sub_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fsub_005fui)
+    /// See: [`mpf_sub_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fsub_005fui)
     #[link_name = "__gmpf_sub_ui"]
     pub fn mpf_sub_ui(rop: mpf_ptr, op1: mpf_srcptr, op2: c_ulong);
-    /// See: [`mpf_mul`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fmul)
+    /// See: [`mpf_mul`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fmul)
     #[link_name = "__gmpf_mul"]
     pub fn mpf_mul(rop: mpf_ptr, op1: mpf_srcptr, op2: mpf_srcptr);
-    /// See: [`mpf_mul_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fmul_005fui)
+    /// See: [`mpf_mul_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fmul_005fui)
     #[link_name = "__gmpf_mul_ui"]
     pub fn mpf_mul_ui(rop: mpf_ptr, op1: mpf_srcptr, op2: c_ulong);
-    /// See: [`mpf_div`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fdiv)
+    /// See: [`mpf_div`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fdiv)
     #[link_name = "__gmpf_div"]
     pub fn mpf_div(rop: mpf_ptr, op1: mpf_srcptr, op2: mpf_srcptr);
-    /// See: [`mpf_ui_div`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fui_005fdiv)
+    /// See: [`mpf_ui_div`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fui_005fdiv)
     #[link_name = "__gmpf_ui_div"]
     pub fn mpf_ui_div(rop: mpf_ptr, op1: c_ulong, op2: mpf_srcptr);
-    /// See: [`mpf_div_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fdiv_005fui)
+    /// See: [`mpf_div_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fdiv_005fui)
     #[link_name = "__gmpf_div_ui"]
     pub fn mpf_div_ui(rop: mpf_ptr, op1: mpf_srcptr, op2: c_ulong);
-    /// See: [`mpf_sqrt`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fsqrt)
+    /// See: [`mpf_sqrt`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fsqrt)
     #[link_name = "__gmpf_sqrt"]
     pub fn mpf_sqrt(rop: mpf_ptr, op: mpf_srcptr);
-    /// See: [`mpf_sqrt_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fsqrt_005fui)
+    /// See: [`mpf_sqrt_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fsqrt_005fui)
     #[link_name = "__gmpf_sqrt_ui"]
     pub fn mpf_sqrt_ui(rop: mpf_ptr, op: c_ulong);
-    /// See: [`mpf_pow_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fpow_005fui)
+    /// See: [`mpf_pow_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fpow_005fui)
     #[link_name = "__gmpf_pow_ui"]
     pub fn mpf_pow_ui(rop: mpf_ptr, op1: mpf_srcptr, op2: c_ulong);
-    /// See: [`mpf_neg`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fneg)
+    /// See: [`mpf_neg`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fneg)
     #[link_name = "__gmpf_neg"]
     pub fn mpf_neg(rop: mpf_ptr, op: mpf_srcptr);
-    /// See: [`mpf_abs`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fabs)
+    /// See: [`mpf_abs`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fabs)
     #[link_name = "__gmpf_abs"]
     pub fn mpf_abs(rop: mpf_ptr, op: mpf_srcptr);
-    /// See: [`mpf_mul_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fmul_005f2exp)
+    /// See: [`mpf_mul_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fmul_005f2exp)
     #[link_name = "__gmpf_mul_2exp"]
     pub fn mpf_mul_2exp(rop: mpf_ptr, op1: mpf_srcptr, op2: bitcnt_t);
-    /// See: [`mpf_div_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Arithmetic.html#index-mpf_005fdiv_005f2exp)
+    /// See: [`mpf_div_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fdiv_005f2exp)
     #[link_name = "__gmpf_div_2exp"]
     pub fn mpf_div_2exp(rop: mpf_ptr, op1: mpf_srcptr, op2: bitcnt_t);
 
@@ -1050,26 +1050,26 @@ extern "C" {
     /// See: [`mpn_cmp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-mpn_005fcmp)
     #[link_name = "__gmpf_cmp"]
     pub fn mpf_cmp(op1: mpf_srcptr, op2: mpf_srcptr) -> c_int;
-    /// See: [`mpq_cmp_z`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Comparing-Rationals.html#index-mpq_005fcmp_005fz)
+    /// See: [`mpq_cmp_z`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Rational-Number-Functions.html#index-mpq_005fcmp_005fz)
     #[link_name = "__gmpf_cmp_z"]
     pub fn mpf_cmp_z(op1: mpf_srcptr, op2: mpz_srcptr) -> c_int;
-    /// See: [`mpf_cmp_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Comparison.html#index-mpf_005fcmp_005fd)
+    /// See: [`mpf_cmp_d`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fcmp_005fd)
     #[link_name = "__gmpf_cmp_d"]
     pub fn mpf_cmp_d(op1: mpf_srcptr, op2: f64) -> c_int;
-    /// See: [`mpf_cmp_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Comparison.html#index-mpf_005fcmp_005fui)
+    /// See: [`mpf_cmp_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fcmp_005fui)
     #[link_name = "__gmpf_cmp_ui"]
     pub fn mpf_cmp_ui(op1: mpf_srcptr, op2: c_ulong) -> c_int;
-    /// See: [`mpf_cmp_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Comparison.html#index-mpf_005fcmp_005fsi)
+    /// See: [`mpf_cmp_si`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fcmp_005fsi)
     #[link_name = "__gmpf_cmp_si"]
     pub fn mpf_cmp_si(op1: mpf_srcptr, op2: c_long) -> c_int;
-    /// See: [`mpf_eq`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Comparison.html#index-mpf_005feq)
+    /// See: [`mpf_eq`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005feq)
     #[link_name = "__gmpf_eq"]
     pub fn mpf_eq(op1: mpf_srcptr, op2: mpf_srcptr, op3: bitcnt_t) -> c_int;
-    /// See: [`mpf_reldiff`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Comparison.html#index-mpf_005freldiff)
+    /// See: [`mpf_reldiff`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005freldiff)
     #[link_name = "__gmpf_reldiff"]
     pub fn mpf_reldiff(rop: mpf_ptr, op1: mpf_srcptr, op2: mpf_srcptr);
 }
-/// See: [`mpf_sgn`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Float-Comparison.html#index-mpf_005fsgn)
+/// See: [`mpf_sgn`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fsgn)
 #[inline]
 pub unsafe fn mpf_sgn(op: mpf_srcptr) -> c_int {
     if (*op).size < 0 {
@@ -1083,40 +1083,40 @@ pub unsafe fn mpf_sgn(op: mpf_srcptr) -> c_int {
 extern "C" {
     // Miscellaneous Functions
 
-    /// See: [`mpf_ceil`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Float-Functions.html#index-mpf_005fceil)
+    /// See: [`mpf_ceil`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005fceil)
     #[link_name = "__gmpf_ceil"]
     pub fn mpf_ceil(rop: mpf_ptr, op: mpf_srcptr);
-    /// See: [`mpf_floor`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Float-Functions.html#index-mpf_005ffloor)
+    /// See: [`mpf_floor`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005ffloor)
     #[link_name = "__gmpf_floor"]
     pub fn mpf_floor(rop: mpf_ptr, op: mpf_srcptr);
-    /// See: [`mpf_trunc`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Float-Functions.html#index-mpf_005ftrunc)
+    /// See: [`mpf_trunc`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005ftrunc)
     #[link_name = "__gmpf_trunc"]
     pub fn mpf_trunc(rop: mpf_ptr, op: mpf_srcptr);
-    /// See: [`mpf_integer_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Float-Functions.html#index-mpf_005finteger_005fp)
+    /// See: [`mpf_integer_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005finteger_005fp)
     #[link_name = "__gmpf_integer_p"]
     pub fn mpf_integer_p(op: mpf_srcptr) -> c_int;
-    /// See: [`mpf_fits_ulong_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Float-Functions.html#index-mpf_005ffits_005fulong_005fp)
+    /// See: [`mpf_fits_ulong_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005ffits_005fulong_005fp)
     #[link_name = "__gmpf_fits_ulong_p"]
     pub fn mpf_fits_ulong_p(op: mpf_srcptr) -> c_int;
-    /// See: [`mpf_fits_slong_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Float-Functions.html#index-mpf_005ffits_005fslong_005fp)
+    /// See: [`mpf_fits_slong_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005ffits_005fslong_005fp)
     #[link_name = "__gmpf_fits_slong_p"]
     pub fn mpf_fits_slong_p(op: mpf_srcptr) -> c_int;
-    /// See: [`mpf_fits_uint_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Float-Functions.html#index-mpf_005ffits_005fuint_005fp)
+    /// See: [`mpf_fits_uint_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005ffits_005fuint_005fp)
     #[link_name = "__gmpf_fits_uint_p"]
     pub fn mpf_fits_uint_p(op: mpf_srcptr) -> c_int;
-    /// See: [`mpf_fits_sint_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Float-Functions.html#index-mpf_005ffits_005fsint_005fp)
+    /// See: [`mpf_fits_sint_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005ffits_005fsint_005fp)
     #[link_name = "__gmpf_fits_sint_p"]
     pub fn mpf_fits_sint_p(op: mpf_srcptr) -> c_int;
-    /// See: [`mpf_fits_ushort_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Float-Functions.html#index-mpf_005ffits_005fushort_005fp)
+    /// See: [`mpf_fits_ushort_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005ffits_005fushort_005fp)
     #[link_name = "__gmpf_fits_ushort_p"]
     pub fn mpf_fits_ushort_p(op: mpf_srcptr) -> c_int;
-    /// See: [`mpf_fits_sshort_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Float-Functions.html#index-mpf_005ffits_005fsshort_005fp)
+    /// See: [`mpf_fits_sshort_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005ffits_005fsshort_005fp)
     #[link_name = "__gmpf_fits_sshort_p"]
     pub fn mpf_fits_sshort_p(op: mpf_srcptr) -> c_int;
-    /// See: [`mpf_urandomb`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Float-Functions.html#index-mpf_005furandomb)
+    /// See: [`mpf_urandomb`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005furandomb)
     #[link_name = "__gmpf_urandomb"]
     pub fn mpf_urandomb(rop: mpf_t, state: randstate_ptr, nbits: bitcnt_t);
-    /// See: [`mpf_random2`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Miscellaneous-Float-Functions.html#index-mpf_005frandom2)
+    /// See: [`mpf_random2`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Floating_002dpoint-Functions.html#index-mpf_005frandom2)
     #[link_name = "__gmpf_random2"]
     pub fn mpf_random2(rop: mpf_ptr, max_size: size_t, exp: exp_t);
 }
@@ -1501,45 +1501,45 @@ extern "C" {
 extern "C" {
     // Random State Initialization
 
-    /// See: [`gmp_randinit_default`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-State-Initialization.html#index-gmp_005frandinit_005fdefault)
+    /// See: [`gmp_randinit_default`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-Number-Functions.html#index-gmp_005frandinit_005fdefault)
     #[link_name = "__gmp_randinit_default"]
     pub fn randinit_default(state: randstate_ptr);
-    /// See: [`gmp_randinit_mt`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-State-Initialization.html#index-gmp_005frandinit_005fmt)
+    /// See: [`gmp_randinit_mt`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-Number-Functions.html#index-gmp_005frandinit_005fmt)
     #[link_name = "__gmp_randinit_mt"]
     pub fn randinit_mt(state: randstate_ptr);
-    /// See: [`gmp_randinit_lc_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-State-Initialization.html#index-gmp_005frandinit_005flc_005f2exp)
+    /// See: [`gmp_randinit_lc_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-Number-Functions.html#index-gmp_005frandinit_005flc_005f2exp)
     #[link_name = "__gmp_randinit_lc_2exp"]
     pub fn randinit_lc_2exp(state: randstate_ptr,
                             a: mpz_srcptr,
                             c: c_ulong,
                             m2exp: bitcnt_t);
-    /// See: [`gmp_randinit_lc_2exp_size`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-State-Initialization.html#index-gmp_005frandinit_005flc_005f2exp_005fsize)
+    /// See: [`gmp_randinit_lc_2exp_size`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-Number-Functions.html#index-gmp_005frandinit_005flc_005f2exp_005fsize)
     #[link_name = "__gmp_randinit_lc_2exp_size"]
     pub fn randinit_lc_2exp_size(state: randstate_ptr,
                                  size: bitcnt_t)
                                  -> c_int;
-    /// See: [`gmp_randinit_set`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-State-Initialization.html#index-gmp_005frandinit_005fset)
+    /// See: [`gmp_randinit_set`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-Number-Functions.html#index-gmp_005frandinit_005fset)
     #[link_name = "__gmp_randinit_set"]
     pub fn randinit_set(rop: randstate_ptr, op: randstate_srcptr);
-    /// See: [`gmp_randclear`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-State-Initialization.html#index-gmp_005frandclear)
+    /// See: [`gmp_randclear`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-Number-Functions.html#index-gmp_005frandclear)
     #[link_name = "__gmp_randclear"]
     pub fn randclear(state: randstate_ptr);
 
     // Random State Seeding
 
-    /// See: [`gmp_randseed`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-State-Seeding.html#index-gmp_005frandseed)
+    /// See: [`gmp_randseed`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-Number-Functions.html#index-gmp_005frandseed)
     #[link_name = "__gmp_randseed"]
     pub fn randseed(state: randstate_ptr, seed: mpz_srcptr);
-    /// See: [`gmp_randseed_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-State-Seeding.html#index-gmp_005frandseed_005fui)
+    /// See: [`gmp_randseed_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-Number-Functions.html#index-gmp_005frandseed_005fui)
     #[link_name = "__gmp_randseed_ui"]
     pub fn randseed_ui(state: randstate_ptr, seed: c_ulong);
 
     // Random State Miscellaneous
 
-    /// See: [`gmp_urandomb_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-State-Miscellaneous.html#index-gmp_005furandomb_005fui)
+    /// See: [`gmp_urandomb_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-Number-Functions.html#index-gmp_005furandomb_005fui)
     #[link_name = "__gmp_urandomb_ui"]
     pub fn urandomb_ui(state: randstate_ptr, n: c_ulong) -> c_ulong;
-    /// See: [`gmp_urandomm_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-State-Miscellaneous.html#index-gmp_005furandomm_005fui)
+    /// See: [`gmp_urandomm_ui`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-Number-Functions.html#index-gmp_005furandomm_005fui)
     #[link_name = "__gmp_urandomm_ui"]
     pub fn urandomm_ui(state: randstate_ptr, n: c_ulong) -> c_ulong;
 }
@@ -1547,20 +1547,20 @@ extern "C" {
 // Formatted Output
 
 extern "C" {
-    /// See: [`gmp_printf`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Formatted-Output-Functions.html#index-gmp_005fprintf)
+    /// See: [`gmp_printf`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Formatted-Output.html#index-gmp_005fprintf)
     #[link_name = "__gmp_printf"]
     pub fn printf(fmt: *const c_char, ...) -> c_int;
-    /// See: [`gmp_sprintf`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Formatted-Output-Functions.html#index-gmp_005fsprintf)
+    /// See: [`gmp_sprintf`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Formatted-Output.html#index-gmp_005fsprintf)
     #[link_name = "__gmp_sprintf"]
     pub fn sprintf(buf: *mut c_char, fmt: *const c_char, ...) -> c_int;
-    /// See: [`gmp_snprintf`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Formatted-Output-Functions.html#index-gmp_005fsnprintf)
+    /// See: [`gmp_snprintf`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Formatted-Output.html#index-gmp_005fsnprintf)
     #[link_name = "__gmp_snprintf"]
     pub fn snprintf(buf: *mut c_char,
                     size: usize,
                     fmt: *const c_char,
                     ...)
                     -> c_int;
-    /// See: [`gmp_asprintf`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Formatted-Output-Functions.html#index-gmp_005fasprintf)
+    /// See: [`gmp_asprintf`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Formatted-Output.html#index-gmp_005fasprintf)
     #[link_name = "__gmp_asprintf"]
     pub fn asprintf(pp: *mut *mut c_char, fmt: *const c_char, ...) -> c_int;
 }
@@ -1568,10 +1568,10 @@ extern "C" {
 // Formatted Input
 
 extern "C" {
-    /// See: [`gmp_scanf`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Formatted-Input-Functions.html#index-gmp_005fscanf)
+    /// See: [`gmp_scanf`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Formatted-Input.html#index-gmp_005fscanf)
     #[link_name = "__gmp_scanf"]
     pub fn scanf(fmt: *const c_char, ...) -> c_int;
-    /// See: [`gmp_sscanf`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Formatted-Input-Functions.html#index-gmp_005fsscanf)
+    /// See: [`gmp_sscanf`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Formatted-Input.html#index-gmp_005fsscanf)
     #[link_name = "__gmp_sscanf"]
     pub fn sscanf(s: *const c_char, fmt: *const c_char, ...) -> c_int;
 }
