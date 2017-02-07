@@ -23,12 +23,19 @@ use std::os::raw::{c_char, c_int, c_long, c_ulong, c_void};
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub enum rnd_t {
+    /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
     RNDN = 0,
+    /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
     RNDZ = 1,
+    /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
     RNDU = 2,
+    /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
     RNDD = 3,
+    /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
     RNDA = 4,
+    /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
     RNDF = 5,
+    /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
     RNDNA = -1,
 }
 
@@ -47,9 +54,13 @@ pub const PREC_MAX: prec_t = (!(0 as uprec_t) >> 1) as prec_t;
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct mpfr_t {
+    /// See: [Internals](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#Internals)
     pub prec: prec_t,
+    /// See: [Internals](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#Internals)
     pub sign: c_int,
+    /// See: [Internals](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#Internals)    pub prec: prec_t,
     pub exp: exp_t,
+    /// See: [Internals](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#Internals)    pub prec: prec_t,
     pub d: *mut gmp::limb_t,
 }
 

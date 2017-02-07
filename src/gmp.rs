@@ -85,8 +85,11 @@ pub type bitcnt_t = c_ulong;
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct mpz_t {
+    /// See: [Integer Internals](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Internals.html#Integer-Internals)
     pub alloc: c_int,
+    /// See: [Integer Internals](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Internals.html#Integer-Internals)
     pub size: c_int,
+    /// See: [Integer Internals](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Internals.html#Integer-Internals)
     pub d: *mut limb_t,
 }
 
@@ -104,9 +107,13 @@ pub struct mpq_t {
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct mpf_t {
+    /// See: [Float Internals](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Internals.html#Float-Internals)
     pub prec: c_int,
+    /// See: [Float Internals](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Internals.html#Float-Internals)
     pub size: c_int,
+    /// See: [Float Internals](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Internals.html#Float-Internals)
     pub exp: exp_t,
+    /// See: [Float Internals](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Internals.html#Float-Internals)
     pub d: *mut limb_t,
 }
 

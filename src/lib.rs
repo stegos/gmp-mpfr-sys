@@ -163,6 +163,11 @@
 //! [sys mpfr]:  https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/mpfr/
 //! [sys]:       https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/
 
+#![warn(missing_docs)]
+
+/// Function and type bindings for the GMP library.
 pub mod gmp;
+/// Function and type bindings for the MPFR library.
 pub mod mpfr;
+/// Function and type bindings for the MPC library.
 pub mod mpc;
