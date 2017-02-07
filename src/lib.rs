@@ -164,6 +164,7 @@
 //! [sys]:       https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/
 
 #![warn(missing_docs)]
+#![doc(test(attr(deny(warnings))))]
 
 /// Function and type bindings for the GMP library.
 pub mod gmp;
