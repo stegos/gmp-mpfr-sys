@@ -123,16 +123,16 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
         let s = "#define __GMP_CC";
         if let Some(start) = buf.find(s) {
             cc = Some(buf[(start + s.len())..]
-                .trim()
-                .trim_matches('"')
-                .to_string());
+                          .trim()
+                          .trim_matches('"')
+                          .to_string());
         }
         let s = "#define __GMP_CFLAGS";
         if let Some(start) = buf.find(s) {
             cflags = Some(buf[(start + s.len())..]
-                .trim()
-                .trim_matches('"')
-                .to_string());
+                              .trim()
+                              .trim_matches('"')
+                              .to_string());
         }
         buf.clear();
     }
@@ -147,8 +147,9 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
         panic!("Cannot determine _LONG_LONG_LIMB from {}", header.display())
     });
     let cc = cc.unwrap_or_else(|| {
-        panic!("Cannot determine __GMP_CC from {}", header.display())
-    });
+                                   panic!("Cannot determine __GMP_CC from {}",
+                                          header.display())
+                               });
     let cflags = cflags.unwrap_or_else(|| {
         panic!("Cannot determine __GMP_CFLAGS from {}", header.display())
     });
@@ -313,15 +314,20 @@ fn make_and_check(build_dir: &Path, jobs: &OsStr, check: bool) {
     execute(make);
     if check {
         let mut make_check = Command::new("make");
-        make_check.current_dir(build_dir).arg("-j").arg(jobs).arg("check");
+        make_check.current_dir(build_dir)
+            .arg("-j")
+            .arg(jobs)
+            .arg("check");
         execute(make_check);
     }
 }
 
 fn copy_file(src: &Path, dst: &Path) {
     fs::copy(&src, &dst).unwrap_or_else(|_| {
-        panic!("Unable to copy {} -> {}", src.display(), dst.display());
-    });
+                                            panic!("Unable to copy {} -> {}",
+                                                   src.display(),
+                                                   dst.display());
+                                        });
 }
 
 fn symlink(dir: &Path, link: &OsStr, name: Option<&OsStr>) {
@@ -335,8 +341,11 @@ fn symlink(dir: &Path, link: &OsStr, name: Option<&OsStr>) {
 
 fn execute(mut command: Command) {
     println!("$ {:?}", command);
-    let status = command.status()
-        .unwrap_or_else(|_| panic!("Unable to execute: {:?}", command));
+    let status =
+        command.status().unwrap_or_else(|_| {
+                                            panic!("Unable to execute: {:?}",
+                                                   command)
+                                        });
     if !status.success() {
         if let Some(code) = status.code() {
             panic!("Program failed with code {}: {:?}", code, command);
@@ -347,14 +356,20 @@ fn execute(mut command: Command) {
 }
 
 fn open(name: &Path) -> BufReader<File> {
-    let file = File::open(name)
-        .unwrap_or_else(|_| panic!("Cannot open file: {}", name.display()));
+    let file =
+        File::open(name).unwrap_or_else(|_| {
+                                            panic!("Cannot open file: {}",
+                                                   name.display())
+                                        });
     BufReader::new(file)
 }
 
 fn create(name: &Path) -> BufWriter<File> {
-    let file = File::create(name)
-        .unwrap_or_else(|_| panic!("Cannot create file: {}", name.display()));
+    let file =
+        File::create(name).unwrap_or_else(|_| {
+                                              panic!("Cannot create file: {}",
+                                                     name.display())
+                                          });
     BufWriter::new(file)
 }
 
@@ -362,8 +377,10 @@ fn read_line(reader: &mut BufReader<File>,
              buf: &mut String,
              name: &Path)
              -> usize {
-    reader.read_line(buf)
-        .unwrap_or_else(|_| panic!("Cannot read from: {}", name.display()))
+    reader.read_line(buf).unwrap_or_else(|_| {
+                                             panic!("Cannot read from: {}",
+                                                    name.display())
+                                         })
 }
 
 fn write(writer: &mut BufWriter<File>, buf: &str, name: &Path) {
@@ -372,6 +389,8 @@ fn write(writer: &mut BufWriter<File>, buf: &str, name: &Path) {
 }
 
 fn flush(writer: &mut BufWriter<File>, name: &Path) {
-    writer.flush()
-        .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
+    writer.flush().unwrap_or_else(|_| {
+                                      panic!("Cannot write to: {}",
+                                             name.display())
+                                  });
 }

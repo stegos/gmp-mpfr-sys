@@ -34,7 +34,7 @@ pub const VERSION_MINOR: c_int = 1;
 /// See: [`__GNU_MP_VERSION_PATCHLEVEL`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-_005f_005fGNU_005fMP_005fVERSION_005fPATCHLEVEL)
 pub const VERSION_PATCHLEVEL: c_int = 2;
 extern "C" {
-/// See: [`gmp_version`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-gmp_005fversion)
+    /// See: [`gmp_version`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-gmp_005fversion)
     #[link_name = "__gmp_version"]
     pub static version: *const c_char;
 }
