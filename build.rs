@@ -204,7 +204,10 @@ fn build_mpfr(top_build_dir: &Path,
     make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join("src").join(".libs").join("libmpfr.a");
     copy_file(&build_lib, &lib);
-    let src_header = top_build_dir.join("mpfr-src").join("src").join("mpfr.h");
+    let src_header = top_build_dir
+        .join("mpfr-src")
+        .join("src")
+        .join("mpfr.h");
     copy_file(&src_header, &header);
 }
 
@@ -314,7 +317,8 @@ fn make_and_check(build_dir: &Path, jobs: &OsStr, check: bool) {
     execute(make);
     if check {
         let mut make_check = Command::new("make");
-        make_check.current_dir(build_dir)
+        make_check
+            .current_dir(build_dir)
             .arg("-j")
             .arg(jobs)
             .arg("check");
@@ -342,10 +346,9 @@ fn symlink(dir: &Path, link: &OsStr, name: Option<&OsStr>) {
 fn execute(mut command: Command) {
     println!("$ {:?}", command);
     let status =
-        command.status().unwrap_or_else(|_| {
-                                            panic!("Unable to execute: {:?}",
-                                                   command)
-                                        });
+        command
+            .status()
+            .unwrap_or_else(|_| panic!("Unable to execute: {:?}", command));
     if !status.success() {
         if let Some(code) = status.code() {
             panic!("Program failed with code {}: {:?}", code, command);
@@ -377,20 +380,19 @@ fn read_line(reader: &mut BufReader<File>,
              buf: &mut String,
              name: &Path)
              -> usize {
-    reader.read_line(buf).unwrap_or_else(|_| {
-                                             panic!("Cannot read from: {}",
-                                                    name.display())
-                                         })
+    reader
+        .read_line(buf)
+        .unwrap_or_else(|_| panic!("Cannot read from: {}", name.display()))
 }
 
 fn write(writer: &mut BufWriter<File>, buf: &str, name: &Path) {
-    writer.write(buf.as_bytes())
+    writer
+        .write(buf.as_bytes())
         .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
 }
 
 fn flush(writer: &mut BufWriter<File>, name: &Path) {
-    writer.flush().unwrap_or_else(|_| {
-                                      panic!("Cannot write to: {}",
-                                             name.display())
-                                  });
+    writer
+        .flush()
+        .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
 }
