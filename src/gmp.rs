@@ -17,8 +17,6 @@
 #![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
 
 use std::os::raw::{c_char, c_int, c_long, c_uchar, c_uint, c_ulong, c_void};
-#[cfg(gmp_long_long_limb)]
-use std::os::raw::c_ulonglong;
 
 include!(concat!(env!("OUT_DIR"), "/gmp_h.rs"));
 
@@ -44,21 +42,10 @@ pub const CC: *const c_char = GMP_CC;
 pub const CFLAGS: *const c_char = GMP_CFLAGS;
 
 /// See: [`GMP_NAIL_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fNAIL_005fBITS)
-#[cfg(gmp_nail_bits_0)]
-pub const NAIL_BITS: c_int = 0;
-/// See: [`GMP_NAIL_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fNAIL_005fBITS)
-#[cfg(not(gmp_nail_bits_0))]
 pub const NAIL_BITS: c_int = GMP_NAIL_BITS;
 /// See: [`GMP_NUMB_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fNUMB_005fBITS)
 pub const NUMB_BITS: c_int = LIMB_BITS - NAIL_BITS;
 /// See: [`GMP_LIMB_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fLIMB_005fBITS)
-#[cfg(gmp_limb_bits_32)]
-pub const LIMB_BITS: c_int = 32;
-/// See: [`GMP_LIMB_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fLIMB_005fBITS)
-#[cfg(gmp_limb_bits_64)]
-pub const LIMB_BITS: c_int = 64;
-/// See: [`GMP_LIMB_BITS`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fLIMB_005fBITS)
-#[cfg(not(all(gmp_nail_bits_0, any(gmp_limb_bits_32, gmp_limb_bits_64))))]
 pub const LIMB_BITS: c_int = GMP_LIMB_BITS;
 /// See: [`GMP_NAIL_MASK`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Low_002dlevel-Functions.html#index-GMP_005fNAIL_005fMASK)
 pub const NAIL_MASK: limb_t = !NUMB_MASK;
@@ -70,11 +57,7 @@ pub const NUMB_MAX: limb_t = NUMB_MASK;
 /// See: [`mp_exp_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-mp_005fexp_005ft)
 pub type exp_t = c_long;
 /// See: [`mp_limb_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-mp_005flimb_005ft)
-#[cfg(gmp_long_long_limb)]
-pub type limb_t = c_ulonglong;
-/// See: [`mp_limb_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-mp_005flimb_005ft)
-#[cfg(not(gmp_long_long_limb))]
-pub type limb_t = c_ulong;
+pub type limb_t = GMP_LIMB_T;
 /// See: [`mp_size_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-mp_005fsize_005ft)
 pub type size_t = c_long;
 /// See: [`mp_bitcnt_t`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/GMP-Basics.html#index-mp_005fbitcnt_005ft)

@@ -96,8 +96,6 @@ fn build_gmp(top_build_dir: &Path,
 }
 
 fn process_gmp_header(header: &Path, out_file: &Path) {
-    use std::fmt::Write;
-
     let mut limb_bits = None;
     let mut nail_bits = None;
     let mut long_long_limb = None;
@@ -137,53 +135,32 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
         buf.clear();
     }
     drop(reader);
-    let limb_bits = limb_bits.unwrap_or_else(|| {
-        panic!("Cannot determine GMP_LIMB_BITS from {}", header.display())
-    });
-    let nail_bits = nail_bits.unwrap_or_else(|| {
-        panic!("Cannot determine GMP_NAIL_BITS from {}", header.display())
-    });
-    let long_long_limb = long_long_limb.unwrap_or_else(|| {
-        panic!("Cannot determine _LONG_LONG_LIMB from {}", header.display())
-    });
-    let cc = cc.unwrap_or_else(|| {
-                                   panic!("Cannot determine __GMP_CC from {}",
-                                          header.display())
-                               });
-    let cflags = cflags.unwrap_or_else(|| {
-        panic!("Cannot determine __GMP_CFLAGS from {}", header.display())
-    });
-    let mut content = String::new();
-    match limb_bits {
-        32 => {
-            println!("cargo:rustc-cfg=gmp_limb_bits_32");
-        }
-        64 => {
-            println!("cargo:rustc-cfg=gmp_limb_bits_64");
-        }
-        n => {
-            let _ = write!(content, "const GMP_LIMB_BITS: c_int = {};\n", n);
-        }
-    }
-    match nail_bits {
-        0 => {
-            println!("cargo:rustc-cfg=gmp_nail_bits_0");
-        }
-        n => {
-            let _ = write!(content, "const GMP_NAIL_BITS: c_int = {};\n", n);
-        }
-    }
-    if long_long_limb {
-        println!("cargo:rustc-cfg=gmp_long_long_limb");
-    }
-    let _ = write!(content,
-                   "const GMP_CC: *const c_char = b\"{}\\0\" as *const u8 as \
-                    *const c_char;\n",
-                   cc);
-    let _ = write!(content,
-                   "const GMP_CFLAGS: *const c_char = b\"{}\\0\" as *const \
-                    u8 as *const c_char;\n",
-                   cflags);
+    let limb_bits =
+        limb_bits.expect("Cannot determine GMP_LIMB_BITS from gmp.h");
+    let nail_bits =
+        nail_bits.expect("Cannot determine GMP_NAIL_BITS from gmp.h");
+    let long_long_limb =
+        long_long_limb.expect("Cannot determine _LONG_LONG_LIMB from gmp.h");
+    let long_long_limb = if long_long_limb {
+        "::std::os::raw::c_ulonglong"
+    } else {
+        "::std::os::raw::c_ulong"
+    };
+    let cc = cc.expect("Cannot determine __GMP_CC from gmp.h");
+    let cflags = cflags.expect("Cannot determine __GMP_CFLAGS from gmp.h");
+    let content = format!(concat!("const GMP_LIMB_BITS: c_int = {};\n",
+                                  "const GMP_NAIL_BITS: c_int = {};\n",
+                                  "type GMP_LIMB_T = {};\n",
+                                  "const GMP_CC: *const c_char =\n",
+                                  "    b\"{}\\0\" as *const _ as _;\n",
+                                  "const GMP_CFLAGS: *const c_char =\n",
+                                  "    b\"{}\\0\" as *const _ as _;\n"),
+                          limb_bits,
+                          nail_bits,
+                          long_long_limb,
+                          cc,
+                          cflags);
+
     let mut rs = create(out_file);
     write(&mut rs, &content, out_file);
     flush(&mut rs, out_file);
