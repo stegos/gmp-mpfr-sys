@@ -221,12 +221,26 @@ fn write_cargo_info(lib_dir: &Path) {
     println!("cargo:rustc-link-lib=static=gmp");
     println!("cargo:rustc-link-lib=static=mpfr");
     println!("cargo:rustc-link-lib=static=mpc");
+    if is_mingw() {
+        println!("cargo:rustc-link-lib=static=gcc_eh");
+    }
 }
 
 fn cargo_env(name: &str) -> OsString {
     env::var_os(name).unwrap_or_else(|| {
         panic!("environment variable not found: {}, please use cargo", name)
     })
+}
+
+fn is_mingw() -> bool {
+    cargo_env("HOST")
+        .into_string()
+        .map(|s| s.ends_with("-windows-gnu"))
+        .unwrap_or(false) &&
+    cargo_env("TARGET")
+        .into_string()
+        .map(|s| s.ends_with("-windows-gnu"))
+        .unwrap_or(false)
 }
 
 fn remove_dir(dir: &Path) {
