@@ -16,7 +16,7 @@
 
 [package]
 name = "gmp-mpfr-sys"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Trevor Spiteri <trevor.spiteri@um.edu.mt>"]
 build = "build.rs"
 description = "Rust FFI bindings for GMP, MPFR and MPC"
