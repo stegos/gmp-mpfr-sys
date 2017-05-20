@@ -45,8 +45,8 @@ fn main() {
     let jobs = cargo_env("NUM_JOBS");
     let profile = cargo_env("PROFILE");
     let check = profile == OsString::from("release");
-    let feature_mpfr = cargo_has_env("CARGO_FEATURE_MPFR");
     let feature_mpc = cargo_has_env("CARGO_FEATURE_MPC");
+    let feature_mpfr = feature_mpc || cargo_has_env("CARGO_FEATURE_MPFR");
 
     let lib_dir = out_dir.join("lib");
     let build_dir = out_dir.join("build");
@@ -56,12 +56,14 @@ fn main() {
     let mpfr_header = lib_dir.join("mpfr.h");
     let mpc_lib = lib_dir.join("libmpc.a");
     let mpc_header = lib_dir.join("mpc.h");
-    let need_mpc = feature_mpc && (!mpc_lib.is_file() || !mpc_header.is_file());
-    let need_mpfr = need_mpc ||
-                    (feature_mpfr &&
-                     (!mpfr_lib.is_file() || !mpfr_header.is_file()));
-    let need_gmp = need_mpfr || !gmp_lib.is_file() || !gmp_header.is_file();
-    if need_gmp {
+    let compile_mpc = feature_mpc &&
+                      (!mpc_lib.is_file() || !mpc_header.is_file());
+    let compile_mpfr = compile_mpc ||
+                       (feature_mpfr &&
+                        (!mpfr_lib.is_file() || !mpfr_header.is_file()));
+    let compile_gmp = compile_mpfr || !gmp_lib.is_file() ||
+                      !gmp_header.is_file();
+    if compile_gmp {
         create_dir(&lib_dir);
         remove_dir(&build_dir);
         create_dir(&build_dir);
@@ -70,19 +72,19 @@ fn main() {
                 Some(&OsString::from("gmp-src")));
         build_gmp(&build_dir, &jobs, check, &gmp_lib, &gmp_header);
     }
-    if need_mpfr {
+    if compile_mpfr {
         symlink(&build_dir,
                 &dir_relative(&build_dir, &src_dir.join(MPFR_DIR)),
                 Some(&OsString::from("mpfr-src")));
         build_mpfr(&build_dir, &jobs, check, &mpfr_lib, &mpfr_header);
     }
-    if need_mpc {
+    if compile_mpc {
         symlink(&build_dir,
                 &dir_relative(&build_dir, &src_dir.join(MPC_DIR)),
                 Some(&OsString::from("mpc-src")));
         build_mpc(&build_dir, &jobs, check, &mpc_lib, &mpc_header);
     }
-    if need_gmp {
+    if compile_gmp {
         remove_dir(&build_dir);
     }
     process_gmp_header(&gmp_header, &out_dir.join("gmp_h.rs"));
@@ -229,7 +231,7 @@ fn write_cargo_info(lib_dir: &Path, feature_mpfr: bool, feature_mpc: bool) {
         });
     println!("cargo:rustc-link-search=native={}", lib_search);
     println!("cargo:rustc-link-lib=static=gmp");
-    if feature_mpfr || feature_mpc {
+    if feature_mpfr {
         println!("cargo:rustc-link-lib=static=mpfr");
     }
     if feature_mpc {
@@ -248,9 +250,9 @@ fn cargo_has_env(name: &str) -> bool {
     env::var_os(name).is_some()
 }
 
-fn check_mingw(feature_mpfr: bool, feature_mpc: bool) {
+fn check_mingw(feature_mpfr: bool, _feature_mpc: bool) {
     // extra libraries needed only for mpfr because of thread-local storage
-    if !feature_mpfr || !feature_mpc {
+    if !feature_mpfr {
         return;
     }
 
