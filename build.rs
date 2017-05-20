@@ -45,37 +45,48 @@ fn main() {
     let jobs = cargo_env("NUM_JOBS");
     let profile = cargo_env("PROFILE");
     let check = profile == OsString::from("release");
+    let feature_mpfr = cargo_has_env("CARGO_FEATURE_MPFR");
+    let feature_mpc = cargo_has_env("CARGO_FEATURE_MPC");
 
     let lib_dir = out_dir.join("lib");
+    let build_dir = out_dir.join("build");
     let gmp_lib = lib_dir.join("libgmp.a");
     let gmp_header = lib_dir.join("gmp.h");
     let mpfr_lib = lib_dir.join("libmpfr.a");
     let mpfr_header = lib_dir.join("mpfr.h");
     let mpc_lib = lib_dir.join("libmpc.a");
     let mpc_header = lib_dir.join("mpc.h");
-    if !gmp_lib.is_file() || !gmp_header.is_file() || !mpfr_lib.is_file() ||
-       !mpfr_header.is_file() ||
-       !mpc_lib.is_file() || !mpc_header.is_file() {
+    let need_mpc = feature_mpc && (!mpc_lib.is_file() || !mpc_header.is_file());
+    let need_mpfr = need_mpc ||
+                    (feature_mpfr &&
+                     (!mpfr_lib.is_file() || !mpfr_header.is_file()));
+    let need_gmp = need_mpfr || !gmp_lib.is_file() || !gmp_header.is_file();
+    if need_gmp {
         create_dir(&lib_dir);
-        let build_dir = out_dir.join("build");
         remove_dir(&build_dir);
         create_dir(&build_dir);
         symlink(&build_dir,
                 &dir_relative(&build_dir, &src_dir.join(GMP_DIR)),
                 Some(&OsString::from("gmp-src")));
         build_gmp(&build_dir, &jobs, check, &gmp_lib, &gmp_header);
+    }
+    if need_mpfr {
         symlink(&build_dir,
                 &dir_relative(&build_dir, &src_dir.join(MPFR_DIR)),
                 Some(&OsString::from("mpfr-src")));
         build_mpfr(&build_dir, &jobs, check, &mpfr_lib, &mpfr_header);
+    }
+    if need_mpc {
         symlink(&build_dir,
                 &dir_relative(&build_dir, &src_dir.join(MPC_DIR)),
                 Some(&OsString::from("mpc-src")));
         build_mpc(&build_dir, &jobs, check, &mpc_lib, &mpc_header);
+    }
+    if need_gmp {
         remove_dir(&build_dir);
     }
     process_gmp_header(&gmp_header, &out_dir.join("gmp_h.rs"));
-    write_cargo_info(&lib_dir);
+    write_cargo_info(&lib_dir, feature_mpfr, feature_mpc);
 }
 
 fn build_gmp(top_build_dir: &Path,
@@ -135,10 +146,10 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
         buf.clear();
     }
     drop(reader);
-    let limb_bits =
-        limb_bits.expect("Cannot determine GMP_LIMB_BITS from gmp.h");
-    let nail_bits =
-        nail_bits.expect("Cannot determine GMP_NAIL_BITS from gmp.h");
+    let limb_bits = limb_bits
+        .expect("Cannot determine GMP_LIMB_BITS from gmp.h");
+    let nail_bits = nail_bits
+        .expect("Cannot determine GMP_NAIL_BITS from gmp.h");
     let long_long_limb =
         long_long_limb.expect("Cannot determine _LONG_LONG_LIMB from gmp.h");
     let long_long_limb = if long_long_limb {
@@ -181,10 +192,7 @@ fn build_mpfr(top_build_dir: &Path,
     make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join("src").join(".libs").join("libmpfr.a");
     copy_file(&build_lib, &lib);
-    let src_header = top_build_dir
-        .join("mpfr-src")
-        .join("src")
-        .join("mpfr.h");
+    let src_header = top_build_dir.join("mpfr-src").join("src").join("mpfr.h");
     copy_file(&src_header, &header);
 }
 
@@ -212,16 +220,22 @@ fn build_mpc(top_build_dir: &Path,
     copy_file(&src_header, &header);
 }
 
-fn write_cargo_info(lib_dir: &Path) {
-    let lib_search = lib_dir.to_str().unwrap_or_else(|| {
-        panic!("Path contains unsupported characters, can only make {}",
-               lib_dir.display())
-    });
+fn write_cargo_info(lib_dir: &Path, feature_mpfr: bool, feature_mpc: bool) {
+    let lib_search = lib_dir
+        .to_str()
+        .unwrap_or_else(|| {
+            panic!("Path contains unsupported characters, can only make {}",
+                   lib_dir.display())
+        });
     println!("cargo:rustc-link-search=native={}", lib_search);
     println!("cargo:rustc-link-lib=static=gmp");
-    println!("cargo:rustc-link-lib=static=mpfr");
-    println!("cargo:rustc-link-lib=static=mpc");
-    check_mingw();
+    if feature_mpfr || feature_mpc {
+        println!("cargo:rustc-link-lib=static=mpfr");
+    }
+    if feature_mpc {
+        println!("cargo:rustc-link-lib=static=mpc");
+    }
+    check_mingw(feature_mpfr, feature_mpc);
 }
 
 fn cargo_env(name: &str) -> OsString {
@@ -230,7 +244,16 @@ fn cargo_env(name: &str) -> OsString {
     })
 }
 
-fn check_mingw() {
+fn cargo_has_env(name: &str) -> bool {
+    env::var_os(name).is_some()
+}
+
+fn check_mingw(feature_mpfr: bool, feature_mpc: bool) {
+    // extra libraries needed only for mpfr because of thread-local storage
+    if !feature_mpfr || !feature_mpc {
+        return;
+    }
+
     for check in &["HOST", "TARGET"] {
         if !cargo_env(check)
                 .into_string()
@@ -255,8 +278,8 @@ fn rustc_later_eq(major: i32, minor: i32) -> bool {
         .arg("--version")
         .output()
         .expect("unable to run rustc --version");
-    let version =
-        String::from_utf8(output.stdout).expect("unrecognized rustc version");
+    let version = String::from_utf8(output.stdout)
+        .expect("unrecognized rustc version");
     if !version.starts_with("rustc ") {
         panic!("unrecognized rustc version");
     }
@@ -386,10 +409,8 @@ fn execute(mut command: Command) {
 
 fn open(name: &Path) -> BufReader<File> {
     let file =
-        File::open(name).unwrap_or_else(|_| {
-                                            panic!("Cannot open file: {}",
-                                                   name.display())
-                                        });
+        File::open(name)
+            .unwrap_or_else(|_| panic!("Cannot open file: {}", name.display()));
     BufReader::new(file)
 }
 

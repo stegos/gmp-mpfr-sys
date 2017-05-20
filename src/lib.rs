@@ -90,6 +90,19 @@
 //! gmp-mpfr-sys = "1.0"
 //! ```
 //!
+//! ### Optional features
+//!
+//! The `gmp-mpfr-sys` crate has two optional features `mpfr` and
+//! `mpc` to include the MPFR and MPC libraries respectively. The GMP
+//! library is always included. The optional features are enabled by
+//! default; to disable them add this to `Cargo.toml`:
+//!
+//! ```toml
+//! [dependencies.gmp-mpfr-sys]
+//! version = "1.0"
+//! default-features = false
+//! ```
+//!
 //! ### Building on GNU/Linux
 //!
 //! To build on GNU/Linux, simply make sure you have `diffutils`,

@@ -26,3 +26,8 @@ readme = "README.md"
 keywords = ["gmp", "mpfr", "mpc", "mathematics", "numerics"]
 categories = ["external-ffi-bindings", "science"]
 license = "LGPL-3.0+"
+
+[features]
+default = ["mpfr", "mpc"]
+mpfr = []
+mpc = ["mpfr"]
