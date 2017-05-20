@@ -1,3 +1,9 @@
+Version 1.0.2 (2017-05-20)
+==========================
+
+* Add features `mpfr` and `mpc`, which are enabled by default, to
+  allow opting out of the MPFR and MPC libraries.
+
 Version 1.0.1 (2017-05-06)
 ==========================
 
