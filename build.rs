@@ -230,13 +230,13 @@ fn write_cargo_info(lib_dir: &Path, feature_mpfr: bool, feature_mpc: bool) {
                    lib_dir.display())
         });
     println!("cargo:rustc-link-search=native={}", lib_search);
-    println!("cargo:rustc-link-lib=static=gmp");
-    if feature_mpfr {
-        println!("cargo:rustc-link-lib=static=mpfr");
-    }
     if feature_mpc {
         println!("cargo:rustc-link-lib=static=mpc");
     }
+    if feature_mpfr {
+        println!("cargo:rustc-link-lib=static=mpfr");
+    }
+    println!("cargo:rustc-link-lib=static=gmp");
     check_mingw(feature_mpfr, feature_mpc);
 }
 
