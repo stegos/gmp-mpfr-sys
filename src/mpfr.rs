@@ -1302,9 +1302,9 @@ mod tests {
                                      mpfr::VERSION_MINOR,
                                      mpfr::VERSION_PATCHLEVEL);
         let from_const_string = unsafe { CStr::from_ptr(mpfr::VERSION_STRING) };
-        assert!(from_fn.to_str().unwrap() == version);
-        assert!(from_constants == version);
-        assert!(from_const_string.to_str().unwrap() == version);
+        assert_eq!(from_fn.to_str().unwrap(), version);
+        assert_eq!(from_constants, version);
+        assert_eq!(from_const_string.to_str().unwrap(), version);
     }
 
     #[test]
@@ -1314,8 +1314,8 @@ mod tests {
             let mut fr: mpfr::mpfr_t = mem::uninitialized();
             let ptr = &mut fr as *mut _;
             mpfr::init2(ptr, 53);
-            assert!(mpfr::set_d(ptr, d, mpfr::rnd_t::RNDN) == 0);
-            assert!(mpfr::get_d(ptr, mpfr::rnd_t::RNDN) == d);
+            assert_eq!(mpfr::set_d(ptr, d, mpfr::rnd_t::RNDN), 0);
+            assert_eq!(mpfr::get_d(ptr, mpfr::rnd_t::RNDN), d);
             mpfr::clear(ptr);
         }
     }

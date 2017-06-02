@@ -1603,8 +1603,8 @@ mod tests {
         let from_static = unsafe { gmp::bits_per_limb };
         let from_type = mem::size_of::<gmp::limb_t>() * 8;
         let from_constant = gmp::LIMB_BITS;
-        assert!(from_static as usize == from_type);
-        assert!(from_static == from_constant);
+        assert_eq!(from_static as usize, from_type);
+        assert_eq!(from_static, from_constant);
     }
 
     #[test]
@@ -1615,8 +1615,8 @@ mod tests {
                                      gmp::VERSION,
                                      gmp::VERSION_MINOR,
                                      gmp::VERSION_PATCHLEVEL);
-        assert!(from_static.to_str().unwrap() == version);
-        assert!(from_constants == version);
+        assert_eq!(from_static.to_str().unwrap(), version);
+        assert_eq!(from_constants, version);
     }
 
     #[test]
@@ -1627,7 +1627,7 @@ mod tests {
             let ptr = &mut z as *mut _;
             gmp::mpz_init(ptr);
             gmp::mpz_set_ui(ptr, i);
-            assert!(gmp::mpz_get_ui(ptr) == i);
+            assert_eq!(gmp::mpz_get_ui(ptr), i);
             gmp::mpz_clear(ptr);
         }
     }
