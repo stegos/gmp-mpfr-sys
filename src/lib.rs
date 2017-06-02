@@ -171,9 +171,9 @@
 //! [rugflo]:    https://tspiteri.gitlab.io/gmp-mpfr/rugflo/
 //! [rugint]:    https://tspiteri.gitlab.io/gmp-mpfr/rugint/
 //! [rugrat]:    https://tspiteri.gitlab.io/gmp-mpfr/rugrat/
-//! [sys gmp]:   https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/gmp/
-//! [sys mpc]:   https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/mpc/
-//! [sys mpfr]:  https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/mpfr/
+//! [sys gmp]:   gmp/index.html
+//! [sys mpc]:   mpc/index.html
+//! [sys mpfr]:  mpfr/index.html
 //! [sys]:       https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/
 
 #![warn(missing_docs)]
