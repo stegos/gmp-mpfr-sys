@@ -706,7 +706,7 @@ pub unsafe fn mpz_odd_p(op: mpz_srcptr) -> c_int {
 /// See: [`mpz_even_p`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005feven_005fp)
 #[inline]
 pub unsafe fn mpz_even_p(op: mpz_srcptr) -> c_int {
-    !mpz_odd_p(op)
+    if mpz_odd_p(op) == 0 { 1 } else { 0 }
 }
 extern "C" {
     /// See: [`mpz_sizeinbase`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fsizeinbase)
