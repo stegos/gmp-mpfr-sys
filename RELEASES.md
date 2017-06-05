@@ -1,3 +1,10 @@
+Version 1.0.3 (2017-..-..)
+==========================
+
+* Add `gmp::mpq_numref_const()`, `gmp::mpq_denref_const()`,
+  `mpc::realref_const()` and `mpc::imagref_const()`.
+* Bug fix: `gmp::mpz_even_p()`
+
 Version 1.0.2 (2017-05-20)
 ==========================
 

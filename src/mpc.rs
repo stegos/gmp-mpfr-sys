@@ -279,10 +279,20 @@ extern "C" {
 pub unsafe fn realref(op: mpc_ptr) -> mpfr_ptr {
     (&mut (*op).re) as mpfr_ptr
 }
+/// Constant version of [`realref`](#method.realref).
+#[inline]
+pub unsafe fn realref_const(op: mpc_srcptr) -> mpfr_srcptr {
+    (&(*op).re) as mpfr_srcptr
+}
 /// See: [`mpc_imagref`](https://tspiteri.gitlab.io/gmp-mpfr/mpc/Complex-Functions.html#index-mpc_005fimagref)
 #[inline]
 pub unsafe fn imagref(op: mpc_ptr) -> mpfr_ptr {
     (&mut (*op).im) as mpfr_ptr
+}
+/// Constant version of [`imagref`](#method.imagref).
+#[inline]
+pub unsafe fn imagref_const(op: mpc_srcptr) -> mpfr_srcptr {
+    (&(*op).im) as mpfr_srcptr
 }
 extern "C" {
     /// See: [`mpc_arg`](https://tspiteri.gitlab.io/gmp-mpfr/mpc/Complex-Functions.html#index-mpc_005farg)
