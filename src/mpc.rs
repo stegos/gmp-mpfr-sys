@@ -279,7 +279,7 @@ extern "C" {
 pub unsafe fn realref(op: mpc_ptr) -> mpfr_ptr {
     (&mut (*op).re) as mpfr_ptr
 }
-/// Constant version of [`realref`](#method.realref).
+/// Constant version of [`realref`](fn.realref.html).
 #[inline]
 pub unsafe fn realref_const(op: mpc_srcptr) -> mpfr_srcptr {
     (&(*op).re) as mpfr_srcptr
@@ -289,7 +289,7 @@ pub unsafe fn realref_const(op: mpc_srcptr) -> mpfr_srcptr {
 pub unsafe fn imagref(op: mpc_ptr) -> mpfr_ptr {
     (&mut (*op).im) as mpfr_ptr
 }
-/// Constant version of [`imagref`](#method.imagref).
+/// Constant version of [`imagref`](fn.imagref.html).
 #[inline]
 pub unsafe fn imagref_const(op: mpc_srcptr) -> mpfr_srcptr {
     (&(*op).im) as mpfr_srcptr
