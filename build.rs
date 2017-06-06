@@ -160,13 +160,20 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
         buf.clear();
     }
     drop(reader);
+
     let limb_bits = limb_bits
         .expect("Cannot determine GMP_LIMB_BITS from gmp.h");
+
     let nail_bits = nail_bits
         .expect("Cannot determine GMP_NAIL_BITS from gmp.h");
+    if nail_bits > 0 {
+        println!("cargo:rustc-cfg=nails");
+    }
+
     let long_long_limb =
         long_long_limb.expect("Cannot determine _LONG_LONG_LIMB from gmp.h");
     let long_long_limb = if long_long_limb {
+        println!("cargo:rustc-cfg=long_long_limb");
         "::std::os::raw::c_ulonglong"
     } else {
         "::std::os::raw::c_ulong"
@@ -193,6 +200,7 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
     let mut rs = create(out_file);
     write(&mut rs, &content, out_file);
     flush(&mut rs, out_file);
+
 }
 
 fn build_mpfr(
