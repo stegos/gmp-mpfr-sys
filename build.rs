@@ -94,7 +94,7 @@ fn main() {
         remove_dir(&build_dir);
     }
     process_gmp_header(&gmp_header, &out_dir.join("gmp_h.rs"));
-    write_cargo_info(&lib_dir, feature_mpfr, feature_mpc);
+    write_link_info(&lib_dir, feature_mpfr, feature_mpc);
 }
 
 fn build_gmp(
@@ -250,7 +250,7 @@ fn build_mpc(
     copy_file(&src_header, &header);
 }
 
-fn write_cargo_info(lib_dir: &Path, feature_mpfr: bool, feature_mpc: bool) {
+fn write_link_info(lib_dir: &Path, feature_mpfr: bool, feature_mpc: bool) {
     let lib_search = lib_dir
         .to_str()
         .unwrap_or_else(

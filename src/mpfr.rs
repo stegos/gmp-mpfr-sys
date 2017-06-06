@@ -17,6 +17,7 @@
 #![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
 
 use gmp;
+use std::mem;
 use std::os::raw::{c_char, c_int, c_long, c_ulong, c_void};
 
 /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
@@ -43,6 +44,8 @@ pub enum rnd_t {
 pub type prec_t = c_long;
 /// See: [Exception Related Functions](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#Exception-Related-Functions)
 pub type exp_t = c_long;
+
+type uexp_t = c_ulong;
 
 /// See: [Nomenclature and Types](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Basics.html#Nomenclature-and-Types)
 pub const PREC_MIN: prec_t = 2;
@@ -85,9 +88,16 @@ type randstate_ptr = *mut gmp::randstate_t;
 type mpfr_ptr = *mut mpfr_t;
 type mpfr_srcptr = *const mpfr_t;
 
-extern "C" {
-    // Initialization Functions
+// Private constants.
 
+const EXP_MAX: exp_t = ((!0 as uexp_t) >> 1) as exp_t;
+const EXP_NAN: exp_t = 1 - EXP_MAX;
+const EXP_ZERO: exp_t = 0 - EXP_MAX;
+const EXP_INF: exp_t = 2 - EXP_MAX;
+
+// Initialization Functions
+
+extern "C" {
     /// See: [`mpfr_init2`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005finit2)
     #[link_name = "mpfr_init2"]
     pub fn init2(x: mpfr_ptr, prec: prec_t);
@@ -115,15 +125,25 @@ extern "C" {
     /// See: [`mpfr_set_prec`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fprec)
     #[link_name = "mpfr_set_prec"]
     pub fn set_prec(x: mpfr_ptr, prec: prec_t);
-    /// See: [`mpfr_get_prec`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fprec)
-    #[link_name = "mpfr_get_prec"]
-    pub fn get_prec(x: mpfr_srcptr) -> prec_t;
+}
+/// See: [`mpfr_get_prec`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fprec)
+#[inline]
+pub unsafe fn get_prec(x: mpfr_srcptr) -> prec_t {
+    (*x).prec
+}
 
-    // Assignment Functions
+// Assignment Functions
 
-    /// See: [`mpfr_set`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fset)
-    #[link_name = "mpfr_set"]
-    pub fn set(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
+extern "C" {
+    #[link_name = "mpfr_set4"]
+    fn set4(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t, i: c_int) -> c_int;
+}
+/// See: [`mpfr_set`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fset)
+#[inline]
+pub unsafe fn set(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int {
+    set4(rop, op, rnd, (*op).sign)
+}
+extern "C" {
     /// See: [`mpfr_set_ui`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fui)
     #[link_name = "mpfr_set_ui"]
     pub fn set_ui(rop: mpfr_ptr, op: c_ulong, rnd: rnd_t) -> c_int;
@@ -650,9 +670,13 @@ extern "C" {
     /// See: [`mpfr_neg`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fneg)
     #[link_name = "mpfr_neg"]
     pub fn neg(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
-    /// See: [`mpfr_abs`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fabs)
-    #[link_name = "mpfr_abs"]
-    pub fn abs(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
+}
+/// See: [`mpfr_abs`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fabs)
+#[inline]
+pub unsafe fn abs(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int {
+    set4(rop, op, rnd, 1)
+}
+extern "C" {
     /// See: [`mpfr_dim`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fdim)
     #[link_name = "mpfr_dim"]
     pub fn dim(
@@ -693,18 +717,30 @@ extern "C" {
         op2: c_long,
         rnd: rnd_t,
     ) -> c_int;
+}
 
-    // Comparison Functions
+// Comparison Functions
 
-    /// See: [`mpfr_cmp`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcmp)
-    #[link_name = "mpfr_cmp"]
-    pub fn cmp(op1: mpfr_srcptr, op2: mpfr_srcptr) -> c_int;
-    /// See: [`mpfr_cmp_ui`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcmp_005fui)
-    #[link_name = "mpfr_cmp_ui"]
-    pub fn cmp_ui(op1: mpfr_srcptr, op2: c_ulong) -> c_int;
-    /// See: [`mpfr_cmp_si`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcmp_005fsi)
-    #[link_name = "mpfr_cmp_si"]
-    pub fn cmp_si(op1: mpfr_srcptr, op2: c_long) -> c_int;
+extern "C" {
+    #[link_name = "mpfr_cmp3"]
+    fn cmp3(op1: mpfr_srcptr, op2: mpfr_srcptr, i: c_int) -> c_int;
+}
+/// See: [`mpfr_cmp`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcmp)
+#[inline]
+pub unsafe fn cmp(op1: mpfr_srcptr, op2: mpfr_srcptr) -> c_int {
+    cmp3(op1, op2, 1)
+}
+/// See: [`mpfr_cmp_ui`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcmp_005fui)
+#[inline]
+pub unsafe fn cmp_ui(op1: mpfr_srcptr, op2: c_ulong) -> c_int {
+    cmp_ui_2exp(op1, op2, 0)
+}
+/// See: [`mpfr_cmp_si`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcmp_005fsi)
+#[inline]
+pub unsafe fn cmp_si(op1: mpfr_srcptr, op2: c_long) -> c_int {
+    cmp_si_2exp(op1, op2, 0)
+}
+extern "C" {
     /// See: [`mpfr_cmp_d`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcmp_005fd)
     #[link_name = "mpfr_cmp_d"]
     pub fn cmp_d(op1: mpfr_srcptr, op2: f64) -> c_int;
@@ -726,24 +762,45 @@ extern "C" {
     /// See: [`mpfr_cmpabs`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcmpabs)
     #[link_name = "mpfr_cmpabs"]
     pub fn cmpabs(op1: mpfr_srcptr, op2: mpfr_srcptr) -> c_int;
-    /// See: [`mpfr_nan_p`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fnan_005fp)
-    #[link_name = "mpfr_nan_p"]
-    pub fn nan_p(op: mpfr_srcptr) -> c_int;
-    /// See: [`mpfr_inf_p`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005finf_005fp)
-    #[link_name = "mpfr_inf_p"]
-    pub fn inf_p(op: mpfr_srcptr) -> c_int;
+}
+/// See: [`mpfr_nan_p`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fnan_005fp)
+#[inline]
+pub unsafe fn nan_p(op: mpfr_srcptr) -> c_int {
+    if (*op).exp == EXP_NAN { 1 } else { 0 }
+}
+/// See: [`mpfr_inf_p`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005finf_005fp)
+#[inline]
+pub unsafe fn inf_p(op: mpfr_srcptr) -> c_int {
+    if (*op).exp == EXP_INF { 1 } else { 0 }
+}
+extern "C" {
     /// See: [`mpfr_number_p`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fnumber_005fp)
     #[link_name = "mpfr_number_p"]
     pub fn number_p(op: mpfr_srcptr) -> c_int;
-    /// See: [`mpfr_zero_p`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fzero_005fp)
-    #[link_name = "mpfr_zero_p"]
-    pub fn zero_p(op: mpfr_srcptr) -> c_int;
-    /// See: [`mpfr_regular_p`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fregular_005fp)
-    #[link_name = "mpfr_regular_p"]
-    pub fn regular_p(op: mpfr_srcptr) -> c_int;
-    /// See: [`mpfr_sgn`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fsgn)
-    #[link_name = "mpfr_sgn"]
-    pub fn sgn(op: mpfr_srcptr) -> c_int;
+}
+/// See: [`mpfr_zero_p`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fzero_005fp)
+#[inline]
+pub unsafe fn zero_p(op: mpfr_srcptr) -> c_int {
+    if (*op).exp == EXP_ZERO { 1 } else { 0 }
+}
+/// See: [`mpfr_regular_p`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fregular_005fp)
+#[inline]
+pub unsafe fn regular_p(op: mpfr_srcptr) -> c_int {
+    if (*op).exp > EXP_INF { 1 } else { 0 }
+}
+/// See: [`mpfr_sgn`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fsgn)
+#[inline]
+pub unsafe fn sgn(op: mpfr_srcptr) -> c_int {
+    if (*op).exp < EXP_INF {
+        if nan_p(op) != 0 {
+            set_erangeflag();
+        }
+        0
+    } else {
+        (*op).sign
+    }
+}
+extern "C" {
     /// See: [`mpfr_greater_p`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fgreater_005fp)
     #[link_name = "mpfr_greater_p"]
     pub fn greater_p(op1: mpfr_srcptr, op2: mpfr_srcptr) -> c_int;
@@ -1016,18 +1073,28 @@ extern "C" {
     /// See: [`mpfr_rint`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005frint)
     #[link_name = "mpfr_rint"]
     pub fn rint(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
-    /// See: [`mpfr_ceil`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fceil)
-    #[link_name = "mpfr_ceil"]
-    pub fn ceil(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int;
-    /// See: [`mpfr_floor`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005ffloor)
-    #[link_name = "mpfr_floor"]
-    pub fn floor(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int;
-    /// See: [`mpfr_round`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fround)
-    #[link_name = "mpfr_round"]
-    pub fn round(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int;
-    /// See: [`mpfr_trunc`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005ftrunc)
-    #[link_name = "mpfr_trunc"]
-    pub fn trunc(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int;
+}
+/// See: [`mpfr_ceil`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fceil)
+#[inline]
+pub unsafe fn ceil(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int {
+    rint(rop, op, rnd_t::RNDU)
+}
+/// See: [`mpfr_floor`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005ffloor)
+#[inline]
+pub unsafe fn floor(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int {
+    rint(rop, op, rnd_t::RNDD)
+}
+/// See: [`mpfr_round`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fround)
+#[inline]
+pub unsafe fn round(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int {
+    rint(rop, op, rnd_t::RNDNA)
+}
+/// See: [`mpfr_trunc`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005ftrunc)
+#[inline]
+pub unsafe fn trunc(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int {
+    rint(rop, op, rnd_t::RNDZ)
+}
+extern "C" {
     /// See: [`mpfr_rint_ceil`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005frint_005fceil)
     #[link_name = "mpfr_rint_ceil"]
     pub fn rint_ceil(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
@@ -1148,31 +1215,43 @@ extern "C" {
         state: randstate_ptr,
         rnd: rnd_t,
     ) -> c_int;
-    /// See: [`mpfr_get_exp`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fexp)
-    #[link_name = "mpfr_get_exp"]
-    pub fn get_exp(x: mpfr_srcptr) -> exp_t;
+}
+/// See: [`mpfr_get_exp`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fexp)
+#[inline]
+pub unsafe fn get_exp(x: mpfr_srcptr) -> exp_t {
+    (*x).exp
+}
+extern "C" {
     /// See: [`mpfr_set_exp`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fexp)
     #[link_name = "mpfr_set_exp"]
     pub fn set_exp(x: mpfr_ptr, e: exp_t) -> c_int;
-    /// See: [`mpfr_signbit`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fsignbit)
-    #[link_name = "mpfr_signbit"]
-    pub fn signbit(op: mpfr_srcptr) -> c_int;
-    /// See: [`mpfr_setsign`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fsetsign)
-    #[link_name = "mpfr_setsign"]
-    pub fn setsign(
-        rop: mpfr_ptr,
-        op: mpfr_srcptr,
-        s: c_int,
-        rnd: rnd_t,
-    ) -> c_int;
-    /// See: [`mpfr_copysign`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcopysign)
-    #[link_name = "mpfr_copysign"]
-    pub fn copysign(
-        rop: mpfr_ptr,
-        op1: mpfr_srcptr,
-        op2: mpfr_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+}
+/// See: [`mpfr_signbit`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fsignbit)
+#[inline]
+pub unsafe fn signbit(op: mpfr_srcptr) -> c_int {
+    if (*op).sign < 0 { 1 } else { 0 }
+}
+/// See: [`mpfr_setsign`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fsetsign)
+#[inline]
+pub unsafe fn setsign(
+    rop: mpfr_ptr,
+    op: mpfr_srcptr,
+    s: c_int,
+    rnd: rnd_t,
+) -> c_int {
+    set4(rop, op, rnd, if s != 0 { -1 } else { 1 })
+}
+/// See: [`mpfr_copysign`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcopysign)
+#[inline]
+pub unsafe fn copysign(
+    rop: mpfr_ptr,
+    op1: mpfr_srcptr,
+    op2: mpfr_srcptr,
+    rnd: rnd_t,
+) -> c_int {
+    set4(rop, op1, rnd, (*op2).sign)
+}
+extern "C" {
     /// See: [`mpfr_get_version`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fversion)
     #[link_name = "mpfr_get_version"]
     pub fn get_version() -> *const c_char;
@@ -1317,52 +1396,87 @@ extern "C" {
         op2: mpfr_srcptr,
         rnd: rnd_t,
     );
-    /// See: [`mpfr_mul_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fmul_005f2exp)
-    #[link_name = "mpfr_mul_2exp"]
-    pub fn mul_2exp(
-        rop: mpfr_ptr,
-        op1: mpfr_srcptr,
-        op2: c_ulong,
-        rnd: rnd_t,
-    ) -> c_int;
-    /// See: [`mpfr_div_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fdiv_005f2exp)
-    #[link_name = "mpfr_div_2exp"]
-    pub fn div_2exp(
-        rop: mpfr_ptr,
-        op1: mpfr_srcptr,
-        op2: c_ulong,
-        rnd: rnd_t,
-    ) -> c_int;
+}
+/// See: [`mpfr_mul_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fmul_005f2exp)
+#[inline]
+pub unsafe fn mul_2exp(
+    rop: mpfr_ptr,
+    op1: mpfr_srcptr,
+    op2: c_ulong,
+    rnd: rnd_t,
+) -> c_int {
+    mul_2ui(rop, op1, op2, rnd)
+}
+/// See: [`mpfr_div_2exp`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fdiv_005f2exp)
+#[inline]
+pub unsafe fn div_2exp(
+    rop: mpfr_ptr,
+    op1: mpfr_srcptr,
+    op2: c_ulong,
+    rnd: rnd_t,
+) -> c_int {
+    div_2ui(rop, op1, op2, rnd)
+}
 
-    // Custom Interface
+// Custom Interface
 
-    /// See: [`mpfr_custom_get_size`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005fget_005fsize)
-    #[link_name = "mpfr_custom_get_size"]
-    pub fn custom_get_size(prec: prec_t) -> usize;
-    /// See: [`mpfr_custom_init`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005finit)
-    #[link_name = "mpfr_custom_init"]
-    pub fn custom_init(significand: *mut c_void, prec: prec_t);
-    /// See: [`mpfr_custom_init_set`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005finit_005fset)
-    #[link_name = "mpfr_custom_init_set"]
-    pub fn custom_init_set(
-        x: mpfr_ptr,
-        kind: c_int,
-        exp: exp_t,
-        prec: prec_t,
-        significand: *mut c_void,
-    );
-    /// See: [`mpfr_custom_get_kind`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005fget_005fkind)
-    #[link_name = "mpfr_custom_get_kind"]
-    pub fn custom_get_kind(x: mpfr_srcptr) -> c_int;
-    /// See: [`mpfr_custom_get_significand`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005fget_005fsignificand)
-    #[link_name = "mpfr_custom_get_significand"]
-    pub fn custom_get_significand(x: mpfr_srcptr) -> *mut c_void;
-    /// See: [`mpfr_custom_get_exp`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005fget_005fexp)
-    #[link_name = "mpfr_custom_get_exp"]
-    pub fn custom_get_exp(x: mpfr_srcptr) -> exp_t;
-    /// See: [`mpfr_custom_move`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005fmove)
-    #[link_name = "mpfr_custom_move"]
-    pub fn custom_move(x: mpfr_ptr, new_position: *mut c_void);
+/// See: [`mpfr_custom_get_size`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005fget_005fsize)
+#[inline]
+pub unsafe fn custom_get_size(prec: prec_t) -> usize {
+    ((prec + gmp::NUMB_BITS as prec_t - 1) / gmp::NUMB_BITS as prec_t) as
+        usize * mem::size_of::<gmp::limb_t>()
+}
+/// See: [`mpfr_custom_init`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005finit)
+#[inline]
+pub unsafe fn custom_init(_significand: *mut c_void, _prec: prec_t) {}
+/// See: [`mpfr_custom_init_set`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005finit_005fset)
+#[inline]
+pub unsafe fn custom_init_set(
+    x: mpfr_ptr,
+    kind: c_int,
+    exp: exp_t,
+    prec: prec_t,
+    significand: *mut c_void,
+) {
+    let (t, s) = if kind >= 0 { (kind, 1) } else { (-kind, -1) };
+    let e = match t {
+        REGULAR_KIND => exp,
+        NAN_KIND => EXP_NAN,
+        INF_KIND => EXP_INF,
+        _ => EXP_ZERO,
+    };
+    (*x).prec = prec;
+    (*x).sign = s;
+    (*x).exp = e;
+    (*x).d = significand as *mut gmp::limb_t;
+}
+/// See: [`mpfr_custom_get_kind`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005fget_005fkind)
+#[inline]
+pub unsafe fn custom_get_kind(x: mpfr_srcptr) -> c_int {
+    if (*x).exp > EXP_INF {
+        REGULAR_KIND * (*x).sign
+    } else if (*x).exp == EXP_INF {
+        INF_KIND * (*x).sign
+    } else if (*x).exp == EXP_NAN {
+        NAN_KIND
+    } else {
+        ZERO_KIND * (*x).sign
+    }
+}
+/// See: [`mpfr_custom_get_significand`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005fget_005fsignificand)
+#[inline]
+pub unsafe fn custom_get_significand(x: mpfr_srcptr) -> *mut c_void {
+    (*x).d as *mut _
+}
+/// See: [`mpfr_custom_get_exp`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005fget_005fexp)
+#[inline]
+pub unsafe fn custom_get_exp(x: mpfr_srcptr) -> exp_t {
+    (*x).exp
+}
+/// See: [`mpfr_custom_move`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005fmove)
+#[inline]
+pub unsafe fn custom_move(x: mpfr_ptr, new_position: *mut c_void) {
+    (*x).d = new_position as *mut gmp::limb_t
 }
 
 #[cfg(test)]
