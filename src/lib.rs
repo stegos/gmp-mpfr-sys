@@ -174,7 +174,6 @@
 //! [sys gmp]:   gmp/index.html
 //! [sys mpc]:   mpc/index.html
 //! [sys mpfr]:  mpfr/index.html
-//! [sys]:       https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/
 
 #![warn(missing_docs)]
 #![doc(test(attr(deny(warnings))))]

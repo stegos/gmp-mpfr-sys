@@ -1,4 +1,4 @@
-Version 1.0.3 (2017-..-..)
+Version 1.0.3 (2017-06-06)
 ==========================
 
 * Add `gmp::mpq_numref_const()`, `gmp::mpq_denref_const()`,
