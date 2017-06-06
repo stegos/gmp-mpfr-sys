@@ -513,8 +513,10 @@ pub unsafe fn mpz_perfect_square_p(op: mpz_srcptr) -> c_int {
     let op_size = (*op).size;
     if op_size > 0 {
         mpn_perfect_square_p((*op).d, op_size as size_t)
+    } else if op_size >= 0 {
+        1
     } else {
-        if op_size >= 0 { 1 } else { 0 }
+        0
     }
 }
 
