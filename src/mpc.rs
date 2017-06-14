@@ -418,12 +418,8 @@ extern "C" {
     ) -> c_int;
     /// See: [`mpc_mul_i`](https://tspiteri.gitlab.io/gmp-mpfr/mpc/Complex-Functions.html#index-mpc_005fmul_005fi)
     #[link_name = "mpc_mul_i"]
-    pub fn mul_i(
-        rop: mpc_ptr,
-        op: mpc_srcptr,
-        sgn: c_int,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn mul_i(rop: mpc_ptr, op: mpc_srcptr, sgn: c_int, rnd: rnd_t)
+        -> c_int;
     /// See: [`mpc_sqr`](https://tspiteri.gitlab.io/gmp-mpfr/mpc/Complex-Functions.html#index-mpc_005fsqr)
     #[link_name = "mpc_sqr"]
     pub fn sqr(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;

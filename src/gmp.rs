@@ -491,12 +491,7 @@ extern "C" {
     pub fn mpz_root(rop: mpz_ptr, op: mpz_srcptr, n: c_ulong) -> c_int;
     /// See: [`mpz_rootrem`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005frootrem)
     #[link_name = "__gmpz_rootrem"]
-    pub fn mpz_rootrem(
-        root: mpz_ptr,
-        rem: mpz_ptr,
-        op: mpz_srcptr,
-        n: c_ulong,
-    );
+    pub fn mpz_rootrem(root: mpz_ptr, rem: mpz_ptr, op: mpz_srcptr, n: c_ulong);
     /// See: [`mpz_sqrt`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Integer-Functions.html#index-mpz_005fsqrt)
     #[link_name = "__gmpz_sqrt"]
     pub fn mpz_sqrt(rop: mpz_ptr, op: mpz_srcptr);
@@ -1702,10 +1697,8 @@ extern "C" {
     );
     /// See: [`gmp_randinit_lc_2exp_size`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-Number-Functions.html#index-gmp_005frandinit_005flc_005f2exp_005fsize)
     #[link_name = "__gmp_randinit_lc_2exp_size"]
-    pub fn randinit_lc_2exp_size(
-        state: randstate_ptr,
-        size: bitcnt_t,
-    ) -> c_int;
+    pub fn randinit_lc_2exp_size(state: randstate_ptr, size: bitcnt_t)
+        -> c_int;
     /// See: [`gmp_randinit_set`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Random-Number-Functions.html#index-gmp_005frandinit_005fset)
     #[link_name = "__gmp_randinit_set"]
     pub fn randinit_set(rop: randstate_ptr, op: randstate_srcptr);
@@ -1768,16 +1761,22 @@ extern "C" {
 // Custom Allocation
 
 /// See: [`allocate_function`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Custom-Allocation.html#index-allocate_005ffunction)
-pub type allocate_function = Option<extern "C" fn(alloc_size: usize)
-                                                  -> *mut c_void>;
+pub type allocate_function = Option<
+    extern "C" fn(alloc_size: usize)
+                  -> *mut c_void,
+>;
 /// See: [`reallocate_function`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Custom-Allocation.html#index-reallocate_005ffunction)
-pub type reallocate_function = Option<unsafe extern "C" fn(ptr: *mut c_void,
-                                                           old_size: usize,
-                                                           new_size: usize)
-                                                           -> *mut c_void>;
+pub type reallocate_function = Option<
+    unsafe extern "C" fn(ptr: *mut c_void,
+                         old_size: usize,
+                         new_size: usize)
+                         -> *mut c_void,
+>;
 /// See: [`free_function`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Custom-Allocation.html#index-free_005ffunction)
-pub type free_function = Option<unsafe extern "C" fn(ptr: *mut c_void,
-                                                     size: usize)>;
+pub type free_function = Option<
+    unsafe extern "C" fn(ptr: *mut c_void,
+                         size: usize),
+>;
 extern "C" {
     /// See: [`mp_set_memory_functions`](https://tspiteri.gitlab.io/gmp-mpfr/gmp/Custom-Allocation.html#index-mp_005fset_005fmemory_005ffunctions)
     #[link_name = "__gmp_set_memory_functions"]
