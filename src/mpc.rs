@@ -15,6 +15,30 @@
 // this program. If not, see <http://www.gnu.org/licenses/>.
 
 //! Function and type bindings for the MPC library.
+//!
+//! # Examples
+//!
+//! ```rust
+//! use gmp_mpfr_sys::mpc;
+//! use gmp_mpfr_sys::mpfr;
+//! use std::f64;
+//! use std::mem;
+//! let one_third = 1.0_f64 / 3.0;
+//! let neg_inf = f64::NEG_INFINITY;
+//! unsafe {
+//!     let mut c: mpc::mpc_t = mem::uninitialized();
+//!     mpc::init3(&mut c, 53, 53);
+//!     let dirs = mpc::set_d_d(&mut c, one_third, neg_inf, mpc::RNDNN);
+//!     assert_eq!(dirs, 0);
+//!     let re_ptr = mpc::realref_const(&c);
+//!     let re = mpfr::get_d(re_ptr, mpfr::rnd_t::RNDN);
+//!     assert_eq!(re, one_third);
+//!     let im_ptr = mpc::imagref_const(&c);
+//!     let im = mpfr::get_d(im_ptr, mpfr::rnd_t::RNDN);
+//!     assert_eq!(im, neg_inf);
+//!     mpc::clear(&mut c);
+//! }
+//! ```
 
 #![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
 
@@ -652,10 +676,7 @@ pub fn VERSION_NUM(major: c_int, minor: c_int, patchlevel: c_int) -> c_int {
 #[cfg(test)]
 mod tests {
     use mpc;
-    use mpfr;
-    use std::f64;
     use std::ffi::CStr;
-    use std::mem;
 
     #[test]
     fn check_version() {
@@ -671,22 +692,5 @@ mod tests {
         assert_eq!(from_fn.to_str().unwrap(), version);
         assert_eq!(from_constants, version);
         assert_eq!(from_const_string.to_str().unwrap(), version);
-    }
-
-    #[test]
-    fn it_runs() {
-        let re: f64 = 1.0 / 3.0;
-        let im: f64 = f64::NEG_INFINITY;
-        unsafe {
-            let mut c: mpc::mpc_t = mem::uninitialized();
-            let ptr = &mut c as *mut _;
-            mpc::init3(ptr, 53, 53);
-            assert_eq!(mpc::set_d_d(ptr, re, im, mpc::RNDNN), 0);
-            let re_ptr = mpc::realref(ptr);
-            let im_ptr = mpc::imagref(ptr);
-            assert_eq!(mpfr::get_d(re_ptr, mpfr::rnd_t::RNDN), re);
-            assert_eq!(mpfr::get_d(im_ptr, mpfr::rnd_t::RNDN), im);
-            mpc::clear(ptr);
-        }
     }
 }

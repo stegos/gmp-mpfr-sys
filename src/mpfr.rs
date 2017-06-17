@@ -15,6 +15,23 @@
 // this program. If not, see <http://www.gnu.org/licenses/>.
 
 //! Function and type bindings for the MPFR library.
+//!
+//! # Examples
+//!
+//! ```rust
+//! use gmp_mpfr_sys::mpfr;
+//! use std::mem;
+//! let one_third = 1.0_f64 / 3.0;
+//! unsafe {
+//!     let mut f: mpfr::mpfr_t = mem::uninitialized();
+//!     mpfr::init2(&mut f, 53);
+//!     let dir = mpfr::set_d(&mut f, one_third, mpfr::rnd_t::RNDN);
+//!     assert_eq!(dir, 0);
+//!     let d = mpfr::get_d(&f, mpfr::rnd_t::RNDN);
+//!     assert_eq!(d, one_third);
+//!     mpfr::clear(&mut f);
+//! }
+//! ```
 
 #![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
 
@@ -1485,7 +1502,6 @@ pub unsafe fn custom_move(x: mpfr_ptr, new_position: *mut c_void) {
 mod tests {
     use mpfr;
     use std::ffi::CStr;
-    use std::mem;
 
     #[test]
     fn check_version() {
@@ -1501,18 +1517,5 @@ mod tests {
         assert_eq!(from_fn.to_str().unwrap(), version);
         assert_eq!(from_constants, version);
         assert_eq!(from_const_string.to_str().unwrap(), version);
-    }
-
-    #[test]
-    fn it_runs() {
-        let d: f64 = 1.0 / 3.0;
-        unsafe {
-            let mut fr: mpfr::mpfr_t = mem::uninitialized();
-            let ptr = &mut fr as *mut _;
-            mpfr::init2(ptr, 53);
-            assert_eq!(mpfr::set_d(ptr, d, mpfr::rnd_t::RNDN), 0);
-            assert_eq!(mpfr::get_d(ptr, mpfr::rnd_t::RNDN), d);
-            mpfr::clear(ptr);
-        }
     }
 }

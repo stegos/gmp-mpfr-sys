@@ -15,6 +15,21 @@
 // this program. If not, see <http://www.gnu.org/licenses/>.
 
 //! Function and type bindings for the GMP library.
+//!
+//! # Examples
+//!
+//! ```rust
+//! use gmp_mpfr_sys::gmp;
+//! use std::mem;
+//! unsafe {
+//!     let mut z: gmp::mpz_t = mem::uninitialized();
+//!     gmp::mpz_init(&mut z);
+//!     gmp::mpz_set_ui(&mut z, 15);
+//!     let u = gmp::mpz_get_ui(&z);
+//!     assert_eq!(u, 15);
+//!     gmp::mpz_clear(&mut z);
+//! }
+//! ```
 
 #![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
 
@@ -1823,18 +1838,5 @@ mod tests {
         );
         assert_eq!(from_static.to_str().unwrap(), version);
         assert_eq!(from_constants, version);
-    }
-
-    #[test]
-    fn it_runs() {
-        let i = 3;
-        unsafe {
-            let mut z: gmp::mpz_t = mem::uninitialized();
-            let ptr = &mut z as *mut _;
-            gmp::mpz_init(ptr);
-            gmp::mpz_set_ui(ptr, i);
-            assert_eq!(gmp::mpz_get_ui(ptr), i);
-            gmp::mpz_clear(ptr);
-        }
     }
 }
