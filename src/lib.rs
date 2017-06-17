@@ -178,9 +178,8 @@
 #![warn(missing_docs)]
 #![doc(test(attr(deny(warnings))))]
 
-/// Function and type bindings for the GMP library.
 pub mod gmp;
-/// Function and type bindings for the MPFR library.
+#[cfg(feature = "mpfr")]
 pub mod mpfr;
-/// Function and type bindings for the MPC library.
+#[cfg(feature = "mpc")]
 pub mod mpc;
