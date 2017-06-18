@@ -45,14 +45,15 @@ fn main() {
     let out_dir = PathBuf::from(cargo_env("OUT_DIR"));
     let jobs = cargo_env("NUM_JOBS");
     let profile = cargo_env("PROFILE");
-    let check = profile == OsString::from("release");
+    let check = cargo_has_env("CARGO_FEATURE_CTEST") ||
+        (!cargo_has_env("CARGO_FEATURE_CNOTEST") &&
+             profile == OsString::from("release"));
 
     // The cache dir is for testing purposes and is not stable, it is
     // *not* meant for general use.
     let cache_dir = env::var_os("GMP_MPFR_SYS_CACHE").map(|cache| {
-        let profile = cargo_env("PROFILE");
         let version = cargo_env("CARGO_PKG_VERSION");
-        PathBuf::from(cache).join(profile).join(version)
+        PathBuf::from(cache).join(version)
     });
 
     let lib_dir = out_dir.join("lib");
@@ -72,7 +73,7 @@ fn main() {
     // make sure we have target directory
     create_dir(&lib_dir);
     let (compile_gmp, compile_mpfr, compile_mpc) =
-        check_compile(&cache_dir, &gmp_ah, &mpfr_ah, &mpc_ah);
+        need_compile(&cache_dir, check, &gmp_ah, &mpfr_ah, &mpc_ah);
 
     if compile_gmp {
         remove_dir(&build_dir);
@@ -107,15 +108,16 @@ fn main() {
         remove_dir(&build_dir);
         if let Some(ref cache_dir) = cache_dir {
             // ignore error, do not bail if saving cache fails
-            save_cache(cache_dir, &gmp_ah, &mpfr_ah, &mpc_ah).is_err();
+            save_cache(cache_dir, check, &gmp_ah, &mpfr_ah, &mpc_ah).is_err();
         }
     }
     process_gmp_header(&gmp_ah.1, &out_dir.join("gmp_h.rs"));
     write_link_info(&lib_dir, mpfr_ah.is_some(), mpc_ah.is_some());
 }
 
-fn check_compile(
+fn need_compile(
     cache_dir: &Option<PathBuf>,
+    check: bool,
     gmp_ah: &(PathBuf, PathBuf),
     mpfr_ah: &Option<(PathBuf, PathBuf)>,
     mpc_ah: &Option<(PathBuf, PathBuf)>,
@@ -132,12 +134,12 @@ fn check_compile(
     if gmp_fine && mpfr_fine && mpc_fine {
         if let Some(ref cache_dir) = *cache_dir {
             // ignore error, do not bail if saving cache fails
-            save_cache(cache_dir, gmp_ah, mpfr_ah, mpc_ah).is_err();
+            save_cache(cache_dir, check, gmp_ah, mpfr_ah, mpc_ah).is_err();
         }
         return (false, false, false);
     } else if let Some(ref cache_dir) = *cache_dir {
         // if loading cache works, we're done
-        if load_cache(cache_dir, gmp_ah, mpfr_ah, mpc_ah) {
+        if load_cache(cache_dir, check, gmp_ah, mpfr_ah, mpc_ah) {
             return (false, false, false);
         }
     }
@@ -149,18 +151,20 @@ fn check_compile(
 
 fn save_cache(
     cache_dir: &PathBuf,
+    check: bool,
     gmp_ah: &(PathBuf, PathBuf),
     mpfr_ah: &Option<(PathBuf, PathBuf)>,
     mpc_ah: &Option<(PathBuf, PathBuf)>,
 ) -> Result<(), io::Error> {
-    let req_dir = if mpc_ah.is_some() {
+    let req_check = if check { "check" } else { "nocheck" };
+    let req_libs = if mpc_ah.is_some() {
         "gmp_mpfr_mpc"
     } else if mpfr_ah.is_some() {
         "gmp_mpfr"
     } else {
         "gmp"
     };
-    let dir = cache_dir.join(req_dir);
+    let dir = cache_dir.join(req_check).join(req_libs);
     fs::create_dir_all(&dir)?;
     let (ref a, ref h) = *gmp_ah;
     fs::copy(a, dir.join("libgmp.a"))?;
@@ -178,23 +182,41 @@ fn save_cache(
 
 fn load_cache(
     cache_dir: &PathBuf,
+    check: bool,
     gmp_ah: &(PathBuf, PathBuf),
     mpfr_ah: &Option<(PathBuf, PathBuf)>,
     mpc_ah: &Option<(PathBuf, PathBuf)>,
 ) -> bool {
-    // first try "gmp" directory
-    if mpfr_ah.is_none() {
-        let dir = cache_dir.join("gmp");
-        let (ref a, ref h) = *gmp_ah;
-        let mut ok = fs::copy(dir.join("libgmp.a"), a).is_ok();
-        ok = ok && fs::copy(dir.join("gmp.h"), h).is_ok();
-        if ok {
-            return true;
+    let checks = ["nocheck", "check"];
+    let req_checks = if check { &checks[1..] } else { &checks };
+    for req_check in req_checks {
+        let check_dir = cache_dir.join(req_check);
+        // first try "gmp" directory
+        if mpfr_ah.is_none() {
+            let dir = check_dir.join("gmp");
+            let (ref a, ref h) = *gmp_ah;
+            let mut ok = fs::copy(dir.join("libgmp.a"), a).is_ok();
+            ok = ok && fs::copy(dir.join("gmp.h"), h).is_ok();
+            if ok {
+                return true;
+            }
         }
-    }
-    // next try "gmp_mpfr" directory
-    if mpc_ah.is_none() {
-        let dir = cache_dir.join("gmp_mpfr");
+        // next try "gmp_mpfr" directory
+        if mpc_ah.is_none() {
+            let dir = check_dir.join("gmp_mpfr");
+            let (ref a, ref h) = *gmp_ah;
+            let mut ok = fs::copy(dir.join("libgmp.a"), a).is_ok();
+            ok = ok && fs::copy(dir.join("gmp.h"), h).is_ok();
+            if let Some((ref a, ref h)) = *mpfr_ah {
+                ok = ok && fs::copy(dir.join("libmpfr.a"), a).is_ok();
+                ok = ok && fs::copy(dir.join("mpfr.h"), h).is_ok();
+            }
+            if ok {
+                return true;
+            }
+        }
+        // finally try "gmp_mpfr_mpc" directory
+        let dir = check_dir.join("gmp_mpfr_mpc");
         let (ref a, ref h) = *gmp_ah;
         let mut ok = fs::copy(dir.join("libgmp.a"), a).is_ok();
         ok = ok && fs::copy(dir.join("gmp.h"), h).is_ok();
@@ -202,24 +224,15 @@ fn load_cache(
             ok = ok && fs::copy(dir.join("libmpfr.a"), a).is_ok();
             ok = ok && fs::copy(dir.join("mpfr.h"), h).is_ok();
         }
+        if let Some((ref a, ref h)) = *mpc_ah {
+            ok = ok && fs::copy(dir.join("libmpc.a"), a).is_ok();
+            ok = ok && fs::copy(dir.join("mpc.h"), h).is_ok();
+        }
         if ok {
             return true;
         }
     }
-    // finally try "gmp_mpfr_mpc" directory
-    let dir = cache_dir.join("gmp_mpfr_mpc");
-    let (ref a, ref h) = *gmp_ah;
-    let mut ok = fs::copy(dir.join("libgmp.a"), a).is_ok();
-    ok = ok && fs::copy(dir.join("gmp.h"), h).is_ok();
-    if let Some((ref a, ref h)) = *mpfr_ah {
-        ok = ok && fs::copy(dir.join("libmpfr.a"), a).is_ok();
-        ok = ok && fs::copy(dir.join("mpfr.h"), h).is_ok();
-    }
-    if let Some((ref a, ref h)) = *mpc_ah {
-        ok = ok && fs::copy(dir.join("libmpc.a"), a).is_ok();
-        ok = ok && fs::copy(dir.join("mpc.h"), h).is_ok();
-    }
-    ok
+    false
 }
 
 fn build_gmp(

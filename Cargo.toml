@@ -29,5 +29,19 @@ license = "LGPL-3.0+"
 
 [features]
 default = ["mpfr", "mpc"]
+
+# Libraries built:
+# gmp: always built
+# mpfr: built when mpfr or mpc features are required (default)
+# mpc: built when mpc feature is required (default)
+
 mpfr = []
 mpc = ["mpfr"]
+
+# After make, make check is executed according to the following:
+# * If ctest, make check
+# * If not ctest and cnotest, do not make check
+# * If not ctest and not cnotest, make check for release build only
+
+ctest = []
+cnotest = []
