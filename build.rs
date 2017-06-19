@@ -40,14 +40,18 @@ const MPFR_DIR: &'static str = "mpfr-3.1.5-slim";
 const MPC_DIR: &'static str = "mpc-1.0.3-slim";
 
 fn main() {
-    Command::new("env").status().is_ok();
     let src_dir = PathBuf::from(cargo_env("CARGO_MANIFEST_DIR"));
     let out_dir = PathBuf::from(cargo_env("OUT_DIR"));
     let jobs = cargo_env("NUM_JOBS");
     let profile = cargo_env("PROFILE");
-    let check = cargo_has_env("CARGO_FEATURE_CTEST") ||
-        (!cargo_has_env("CARGO_FEATURE_CNOTEST") &&
+    let check = there_is_env("CARGO_FEATURE_CTEST") ||
+        (!there_is_env("CARGO_FEATURE_CNOTEST") &&
              profile == OsString::from("release"));
+
+    println!("cargo:rerun-if-env-changed=GMP_MPFR_SYS_CDOC");
+    if let Some(doc_dir) = env::var_os("GMP_MPFR_SYS_CDOC").map(PathBuf::from) {
+        build_doc(&src_dir, &doc_dir);
+    }
 
     // The cache dir is for testing purposes and is not stable, it is
     // *not* meant for general use.
@@ -59,12 +63,12 @@ fn main() {
     let lib_dir = out_dir.join("lib");
     let build_dir = out_dir.join("build");
     let gmp_ah = (lib_dir.join("libgmp.a"), lib_dir.join("gmp.h"));
-    let mpc_ah = if cargo_has_env("CARGO_FEATURE_MPC") {
+    let mpc_ah = if there_is_env("CARGO_FEATURE_MPC") {
         Some((lib_dir.join("libmpc.a"), lib_dir.join("mpc.h")))
     } else {
         None
     };
-    let mpfr_ah = if mpc_ah.is_some() || cargo_has_env("CARGO_FEATURE_MPFR") {
+    let mpfr_ah = if mpc_ah.is_some() || there_is_env("CARGO_FEATURE_MPFR") {
         Some((lib_dir.join("libmpfr.a"), lib_dir.join("mpfr.h")))
     } else {
         None
@@ -113,6 +117,22 @@ fn main() {
     }
     process_gmp_header(&gmp_ah.1, &out_dir.join("gmp_h.rs"));
     write_link_info(&lib_dir, mpfr_ah.is_some(), mpc_ah.is_some());
+}
+
+fn build_doc(src_dir: &PathBuf, doc_dir: &PathBuf) {
+    for &(l, d) in &[("gmp", GMP_DIR), ("mpfr", MPFR_DIR), ("mpc", MPC_DIR)] {
+        let src_file =
+            src_dir.join(d).join("doc").join(String::from(l) + ".texi");
+        let lib_dir = doc_dir.join(l);
+        create_dir(&lib_dir);
+        let mut makeinfo = Command::new("makeinfo");
+        makeinfo.arg(src_file).arg("--output").arg(lib_dir);
+        makeinfo.arg("--html").arg("--split").arg("chapter");
+        makeinfo.arg("--css-ref").arg("../normalize.css");
+        makeinfo.arg("--css-ref").arg("../rustdoc.css");
+        makeinfo.arg("--css-ref").arg("../main.css");
+        execute(makeinfo);
+    }
 }
 
 fn need_compile(
@@ -412,7 +432,7 @@ fn cargo_env(name: &str) -> OsString {
     })
 }
 
-fn cargo_has_env(name: &str) -> bool {
+fn there_is_env(name: &str) -> bool {
     env::var_os(name).is_some()
 }
 
