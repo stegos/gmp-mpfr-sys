@@ -20,16 +20,10 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
-#if defined (__cplusplus)
-#include <cstdio>
-#else
-#include <stdio.h>
-#endif
 #include <stdlib.h>
-#include <string.h>
 
-#include "gmp.h"
-#include "mpfr.h"
+#include "mpfr-impl.h"
+
 #ifdef MPFR
 #include "mpf2mpfr.h"
 #endif
@@ -227,6 +221,16 @@ main (void)
       fprintf (stderr, "expected 17, got %1.16e\n", mpf_get_d (x));
       exit (1);
     }
+
+  /* non-regression tests for bugs fixed in revision 11565 */
+  mpf_set_si (x, -1);
+  MPFR_ASSERTN(mpf_fits_ulong_p (x) == 0);
+  MPFR_ASSERTN(mpf_fits_slong_p (x) != 0);
+  MPFR_ASSERTN(mpf_fits_uint_p (x) == 0);
+  MPFR_ASSERTN(mpf_fits_sint_p (x) != 0);
+  MPFR_ASSERTN(mpf_fits_ushort_p (x) == 0);
+  MPFR_ASSERTN(mpf_fits_sshort_p (x) != 0);
+  MPFR_ASSERTN(mpf_get_si (x) == -1);
 
   /* clear all variables */
   mpf_clear (y);

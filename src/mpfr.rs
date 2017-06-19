@@ -1285,7 +1285,7 @@ pub const VERSION_MINOR: c_int = 1;
 /// See: [`MPFR_VERSION_PATCHLEVEL`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-MPFR_005fVERSION_005fPATCHLEVEL)
 pub const VERSION_PATCHLEVEL: c_int = 5;
 /// See: [`MPFR_VERSION_STRING`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-MPFR_005fVERSION_005fSTRING)
-pub const VERSION_STRING: *const c_char = b"3.1.5\0" as *const u8 as
+pub const VERSION_STRING: *const c_char = b"3.1.5-p8\0" as *const u8 as
     *const c_char;
 /// See: [`MPFR_VERSION_NUM`](https://tspiteri.gitlab.io/gmp-mpfr/mpfr/MPFR-Interface.html#index-MPFR_005fVERSION_005fNUM)
 #[inline]
@@ -1506,16 +1506,17 @@ mod tests {
     #[test]
     fn check_version() {
         let version = "3.1.5";
-        let from_fn = unsafe { CStr::from_ptr(mpfr::get_version()) };
         let from_constants = format!(
             "{}.{}.{}",
             mpfr::VERSION_MAJOR,
             mpfr::VERSION_MINOR,
             mpfr::VERSION_PATCHLEVEL
         );
-        let from_const_string = unsafe { CStr::from_ptr(mpfr::VERSION_STRING) };
-        assert_eq!(from_fn.to_str().unwrap(), version);
         assert_eq!(from_constants, version);
+        let version = "3.1.5-p8";
+        let from_fn = unsafe { CStr::from_ptr(mpfr::get_version()) };
+        assert_eq!(from_fn.to_str().unwrap(), version);
+        let from_const_string = unsafe { CStr::from_ptr(mpfr::VERSION_STRING) };
         assert_eq!(from_const_string.to_str().unwrap(), version);
     }
 }

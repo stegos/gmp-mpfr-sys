@@ -83,7 +83,7 @@ compute_l2b (int output)
   mpfr_srcptr t;
   int beta, i;
   int error = 0;
-  char buffer[30];
+  char buffer[256];  /* larger than needed, for maintainability */
 
   for (beta = 2; beta <= BASE_MAX; beta++)
     {

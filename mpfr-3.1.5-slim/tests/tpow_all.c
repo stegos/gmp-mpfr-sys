@@ -498,7 +498,7 @@ underflow_up1 (void)
   for (i = 0; i <= 12; i++)
     {
       unsigned int flags = 0;
-      char sy[16];
+      char sy[256];  /* larger than needed, for maintainability */
 
       /* Test 2^(emin - i/4).
        * --> Underflow iff i > 4.

@@ -342,11 +342,15 @@ __MPFR_DECLSPEC extern const mpfr_t __gmpfr_four;
 #define MPFR_FLAGS_DIVBY0 32
 #define MPFR_FLAGS_ALL 63
 
-/* Replace some common functions for direct access to the global vars */
-#define mpfr_get_emin() (__gmpfr_emin + 0)
-#define mpfr_get_emax() (__gmpfr_emax + 0)
-#define mpfr_get_default_rounding_mode() (__gmpfr_default_rounding_mode + 0)
-#define mpfr_get_default_prec() (__gmpfr_default_fp_bit_precision + 0)
+/* Replace some common functions for direct access to the global vars.
+   The casts prevent these macros from being used as a lvalue (and this
+   method makes sure that the expressions have the correct type). */
+#define mpfr_get_emin() ((mpfr_exp_t) __gmpfr_emin)
+#define mpfr_get_emax() ((mpfr_exp_t) __gmpfr_emax)
+#define mpfr_get_default_rounding_mode() \
+  ((mpfr_rnd_t) __gmpfr_default_rounding_mode)
+#define mpfr_get_default_prec() \
+  ((mpfr_prec_t) __gmpfr_default_fp_bit_precision)
 
 #define mpfr_clear_flags() \
   ((void) (__gmpfr_flags = 0))
@@ -873,7 +877,7 @@ typedef intmax_t mpfr_eexp_t;
    following two macros, unless the flag comes from another function
    returning the ternary inexact value */
 #define MPFR_RET(I) return \
-  (I) ? ((__gmpfr_flags |= MPFR_FLAGS_INEXACT), (I)) : 0
+  (I) != 0 ? ((__gmpfr_flags |= MPFR_FLAGS_INEXACT), (I)) : 0
 #define MPFR_RET_NAN return (__gmpfr_flags |= MPFR_FLAGS_NAN), 0
 
 #define MPFR_SET_ERANGE() (__gmpfr_flags |= MPFR_FLAGS_ERANGE)
