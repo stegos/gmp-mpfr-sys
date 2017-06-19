@@ -22,7 +22,7 @@
 //! * the [GNU MPFR Library][mpfr home], a library for
 //!   multiple-precision floating-point computations, and
 //! * [GNU MPC][mpc home], a library for the arithmetic of complex
-//! numbers with arbitrarily high precision.
+//!   numbers with arbitrarily high precision.
 //!
 //! The source of the three libraries is included in the package.
 //!
@@ -44,16 +44,17 @@
 //! * [`mpfr`][sys mpfr] provides external FFI bindings to MPFR.
 //! * [`mpc`][sys mpc] provides external FFI bindings to MPC.
 //!
-//! If you want a high-level API, consider using the following crates:
+//! If you want a high-level API, consider using the [`rug`][rug] crate,
+//! which provides big integer and floating-point numers. Its main
+//! features are:
 //!
-//! * [`rugint`][rugint] provides arbitrary-precision integers based
-//!   on GMP.
-//! * [`rugrat`][rugrat] provides arbitrary-precision rational number
-//!   based on GMP.
-//! * [`rugflo`][rugflo] provides arbitrary-precision floating-point
-//!   numbers based on MPFR.
-//! * [`rugcom`][rugcom] provides arbitrary-precision complex numbers
-//!   based on MPC.
+//! * big [integers][rug int] with arbitrary precision based on GMP,
+//! * big [rational numbers][rug rat] with arbitrary precision based
+//!   on GMP,
+//! * multi-precision [floating-point numbers][rug flo] with correct
+//!   rounding based on MPFR, and
+//! * multi-precision [complex numbers][rug comp] with correct
+//!   rounding based on MPC.
 //!
 //! ## Notes
 //!
@@ -102,6 +103,19 @@
 //! version = "1.0"
 //! default-features = false
 //! ```
+//!
+//! To use features selectively, you can add this to `Cargo.toml`:
+//!
+//! ```toml
+//! [dependencies.gmp-mpfr-sys]
+//! version = "1.0"
+//! default-features = false
+//! # Pick which features to use
+//! features = ["mpfr"]
+//! ```
+//!
+//! Note that the the `mpc` feature will enable the `mpfr` feature, on
+//! which it depends.
 //!
 //! ### Building on GNU/Linux
 //!
@@ -159,18 +173,19 @@
 //! 3. Build the crate using `cargo`.
 //!
 //! [gmp home]:  https://gmplib.org/
-//! [gmp]:       https://tspiteri.gitlab.io/gmp-mpfr/gmp/
+//! [gmp]:       https://tspiteri.gitlab.io/rug/gmp/index.html
 //! [gpl]:       https://www.gnu.org/licenses/gpl-3.0.html
 //! [lgpl]:      https://www.gnu.org/licenses/lgpl-3.0.en.html
 //! [mpc home]:  http://www.multiprecision.org/
-//! [mpc]:       https://tspiteri.gitlab.io/gmp-mpfr/mpc/
+//! [mpc]:       https://tspiteri.gitlab.io/rug/mpc/index.html
 //! [mpfr home]: http://www.mpfr.org/
-//! [mpfr]:      https://tspiteri.gitlab.io/gmp-mpfr/mpfr/
+//! [mpfr]:      https://tspiteri.gitlab.io/rug/mpfr/index.html
 //! [msys]:      https://msys2.github.io/
-//! [rugcom]:    https://tspiteri.gitlab.io/gmp-mpfr/rugcom/
-//! [rugflo]:    https://tspiteri.gitlab.io/gmp-mpfr/rugflo/
-//! [rugint]:    https://tspiteri.gitlab.io/gmp-mpfr/rugint/
-//! [rugrat]:    https://tspiteri.gitlab.io/gmp-mpfr/rugrat/
+//! [rug com]:   https://tspiteri.gitlab.io/rug/rug/struct.Complex.html
+//! [rug flo]:   https://tspiteri.gitlab.io/rug/rug/struct.Float.html
+//! [rug int]:   https://tspiteri.gitlab.io/rug/rug/struct.Integer.html
+//! [rug rat]:   https://tspiteri.gitlab.io/rug/rug/struct.Rational.html
+//! [rug]:       https://tspiteri.gitlab.io/rug/rug/index.html
 //! [sys gmp]:   gmp/index.html
 //! [sys mpc]:   mpc/index.html
 //! [sys mpfr]:  mpfr/index.html

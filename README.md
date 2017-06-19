@@ -29,10 +29,12 @@ The three modules of this crate are:
 * [`mpc`][sys mpc] provides external FFI bindings to MPC.
 
 If you want a high-level API, consider using the [`rug`][rug] crate,
-which provides:
+which provides big integer and floating-point numers. Its main
+features are:
 
-* big [integers][rug int] based on GMP,
-* big [rational numbers][rug rat] based on GMP,
+* big [integers][rug int] with arbitrary precision based on GMP,
+* big [rational numbers][rug rat] with arbitrary precision based on
+  GMP,
 * multi-precision [floating-point numbers][rug flo] with correct
   rounding based on MPFR, and
 * multi-precision [complex numbers][rug comp] with correct rounding
@@ -85,6 +87,19 @@ disable them add this to `Cargo.toml`:
 version = "1.0"
 default-features = false
 ```
+
+To use features selectively, you can add this to `Cargo.toml`:
+
+```toml
+[dependencies.gmp-mpfr-sys]
+version = "1.0"
+default-features = false
+# Pick which features to use
+features = ["mpfr"]
+```
+
+Note that the the `mpc` feature will enable the `mpfr` feature, on
+which it depends.
 
 ### Building on GNU/Linux
 
@@ -142,20 +157,20 @@ Then, to build a crate with a dependency on this crate:
 3. Build the crate using `cargo`.
 
 [gmp home]:  https://gmplib.org/
-[gmp]:       https://tspiteri.gitlab.io/gmp-mpfr/gmp/
+[gmp]:       https://tspiteri.gitlab.io/rug/gmp/index.html
 [gpl]:       https://www.gnu.org/licenses/gpl-3.0.html
 [lgpl]:      https://www.gnu.org/licenses/lgpl-3.0.en.html
 [mpc home]:  http://www.multiprecision.org/
-[mpc]:       https://tspiteri.gitlab.io/gmp-mpfr/mpc/
+[mpc]:       https://tspiteri.gitlab.io/rug/mpc/index.html
 [mpfr home]: http://www.mpfr.org/
-[mpfr]:      https://tspiteri.gitlab.io/gmp-mpfr/mpfr/
+[mpfr]:      https://tspiteri.gitlab.io/rug/mpfr/index.html
 [msys]:      https://msys2.github.io/
-[rug com]:   https://tspiteri.gitlab.io/rug/rug/Complex.html
-[rug flo]:   https://tspiteri.gitlab.io/rug/rug/Float.html
-[rug int]:   https://tspiteri.gitlab.io/rug/rug/Integer.html
-[rug rat]:   https://tspiteri.gitlab.io/rug/rug/Rational.html
-[rug]:       https://tspiteri.gitlab.io/rug/rug/
-[sys gmp]:   https://tspiteri.gitlab.io/rug/gmp_mpfr_sys/gmp/
-[sys mpc]:   https://tspiteri.gitlab.io/rug/gmp_mpfr_sys/mpc/
-[sys mpfr]:  https://tspiteri.gitlab.io/rug/gmp_mpfr_sys/mpfr/
-[sys]:       https://tspiteri.gitlab.io/rug/gmp_mpfr_sys/
+[rug com]:   https://tspiteri.gitlab.io/rug/rug/struct.Complex.html
+[rug flo]:   https://tspiteri.gitlab.io/rug/rug/struct.Float.html
+[rug int]:   https://tspiteri.gitlab.io/rug/rug/struct.Integer.html
+[rug rat]:   https://tspiteri.gitlab.io/rug/rug/struct.Rational.html
+[rug]:       https://tspiteri.gitlab.io/rug/rug/index.html
+[sys gmp]:   https://tspiteri.gitlab.io/rug/gmp_mpfr_sys/gmp/index.html
+[sys mpc]:   https://tspiteri.gitlab.io/rug/gmp_mpfr_sys/mpc/index.html
+[sys mpfr]:  https://tspiteri.gitlab.io/rug/gmp_mpfr_sys/mpfr/index.html
+[sys]:       https://tspiteri.gitlab.io/rug/gmp_mpfr_sys/index.html
