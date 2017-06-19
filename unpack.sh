@@ -8,19 +8,25 @@ set -e
 
 # library versions and tar locations
 TARDIR="$HOME/Downloads"
+
 GMPVER=6.1.2
+GMPVERP="$GMPVER"
 GMPTAR="$TARDIR/gmp-$GMPVER.tar.lz"
-GMPPATCH="$TARDIR/gmp-$GMPVER-allpatches"
+GMPPATCH="$TARDIR/gmp-$GMPVERP-allpatches"
+
 MPFRVER=3.1.5
+MPFRVERP="$MPFRVER"-p8
 MPFRTAR="$TARDIR/mpfr-$MPFRVER.tar.xz"
-MPFRPATCH="$TARDIR/mpfr-$MPFRVER-allpatches"
+MPFRPATCH="$TARDIR/mpfr-$MPFRVERP-allpatches"
+
 MPCVER=1.0.3
+MPCVERP="$MPCVER"
 MPCTAR="$TARDIR/mpc-$MPCVER.tar.gz"
-MPCPATCH="$TARDIR/mpc-$MPCVER-allpatches"
+MPCPATCH="$TARDIR/mpc-$MPCVERP-allpatches"
 
 tar xf "$GMPTAR"
-mv gmp-$GMPVER gmp-$GMPVER-slim
-cd gmp-$GMPVER-slim
+mv gmp-$GMPVER gmp-$GMPVERP-slim
+cd gmp-$GMPVERP-slim
 if [ -f "$GMPPATCH" ]; then
 	patch -N -Z -p1 < "$GMPPATCH" > /dev/null
 fi
@@ -33,8 +39,8 @@ sed -i.rm~ '/SUBDIRS = /s/doc\|demos//g' Makefile.in
 cd ..
 
 tar xf "$MPFRTAR"
-mv mpfr-$MPFRVER mpfr-$MPFRVER-slim
-cd mpfr-$MPFRVER-slim
+mv mpfr-$MPFRVER mpfr-$MPFRVERP-slim
+cd mpfr-$MPFRVERP-slim
 if [ -f "$MPFRPATCH" ]; then
 	patch -N -Z -p1 < "$MPFRPATCH" > /dev/null
 fi
@@ -45,8 +51,8 @@ sed -i.rm~ '/SUBDIRS = /s/doc//g' Makefile.in
 cd ..
 
 tar xf "$MPCTAR"
-mv mpc-$MPCVER mpc-$MPCVER-slim
-cd mpc-$MPCVER-slim
+mv mpc-$MPCVER mpc-$MPCVERP-slim
+cd mpc-$MPCVERP-slim
 if [ -f "$MPCPATCH" ]; then
 	patch -N -Z -p1 < "$MPCPATCH" > /dev/null
 fi
