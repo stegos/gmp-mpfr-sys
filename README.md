@@ -28,15 +28,14 @@ The three modules of this crate are:
 * [`mpfr`][sys mpfr] provides external FFI bindings to MPFR.
 * [`mpc`][sys mpc] provides external FFI bindings to MPC.
 
-If you want a high-level API, consider using the following crates:
+If you want a high-level API, consider using the [`rug`][rug] crate,
+which provides:
 
-* [`rugint`][rugint] provides arbitrary-precision integers based on
-  GMP.
-* [`rugrat`][rugrat] provides arbitrary-precision rational number
-  based on GMP.
-* [`rugflo`][rugflo] provides arbitrary-precision floating-point
-  numbers based on MPFR.
-* [`rugcom`][rugcom] provides arbitrary-precision complex numbers
+* big [integers][rug int] based on GMP,
+* big [rational numbers][rug rat] based on GMP,
+* multi-precision [floating-point numbers][rug flo] with correct
+  rounding based on MPFR, and
+* multi-precision [complex numbers][rug comp] with correct rounding
   based on MPC.
 
 ## Notes
@@ -151,11 +150,12 @@ Then, to build a crate with a dependency on this crate:
 [mpfr home]: http://www.mpfr.org/
 [mpfr]:      https://tspiteri.gitlab.io/gmp-mpfr/mpfr/
 [msys]:      https://msys2.github.io/
-[rugcom]:    https://tspiteri.gitlab.io/gmp-mpfr/rugcom/
-[rugflo]:    https://tspiteri.gitlab.io/gmp-mpfr/rugflo/
-[rugint]:    https://tspiteri.gitlab.io/gmp-mpfr/rugint/
-[rugrat]:    https://tspiteri.gitlab.io/gmp-mpfr/rugrat/
-[sys gmp]:   https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/gmp/
-[sys mpc]:   https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/mpc/
-[sys mpfr]:  https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/mpfr/
-[sys]:       https://tspiteri.gitlab.io/gmp-mpfr/gmp_mpfr_sys/
+[rug com]:   https://tspiteri.gitlab.io/rug/rug/Complex.html
+[rug flo]:   https://tspiteri.gitlab.io/rug/rug/Float.html
+[rug int]:   https://tspiteri.gitlab.io/rug/rug/Integer.html
+[rug rat]:   https://tspiteri.gitlab.io/rug/rug/Rational.html
+[rug]:       https://tspiteri.gitlab.io/rug/rug/
+[sys gmp]:   https://tspiteri.gitlab.io/rug/gmp_mpfr_sys/gmp/
+[sys mpc]:   https://tspiteri.gitlab.io/rug/gmp_mpfr_sys/mpc/
+[sys mpfr]:  https://tspiteri.gitlab.io/rug/gmp_mpfr_sys/mpfr/
+[sys]:       https://tspiteri.gitlab.io/rug/gmp_mpfr_sys/
