@@ -23,7 +23,7 @@
 //! use std::mem;
 //! let one_third = 1.0_f64 / 3.0;
 //! unsafe {
-//!     let mut f: mpfr::mpfr_t = mem::uninitialized();
+//!     let mut f = mem::uninitialized();
 //!     mpfr::init2(&mut f, 53);
 //!     let dir = mpfr::set_d(&mut f, one_third, mpfr::rnd_t::RNDN);
 //!     assert_eq!(dir, 0);

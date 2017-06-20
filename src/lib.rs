@@ -53,8 +53,8 @@
 //!   on GMP,
 //! * multi-precision [floating-point numbers][rug flo] with correct
 //!   rounding based on MPFR, and
-//! * multi-precision [complex numbers][rug comp] with correct
-//!   rounding based on MPC.
+//! * multi-precision [complex numbers][rug com] with correct rounding
+//!   based on MPC.
 //!
 //! ## Notes
 //!

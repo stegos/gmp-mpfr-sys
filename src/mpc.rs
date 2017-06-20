@@ -26,7 +26,7 @@
 //! let one_third = 1.0_f64 / 3.0;
 //! let neg_inf = f64::NEG_INFINITY;
 //! unsafe {
-//!     let mut c: mpc::mpc_t = mem::uninitialized();
+//!     let mut c = mem::uninitialized();
 //!     mpc::init3(&mut c, 53, 53);
 //!     let dirs = mpc::set_d_d(&mut c, one_third, neg_inf, mpc::RNDNN);
 //!     assert_eq!(dirs, 0);

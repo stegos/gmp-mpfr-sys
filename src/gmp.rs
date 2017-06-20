@@ -22,7 +22,7 @@
 //! use gmp_mpfr_sys::gmp;
 //! use std::mem;
 //! unsafe {
-//!     let mut z: gmp::mpz_t = mem::uninitialized();
+//!     let mut z = mem::uninitialized();
 //!     gmp::mpz_init(&mut z);
 //!     gmp::mpz_set_ui(&mut z, 15);
 //!     let u = gmp::mpz_get_ui(&z);
