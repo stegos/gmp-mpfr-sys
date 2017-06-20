@@ -53,8 +53,9 @@ fn main() {
         build_doc(&src_dir, &doc_dir);
     }
 
-    // The cache dir is for testing purposes and is not stable, it is
-    // *not* meant for general use.
+    // The cache dir is for testing purposes, it is *not* meant for
+    // general use.
+    println!("cargo:rerun-if-env-changed=GMP_MPFR_SYS_CDOC");
     let cache_dir = env::var_os("GMP_MPFR_SYS_CACHE").map(|cache| {
         let version = cargo_env("CARGO_PKG_VERSION");
         PathBuf::from(cache).join(version)
@@ -257,12 +258,7 @@ fn load_cache(
     false
 }
 
-fn has_cache(
-    cache_dir: &PathBuf,
-    check: bool,
-    mpfr: bool,
-    mpc: bool,
-) -> bool {
+fn has_cache(cache_dir: &PathBuf, check: bool, mpfr: bool, mpc: bool) -> bool {
     let checks = ["nocheck", "check"];
     let req_checks = if check { &checks[1..] } else { &checks };
     for req_check in req_checks {
