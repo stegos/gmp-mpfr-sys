@@ -191,7 +191,7 @@
 //! [sys mpfr]:  mpfr/index.html
 
 #![warn(missing_docs)]
-#![doc(html_root_url = "https://tspiteri.gitlab.io/rug/gmp-mpfr-sys/",
+#![doc(html_root_url = "https://tspiteri.gitlab.io/rug/",
        test(attr(deny(warnings))))]
 
 pub mod gmp;
