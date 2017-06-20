@@ -16,7 +16,7 @@
 
 [package]
 name = "gmp-mpfr-sys"
-version = "1.0.3"
+version = "1.0.4"
 authors = ["Trevor Spiteri <trevor.spiteri@um.edu.mt>"]
 build = "build.rs"
 description = "Rust FFI bindings for GMP, MPFR and MPC"
@@ -38,10 +38,14 @@ default = ["mpfr", "mpc"]
 mpfr = []
 mpc = ["mpfr"]
 
-# After make, make check is executed according to the following:
-# * If ctest, make check
-# * If not ctest and cnotest, do not make check
-# * If not ctest and not cnotest, make check for release build only
+# When building the C libraries, make is followed by make check
+# according to the following:
+# * If ctest is enabled:
+#       make check
+# * If ctest is disabled and cnotest is enabled:
+#       do not make check
+# * If ctest is disabled and cnottest is disabled (default):
+#       make check for release build only
 
 ctest = []
 cnotest = []
