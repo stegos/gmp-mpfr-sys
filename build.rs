@@ -110,9 +110,9 @@ fn main() {
     }
     if compile_gmp {
         remove_dir(&build_dir);
-        if let Some(ref cache_dir) = cache_dir {
+        if let Some(ref dir) = cache_dir {
             // ignore error, do not bail if saving cache fails
-            save_cache(cache_dir, check, &gmp_ah, &mpfr_ah, &mpc_ah).is_err();
+            save_cache(dir, check, &gmp_ah, &mpfr_ah, &mpc_ah).is_err();
         }
     }
     process_gmp_header(&gmp_ah.1, &out_dir.join("gmp_h.rs"));
@@ -152,14 +152,16 @@ fn need_compile(
         None => true,
     };
     if gmp_fine && mpfr_fine && mpc_fine {
-        if let Some(ref cache_dir) = *cache_dir {
-            // ignore error, do not bail if saving cache fails
-            save_cache(cache_dir, check, gmp_ah, mpfr_ah, mpc_ah).is_err();
+        if let Some(ref dir) = *cache_dir {
+            if !has_cache(dir, check, mpfr_ah.is_some(), mpc_ah.is_some()) {
+                // ignore error, do not bail if saving cache fails
+                save_cache(dir, check, gmp_ah, mpfr_ah, mpc_ah).is_err();
+            }
         }
         return (false, false, false);
-    } else if let Some(ref cache_dir) = *cache_dir {
+    } else if let Some(ref dir) = *cache_dir {
         // if loading cache works, we're done
-        if load_cache(cache_dir, check, gmp_ah, mpfr_ah, mpc_ah) {
+        if load_cache(dir, check, gmp_ah, mpfr_ah, mpc_ah) {
             return (false, false, false);
         }
     }
@@ -247,6 +249,57 @@ fn load_cache(
         if let Some((ref a, ref h)) = *mpc_ah {
             ok = ok && fs::copy(dir.join("libmpc.a"), a).is_ok();
             ok = ok && fs::copy(dir.join("mpc.h"), h).is_ok();
+        }
+        if ok {
+            return true;
+        }
+    }
+    false
+}
+
+fn has_cache(
+    cache_dir: &PathBuf,
+    check: bool,
+    mpfr: bool,
+    mpc: bool,
+) -> bool {
+    let checks = ["nocheck", "check"];
+    let req_checks = if check { &checks[1..] } else { &checks };
+    for req_check in req_checks {
+        let check_dir = cache_dir.join(req_check);
+        // first try "gmp" directory
+        if !mpfr {
+            let dir = check_dir.join("gmp");
+            let mut ok = dir.join("libgmp.a").is_file();
+            ok = ok && dir.join("gmp.h").is_file();
+            if ok {
+                return true;
+            }
+        }
+        // next try "gmp_mpfr" directory
+        if !mpc {
+            let dir = check_dir.join("gmp_mpfr");
+            let mut ok = dir.join("libgmp.a").is_file();
+            ok = ok && dir.join("gmp.h").is_file();
+            if mpfr {
+                ok = ok && dir.join("libmpfr.a").is_file();
+                ok = ok && dir.join("mpfr.h").is_file();
+            }
+            if ok {
+                return true;
+            }
+        }
+        // finally try "gmp_mpfr_mpc" directory
+        let dir = check_dir.join("gmp_mpfr_mpc");
+        let mut ok = dir.join("libgmp.a").is_file();
+        ok = ok && dir.join("gmp.h").is_file();
+        if mpfr {
+            ok = ok && dir.join("libmpfr.a").is_file();
+            ok = ok && dir.join("mpfr.h").is_file();
+        }
+        if mpc {
+            ok = ok && dir.join("libmpc.a").is_file();
+            ok = ok && dir.join("mpc.h").is_file();
         }
         if ok {
             return true;
