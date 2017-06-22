@@ -18,11 +18,11 @@
 //!
 //! The `gmp-mpfr-sys` crate provides Rust FFI bindings for:
 //!
-//! * the [GNU Multiple Precision Arithmetic Library][gmp home] (GMP),
-//! * the [GNU MPFR Library][mpfr home], a library for
-//!   multiple-precision floating-point computations, and
-//! * [GNU MPC][mpc home], a library for the arithmetic of complex
-//!   numbers with arbitrarily high precision.
+//! * the [GNU Multiple Precision Arithmetic Library][gmp] (GMP),
+//! * the [GNU MPFR Library][mpfr], a library for multiple-precision
+//!   floating-point computations, and
+//! * [GNU MPC][mpc], a library for the arithmetic of complex numbers
+//!   with arbitrarily high precision.
 //!
 //! The source of the three libraries is included in the package.
 //!
@@ -37,8 +37,8 @@
 //! This crate provides a low-level interface to GMP, MPFR and MPC in
 //! three modules. The documentation of the three modules contains
 //! links for each function, constant and type into the respective
-//! documentation of [GMP][gmp], [MPFR][mpfr] and [MPC][mpc]
-//! libraries. The three modules of this crate are:
+//! documentation of [GMP][gmp doc], [MPFR][mpfr doc] and
+//! [MPC][mpc doc] libraries. The three modules of this crate are:
 //!
 //! * [`gmp`][sys gmp] provides external FFI bindings to GMP.
 //! * [`mpfr`][sys mpfr] provides external FFI bindings to MPFR.
@@ -160,7 +160,7 @@
 //! Then, to build a crate with a dependency on this crate:
 //!
 //! 1. Launch the MSYS MinGW 64-bit terminal from the start menu.
-//! (32-bit: Launch the MSYS2 MinGW 32-bit terminal instead.)
+//!    (32-bit: Launch the MSYS2 MinGW 32-bit terminal instead.)
 //!
 //! 2. Change to the crate directory.
 //!
@@ -172,26 +172,26 @@
 //!
 //! 3. Build the crate using `cargo`.
 //!
-//! [gmp home]:  https://gmplib.org/
-//! [gmp]:       https://tspiteri.gitlab.io/rug/gmp/index.html
-//! [gpl]:       https://www.gnu.org/licenses/gpl-3.0.html
-//! [lgpl]:      https://www.gnu.org/licenses/lgpl-3.0.en.html
-//! [mpc home]:  http://www.multiprecision.org/
-//! [mpc]:       https://tspiteri.gitlab.io/rug/mpc/index.html
-//! [mpfr home]: http://www.mpfr.org/
-//! [mpfr]:      https://tspiteri.gitlab.io/rug/mpfr/index.html
-//! [msys]:      https://msys2.github.io/
-//! [rug com]:   https://tspiteri.gitlab.io/rug/rug/struct.Complex.html
-//! [rug flo]:   https://tspiteri.gitlab.io/rug/rug/struct.Float.html
-//! [rug int]:   https://tspiteri.gitlab.io/rug/rug/struct.Integer.html
-//! [rug rat]:   https://tspiteri.gitlab.io/rug/rug/struct.Rational.html
-//! [rug]:       https://tspiteri.gitlab.io/rug/rug/index.html
-//! [sys gmp]:   gmp/index.html
-//! [sys mpc]:   mpc/index.html
-//! [sys mpfr]:  mpfr/index.html
+//! [gmp doc]:  https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/index.html
+//! [gmp]:      https://gmplib.org/
+//! [gpl]:      https://www.gnu.org/licenses/gpl-3.0.html
+//! [lgpl]:     https://www.gnu.org/licenses/lgpl-3.0.en.html
+//! [mpc doc]:  https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/index.html
+//! [mpc]:      http://www.multiprecision.org/
+//! [mpfr doc]: https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/index.html
+//! [mpfr]:     http://www.mpfr.org/
+//! [msys]:     https://msys2.github.io/
+//! [rug com]:  https://docs.rs/rug/*/rug/struct.Complex.html
+//! [rug flo]:  https://docs.rs/rug/*/rug/struct.Float.html
+//! [rug int]:  https://docs.rs/rug/*/rug/struct.Integer.html
+//! [rug rat]:  https://docs.rs/rug/*/rug/struct.Rational.html
+//! [rug]:      https://docs.rs/rug/
+//! [sys gmp]:  gmp/index.html
+//! [sys mpc]:  mpc/index.html
+//! [sys mpfr]: mpfr/index.html
 
 #![warn(missing_docs)]
-#![doc(html_root_url = "https://tspiteri.gitlab.io/rug/",
+#![doc(html_root_url = "https://tspiteri.gitlab.io/gmp-mpfr-sys/",
        test(attr(deny(warnings))))]
 
 pub mod gmp;

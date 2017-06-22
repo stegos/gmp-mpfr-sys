@@ -1,0 +1,8 @@
+pages:
+  script:
+  - "true"
+  artifacts:
+    paths:
+    - public
+  only:
+  - www
