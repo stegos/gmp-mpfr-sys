@@ -48,11 +48,6 @@ fn main() {
         (!there_is_env("CARGO_FEATURE_CNOTEST") &&
              profile == OsString::from("release"));
 
-    println!("cargo:rerun-if-env-changed=GMP_MPFR_SYS_CDOC");
-    if let Some(doc_dir) = env::var_os("GMP_MPFR_SYS_CDOC").map(PathBuf::from) {
-        build_doc(&src_dir, &doc_dir);
-    }
-
     // The cache dir is for testing purposes, it is *not* meant for
     // general use.
     println!("cargo:rerun-if-env-changed=GMP_MPFR_SYS_CACHE");
@@ -118,22 +113,6 @@ fn main() {
     }
     process_gmp_header(&gmp_ah.1, &out_dir.join("gmp_h.rs"));
     write_link_info(&lib_dir, mpfr_ah.is_some(), mpc_ah.is_some());
-}
-
-fn build_doc(src_dir: &PathBuf, doc_dir: &PathBuf) {
-    for &(l, d) in &[("gmp", GMP_DIR), ("mpfr", MPFR_DIR), ("mpc", MPC_DIR)] {
-        let src_file =
-            src_dir.join(d).join("doc").join(String::from(l) + ".texi");
-        let lib_dir = doc_dir.join(l);
-        create_dir(&lib_dir);
-        let mut makeinfo = Command::new("makeinfo");
-        makeinfo.arg(src_file).arg("--output").arg(lib_dir);
-        makeinfo.arg("--html").arg("--split").arg("chapter");
-        makeinfo.arg("--css-ref").arg("../normalize.css");
-        makeinfo.arg("--css-ref").arg("../rustdoc.css");
-        makeinfo.arg("--css-ref").arg("../main.css");
-        execute(makeinfo);
-    }
 }
 
 fn need_compile(
