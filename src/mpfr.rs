@@ -785,12 +785,20 @@ extern "C" {
 /// See: [`mpfr_nan_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fnan_005fp)
 #[inline]
 pub unsafe fn nan_p(op: mpfr_srcptr) -> c_int {
-    if (*op).exp == EXP_NAN { 1 } else { 0 }
+    if (*op).exp == EXP_NAN {
+        1
+    } else {
+        0
+    }
 }
 /// See: [`mpfr_inf_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005finf_005fp)
 #[inline]
 pub unsafe fn inf_p(op: mpfr_srcptr) -> c_int {
-    if (*op).exp == EXP_INF { 1 } else { 0 }
+    if (*op).exp == EXP_INF {
+        1
+    } else {
+        0
+    }
 }
 extern "C" {
     /// See: [`mpfr_number_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fnumber_005fp)
@@ -800,12 +808,20 @@ extern "C" {
 /// See: [`mpfr_zero_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fzero_005fp)
 #[inline]
 pub unsafe fn zero_p(op: mpfr_srcptr) -> c_int {
-    if (*op).exp == EXP_ZERO { 1 } else { 0 }
+    if (*op).exp == EXP_ZERO {
+        1
+    } else {
+        0
+    }
 }
 /// See: [`mpfr_regular_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fregular_005fp)
 #[inline]
 pub unsafe fn regular_p(op: mpfr_srcptr) -> c_int {
-    if (*op).exp > EXP_INF { 1 } else { 0 }
+    if (*op).exp > EXP_INF {
+        1
+    } else {
+        0
+    }
 }
 /// See: [`mpfr_sgn`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fsgn)
 #[inline]
@@ -1248,7 +1264,11 @@ extern "C" {
 /// See: [`mpfr_signbit`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fsignbit)
 #[inline]
 pub unsafe fn signbit(op: mpfr_srcptr) -> c_int {
-    if (*op).sign < 0 { 1 } else { 0 }
+    if (*op).sign < 0 {
+        1
+    } else {
+        0
+    }
 }
 /// See: [`mpfr_setsign`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fsetsign)
 #[inline]

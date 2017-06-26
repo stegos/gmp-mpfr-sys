@@ -233,7 +233,11 @@ pub unsafe fn mpz_get_ui(op: mpz_srcptr) -> c_ulong {
     let p = (*op).d;
     let n = (*op).size;
     let l = (*p) as c_ulong;
-    if n != 0 { l } else { 0 }
+    if n != 0 {
+        l
+    } else {
+        0
+    }
 }
 /// See: [`mpz_get_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fget_005fui)
 #[inline]
@@ -244,7 +248,11 @@ pub unsafe fn mpz_get_ui(op: mpz_srcptr) -> c_ulong {
     let l = (*p);
     let n = n.abs();
     if n <= 1 {
-        if n != 0 { l } else { 0 }
+        if n != 0 {
+            l
+        } else {
+            0
+        }
     } else {
         l + ((*(p.offset(1))) << NUMB_BITS)
     }
@@ -813,7 +821,11 @@ pub unsafe fn mpz_odd_p(op: mpz_srcptr) -> c_int {
 /// See: [`mpz_even_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005feven_005fp)
 #[inline]
 pub unsafe fn mpz_even_p(op: mpz_srcptr) -> c_int {
-    if mpz_odd_p(op) == 0 { 1 } else { 0 }
+    if mpz_odd_p(op) == 0 {
+        1
+    } else {
+        0
+    }
 }
 extern "C" {
     /// See: [`mpz_sizeinbase`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fsizeinbase)
@@ -1779,20 +1791,16 @@ extern "C" {
 
 /// See: [`allocate_function`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Custom-Allocation.html#index-allocate_005ffunction)
 pub type allocate_function = Option<
-    extern "C" fn(alloc_size: usize)
-                  -> *mut c_void,
+    extern "C" fn(alloc_size: usize) -> *mut c_void,
 >;
 /// See: [`reallocate_function`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Custom-Allocation.html#index-reallocate_005ffunction)
 pub type reallocate_function = Option<
-    unsafe extern "C" fn(ptr: *mut c_void,
-                         old_size: usize,
-                         new_size: usize)
-                         -> *mut c_void,
+    unsafe extern "C" fn(ptr: *mut c_void, old_size: usize, new_size: usize)
+        -> *mut c_void,
 >;
 /// See: [`free_function`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Custom-Allocation.html#index-free_005ffunction)
 pub type free_function = Option<
-    unsafe extern "C" fn(ptr: *mut c_void,
-                         size: usize),
+    unsafe extern "C" fn(ptr: *mut c_void, size: usize),
 >;
 extern "C" {
     /// See: [`mp_set_memory_functions`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Custom-Allocation.html#index-mp_005fset_005fmemory_005ffunctions)

@@ -347,17 +347,17 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
     }
     drop(reader);
 
-    let limb_bits =
-        limb_bits.expect("Cannot determine GMP_LIMB_BITS from gmp.h");
+    let limb_bits = limb_bits
+        .expect("Cannot determine GMP_LIMB_BITS from gmp.h");
 
-    let nail_bits =
-        nail_bits.expect("Cannot determine GMP_NAIL_BITS from gmp.h");
+    let nail_bits = nail_bits
+        .expect("Cannot determine GMP_NAIL_BITS from gmp.h");
     if nail_bits > 0 {
         println!("cargo:rustc-cfg=nails");
     }
 
-    let long_long_limb =
-        long_long_limb.expect("Cannot determine _LONG_LONG_LIMB from gmp.h");
+    let long_long_limb = long_long_limb
+        .expect("Cannot determine _LONG_LONG_LIMB from gmp.h");
     let long_long_limb = if long_long_limb {
         println!("cargo:rustc-cfg=long_long_limb");
         "::std::os::raw::c_ulonglong"
@@ -491,19 +491,20 @@ fn check_mingw(feature_mpfr: bool, _feature_mpc: bool) {
 
 fn rustc_later_eq(major: i32, minor: i32) -> bool {
     let rustc = cargo_env("RUSTC");
-    let output = Command::new(rustc).arg("--version").output().expect(
-        "unable to run rustc --version",
-    );
-    let version =
-        String::from_utf8(output.stdout).expect("unrecognized rustc version");
+    let output = Command::new(rustc)
+        .arg("--version")
+        .output()
+        .expect("unable to run rustc --version");
+    let version = String::from_utf8(output.stdout)
+        .expect("unrecognized rustc version");
     if !version.starts_with("rustc ") {
         panic!("unrecognized rustc version");
     }
     let remain = &version[6..];
     let dot = remain.find('.').expect("unrecognized rustc version");
-    let ver_major = remain[0..dot].parse::<i32>().expect(
-        "unrecognized rustc version",
-    );
+    let ver_major = remain[0..dot]
+        .parse::<i32>()
+        .expect("unrecognized rustc version");
     if ver_major < major {
         return false;
     } else if ver_major > major {
@@ -511,9 +512,9 @@ fn rustc_later_eq(major: i32, minor: i32) -> bool {
     }
     let remain = &remain[dot + 1..];
     let dot = remain.find('.').expect("unrecognized rustc version");
-    let ver_minor = remain[0..dot].parse::<i32>().expect(
-        "unrecognized rustc version",
-    );
+    let ver_minor = remain[0..dot]
+        .parse::<i32>()
+        .expect("unrecognized rustc version");
     ver_minor >= minor
 }
 
@@ -522,15 +523,15 @@ fn remove_dir(dir: &Path) {
         return;
     }
     assert!(dir.is_dir(), "Not a directory: {}", dir.display());
-    fs::remove_dir_all(dir).unwrap_or_else(|_| {
-        panic!("Unable to remove directory: {}", dir.display())
-    });
+    fs::remove_dir_all(dir).unwrap_or_else(
+        |_| panic!("Unable to remove directory: {}", dir.display()),
+    );
 }
 
 fn create_dir(dir: &Path) {
-    fs::create_dir_all(dir).unwrap_or_else(|_| {
-        panic!("Unable to create directory: {}", dir.display())
-    });
+    fs::create_dir_all(dir).unwrap_or_else(
+        |_| panic!("Unable to create directory: {}", dir.display()),
+    );
 }
 
 fn dir_relative(dir: &Path, rel_to: &Path) -> OsString {
@@ -584,9 +585,11 @@ fn make_and_check(build_dir: &Path, jobs: &OsStr, check: bool) {
     execute(make);
     if check {
         let mut make_check = Command::new("make");
-        make_check.current_dir(build_dir).arg("-j").arg(jobs).arg(
-            "check",
-        );
+        make_check
+            .current_dir(build_dir)
+            .arg("-j")
+            .arg(jobs)
+            .arg("check");
         execute(make_check);
     }
 }
@@ -608,9 +611,9 @@ fn symlink(dir: &Path, link: &OsStr, name: Option<&OsStr>) {
 
 fn execute(mut command: Command) {
     println!("$ {:?}", command);
-    let status = command.status().unwrap_or_else(|_| {
-        panic!("Unable to execute: {:?}", command)
-    });
+    let status = command
+        .status()
+        .unwrap_or_else(|_| panic!("Unable to execute: {:?}", command));
     if !status.success() {
         if let Some(code) = status.code() {
             panic!("Program failed with code {}: {:?}", code, command);
@@ -621,16 +624,14 @@ fn execute(mut command: Command) {
 }
 
 fn open(name: &Path) -> BufReader<File> {
-    let file = File::open(name).unwrap_or_else(|_| {
-        panic!("Cannot open file: {}", name.display())
-    });
+    let file = File::open(name)
+        .unwrap_or_else(|_| panic!("Cannot open file: {}", name.display()));
     BufReader::new(file)
 }
 
 fn create(name: &Path) -> BufWriter<File> {
-    let file = File::create(name).unwrap_or_else(|_| {
-        panic!("Cannot create file: {}", name.display())
-    });
+    let file = File::create(name)
+        .unwrap_or_else(|_| panic!("Cannot create file: {}", name.display()));
     BufWriter::new(file)
 }
 
@@ -639,19 +640,19 @@ fn read_line(
     buf: &mut String,
     name: &Path,
 ) -> usize {
-    reader.read_line(buf).unwrap_or_else(|_| {
-        panic!("Cannot read from: {}", name.display())
-    })
+    reader
+        .read_line(buf)
+        .unwrap_or_else(|_| panic!("Cannot read from: {}", name.display()))
 }
 
 fn write(writer: &mut BufWriter<File>, buf: &str, name: &Path) {
-    writer.write(buf.as_bytes()).unwrap_or_else(|_| {
-        panic!("Cannot write to: {}", name.display())
-    });
+    writer
+        .write(buf.as_bytes())
+        .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
 }
 
 fn flush(writer: &mut BufWriter<File>, name: &Path) {
-    writer.flush().unwrap_or_else(|_| {
-        panic!("Cannot write to: {}", name.display())
-    });
+    writer
+        .flush()
+        .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
 }
