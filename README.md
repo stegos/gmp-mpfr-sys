@@ -98,8 +98,8 @@ default-features = false
 features = ["mpfr"]
 ```
 
-Note that the the `mpc` feature will enable the `mpfr` feature, on
-which it depends.
+Note that the the `mpc` feature depends on, and will enable, the
+`mpfr` feature.
 
 ### Building on GNU/Linux
 
