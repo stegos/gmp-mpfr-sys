@@ -187,7 +187,7 @@ extern "C" {
 }
 /// See: [`mpz_set_q`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fset_005fq)
 #[inline]
-pub unsafe fn mpz_set_q(rop: mpz_ptr, op: mpq_srcptr) {
+pub unsafe extern "C" fn mpz_set_q(rop: mpz_ptr, op: mpq_srcptr) {
     mpz_tdiv_q(rop, mpq_numref_const(op), mpq_denref_const(op))
 }
 extern "C" {
@@ -319,7 +319,7 @@ extern "C" {
 }
 /// See: [`mpz_neg`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fneg)
 #[inline]
-pub unsafe fn mpz_neg(rop: mpz_ptr, op: mpz_srcptr) {
+pub unsafe extern "C" fn mpz_neg(rop: mpz_ptr, op: mpz_srcptr) {
     if rop as mpz_srcptr != op {
         mpz_set(rop, op);
     }
@@ -327,7 +327,7 @@ pub unsafe fn mpz_neg(rop: mpz_ptr, op: mpz_srcptr) {
 }
 /// See: [`mpz_abs`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fabs)
 #[inline]
-pub unsafe fn mpz_abs(rop: mpz_ptr, op: mpz_srcptr) {
+pub unsafe extern "C" fn mpz_abs(rop: mpz_ptr, op: mpz_srcptr) {
     if rop as mpz_srcptr != op {
         mpz_set(rop, op);
     }
@@ -439,7 +439,11 @@ extern "C" {
 }
 /// See: [`mpz_mod_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fmod_005fui)
 #[inline]
-pub unsafe fn mpz_mod_ui(r: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong {
+pub unsafe extern "C" fn mpz_mod_ui(
+    r: mpz_ptr,
+    n: mpz_srcptr,
+    d: c_ulong,
+) -> c_ulong {
     mpz_fdiv_r_ui(r, n, d)
 }
 extern "C" {
@@ -529,7 +533,7 @@ extern "C" {
 }
 /// See: [`mpz_perfect_square_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fperfect_005fsquare_005fp)
 #[inline]
-pub unsafe fn mpz_perfect_square_p(op: mpz_srcptr) -> c_int {
+pub unsafe extern "C" fn mpz_perfect_square_p(op: mpz_srcptr) -> c_int {
     let op_size = (*op).size;
     if op_size > 0 {
         mpn_perfect_square_p((*op).d, op_size as size_t)
@@ -579,12 +583,12 @@ extern "C" {
 }
 /// See: [`mpz_legendre`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005flegendre)
 #[inline]
-pub unsafe fn mpz_legendre(a: mpz_srcptr, p: mpz_srcptr) -> c_int {
+pub unsafe extern "C" fn mpz_legendre(a: mpz_srcptr, p: mpz_srcptr) -> c_int {
     mpz_jacobi(a, p)
 }
 /// See: [`mpz_kronecker`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fkronecker)
 #[inline]
-pub unsafe fn mpz_kronecker(a: mpz_srcptr, b: mpz_srcptr) -> c_int {
+pub unsafe extern "C" fn mpz_kronecker(a: mpz_srcptr, b: mpz_srcptr) -> c_int {
     mpz_jacobi(a, b)
 }
 extern "C" {
@@ -660,7 +664,7 @@ extern "C" {
 }
 /// See: [`mpz_sgn`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fsgn)
 #[inline]
-pub unsafe fn mpz_sgn(op: mpz_srcptr) -> c_int {
+pub unsafe extern "C" fn mpz_sgn(op: mpz_srcptr) -> c_int {
     if (*op).size < 0 {
         -1
     } else if (*op).size > 0 {
@@ -685,7 +689,7 @@ extern "C" {
 }
 /// See: [`mpz_popcount`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fpopcount)
 #[inline]
-pub unsafe fn mpz_popcount(op: mpz_srcptr) -> bitcnt_t {
+pub unsafe extern "C" fn mpz_popcount(op: mpz_srcptr) -> bitcnt_t {
     let size = (*op).size;
     if size > 0 {
         mpn_popcount((*op).d, size as size_t)
@@ -766,7 +770,7 @@ macro_rules! mpz_fits {
         #[cfg(not(nails))]
         $(#[$attr])*
         #[inline]
-        pub unsafe fn  $name(op: mpz_srcptr) -> c_int {
+        pub unsafe extern "C" fn  $name(op: mpz_srcptr) -> c_int {
             let n = (*op).size;
             let p = (*op).d;
             let fits = n == 0 || (n == 1 && (*p) <= $max as limb_t);
@@ -775,7 +779,7 @@ macro_rules! mpz_fits {
         #[cfg(nails)]
         $(#[$attr])*
         #[inline]
-        pub unsafe fn  $name(op: mpz_srcptr) -> c_int {
+        pub unsafe extern "C" fn  $name(op: mpz_srcptr) -> c_int {
             let n = (*op).size;
             let p = (*op).d;
             let fits =
@@ -815,12 +819,12 @@ extern "C" {
 }
 /// See: [`mpz_odd_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fodd_005fp)
 #[inline]
-pub unsafe fn mpz_odd_p(op: mpz_srcptr) -> c_int {
+pub unsafe extern "C" fn mpz_odd_p(op: mpz_srcptr) -> c_int {
     (*(*op).d) as c_int & if (*op).size != 0 { 1 } else { 0 }
 }
 /// See: [`mpz_even_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005feven_005fp)
 #[inline]
-pub unsafe fn mpz_even_p(op: mpz_srcptr) -> c_int {
+pub unsafe extern "C" fn mpz_even_p(op: mpz_srcptr) -> c_int {
     if mpz_odd_p(op) == 0 {
         1
     } else {
@@ -840,7 +844,7 @@ extern "C" {
 }
 /// See: [`mpz_getlimbn`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fgetlimbn)
 #[inline]
-pub unsafe fn mpz_getlimbn(op: mpz_srcptr, n: size_t) -> limb_t {
+pub unsafe extern "C" fn mpz_getlimbn(op: mpz_srcptr, n: size_t) -> limb_t {
     if n >= 0 && n < (*op).size.abs() as size_t {
         *((*op).d.offset(n as isize))
     } else {
@@ -849,7 +853,7 @@ pub unsafe fn mpz_getlimbn(op: mpz_srcptr, n: size_t) -> limb_t {
 }
 /// See: [`mpz_size`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fsize)
 #[inline]
-pub unsafe fn mpz_size(op: mpz_srcptr) -> usize {
+pub unsafe extern "C" fn mpz_size(op: mpz_srcptr) -> usize {
     (*op).size.abs() as usize
 }
 extern "C" {
@@ -964,7 +968,10 @@ extern "C" {
 }
 /// See: [`mpq_neg`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Rational-Number-Functions.html#index-mpq_005fneg)
 #[inline]
-pub unsafe fn mpq_neg(negated_operand: mpq_ptr, operand: mpq_srcptr) {
+pub unsafe extern "C" fn mpq_neg(
+    negated_operand: mpq_ptr,
+    operand: mpq_srcptr,
+) {
     if negated_operand as mpq_srcptr != operand {
         mpq_set(negated_operand, operand);
     }
@@ -972,7 +979,7 @@ pub unsafe fn mpq_neg(negated_operand: mpq_ptr, operand: mpq_srcptr) {
 }
 /// See: [`mpq_abs`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Rational-Number-Functions.html#index-mpq_005fabs)
 #[inline]
-pub unsafe fn mpq_abs(rop: mpq_ptr, op: mpq_srcptr) {
+pub unsafe extern "C" fn mpq_abs(rop: mpq_ptr, op: mpq_srcptr) {
     if rop as mpq_srcptr != op {
         mpq_set(rop, op);
     }
@@ -1000,7 +1007,7 @@ extern "C" {
 }
 /// See: [`mpq_sgn`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Rational-Number-Functions.html#index-mpq_005fsgn)
 #[inline]
-pub unsafe fn mpq_sgn(op: mpq_srcptr) -> c_int {
+pub unsafe extern "C" fn mpq_sgn(op: mpq_srcptr) -> c_int {
     if (*op).num.size < 0 {
         -1
     } else if (*op).num.size > 0 {
@@ -1022,9 +1029,9 @@ extern "C" {
 pub unsafe fn mpq_numref(op: mpq_ptr) -> mpz_ptr {
     (&mut (*op).num) as mpz_ptr
 }
-/// Constant version of [`mpq_numref`](fn.mpq_numref.html).
+/// Constant version of [`mpq_numref`](extern "C" fn.mpq_numref.html).
 #[inline]
-pub unsafe fn mpq_numref_const(op: mpq_srcptr) -> mpz_srcptr {
+pub unsafe extern "C" fn mpq_numref_const(op: mpq_srcptr) -> mpz_srcptr {
     (&(*op).num) as mpz_srcptr
 }
 /// See: [`mpq_denref`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Rational-Number-Functions.html#index-mpq_005fdenref)
@@ -1032,9 +1039,9 @@ pub unsafe fn mpq_numref_const(op: mpq_srcptr) -> mpz_srcptr {
 pub unsafe fn mpq_denref(op: mpq_ptr) -> mpz_ptr {
     (&mut (*op).den) as mpz_ptr
 }
-/// Constant version of [`mpq_denref`](fn.mpq_denref.html).
+/// Constant version of [`mpq_denref`](extern "C" fn.mpq_denref.html).
 #[inline]
-pub unsafe fn mpq_denref_const(op: mpq_srcptr) -> mpz_srcptr {
+pub unsafe extern "C" fn mpq_denref_const(op: mpq_srcptr) -> mpz_srcptr {
     (&(*op).den) as mpz_srcptr
 }
 extern "C" {
@@ -1241,7 +1248,7 @@ extern "C" {
 }
 /// See: [`mpf_sgn`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Floating_002dpoint-Functions.html#index-mpf_005fsgn)
 #[inline]
-pub unsafe fn mpf_sgn(op: mpf_srcptr) -> c_int {
+pub unsafe extern "C" fn mpf_sgn(op: mpf_srcptr) -> c_int {
     if (*op).size < 0 {
         -1
     } else if (*op).size > 0 {
@@ -1410,7 +1417,7 @@ extern "C" {
 }
 /// See: [`mpn_divmod_1`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Low_002dlevel-Functions.html#index-mpn_005fdivmod_005f1)
 #[inline]
-pub unsafe fn mpn_divmod_1(
+pub unsafe extern "C" fn mpn_divmod_1(
     r1p: mp_ptr,
     s2p: mp_srcptr,
     s2n: size_t,
@@ -1425,7 +1432,11 @@ extern "C" {
 }
 /// See: [`mpn_divexact_by3`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Low_002dlevel-Functions.html#index-mpn_005fdivexact_005fby3)
 #[inline]
-pub unsafe fn mpn_divexact_by3(rp: mp_ptr, sp: mp_srcptr, n: size_t) -> limb_t {
+pub unsafe extern "C" fn mpn_divexact_by3(
+    rp: mp_ptr,
+    sp: mp_srcptr,
+    n: size_t,
+) -> limb_t {
     mpn_divexact_by3c(rp, sp, n, 0)
 }
 extern "C" {

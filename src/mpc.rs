@@ -47,7 +47,7 @@ use mpfr;
 use std::os::raw::{c_char, c_int, c_long, c_ulong};
 
 #[inline]
-fn INEX_NEG(inex: c_int) -> c_int {
+extern "C" fn INEX_NEG(inex: c_int) -> c_int {
     match inex {
         2 => -1,
         0 => 0,
@@ -56,22 +56,22 @@ fn INEX_NEG(inex: c_int) -> c_int {
 }
 /// See: [Return Value](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/GNU-MPC-Basics.html#return_002dvalue)
 #[inline]
-pub fn INEX_RE(inex: c_int) -> c_int {
+pub extern "C" fn INEX_RE(inex: c_int) -> c_int {
     INEX_NEG((inex) & 3)
 }
 /// See: [Return Value](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/GNU-MPC-Basics.html#return_002dvalue)
 #[inline]
-pub fn INEX_IM(inex: c_int) -> c_int {
+pub extern "C" fn INEX_IM(inex: c_int) -> c_int {
     INEX_NEG((inex) >> 2)
 }
 /// See: [Return Value](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/GNU-MPC-Basics.html#return_002dvalue)
 #[inline]
-pub fn INEX1(inex: c_int) -> c_int {
+pub extern "C" fn INEX1(inex: c_int) -> c_int {
     inex & 15
 }
 /// See: [Return Value](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/GNU-MPC-Basics.html#return_002dvalue)
 #[inline]
-pub fn INEX2(inex: c_int) -> c_int {
+pub extern "C" fn INEX2(inex: c_int) -> c_int {
     inex >> 4
 }
 
@@ -287,7 +287,7 @@ extern "C" {
 }
 /// See: [`mpc_cmp_si`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fcmp_005fsi)
 #[inline]
-pub unsafe fn cmp_si(op1: mpc_srcptr, op2: c_long) -> c_int {
+pub unsafe extern "C" fn cmp_si(op1: mpc_srcptr, op2: c_long) -> c_int {
     cmp_si_si(op1, op2, 0)
 }
 
@@ -302,22 +302,22 @@ extern "C" {
 }
 /// See: [`mpc_realref`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005frealref)
 #[inline]
-pub unsafe fn realref(op: mpc_ptr) -> mpfr_ptr {
+pub unsafe extern "C" fn realref(op: mpc_ptr) -> mpfr_ptr {
     (&mut (*op).re) as mpfr_ptr
 }
 /// Constant version of [`realref`](fn.realref.html).
 #[inline]
-pub unsafe fn realref_const(op: mpc_srcptr) -> mpfr_srcptr {
+pub unsafe extern "C" fn realref_const(op: mpc_srcptr) -> mpfr_srcptr {
     (&(*op).re) as mpfr_srcptr
 }
 /// See: [`mpc_imagref`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fimagref)
 #[inline]
-pub unsafe fn imagref(op: mpc_ptr) -> mpfr_ptr {
+pub unsafe extern "C" fn imagref(op: mpc_ptr) -> mpfr_ptr {
     (&mut (*op).im) as mpfr_ptr
 }
 /// Constant version of [`imagref`](fn.imagref.html).
 #[inline]
-pub unsafe fn imagref_const(op: mpc_srcptr) -> mpfr_srcptr {
+pub unsafe extern "C" fn imagref_const(op: mpc_srcptr) -> mpfr_srcptr {
     (&(*op).im) as mpfr_srcptr
 }
 extern "C" {
@@ -389,7 +389,7 @@ extern "C" {
 }
 /// See: [`mpc_ui_sub`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fui_005fsub)
 #[inline]
-pub unsafe fn ui_sub(
+pub unsafe extern "C" fn ui_sub(
     rop: mpc_ptr,
     op1: c_ulong,
     op2: mpc_srcptr,
@@ -669,7 +669,11 @@ pub const VERSION_STRING: *const c_char = b"1.0.3\0" as *const u8 as
     *const c_char;
 /// See: [`MPC_VERSION_NUM`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fNUM)
 #[inline]
-pub fn VERSION_NUM(major: c_int, minor: c_int, patchlevel: c_int) -> c_int {
+pub extern "C" fn VERSION_NUM(
+    major: c_int,
+    minor: c_int,
+    patchlevel: c_int,
+) -> c_int {
     (major << 16) | (minor << 8) | patchlevel
 }
 
