@@ -349,7 +349,7 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
 
     let limb_bits = limb_bits
         .expect("Cannot determine GMP_LIMB_BITS from gmp.h");
-    println!("cargo:gmp_limb_bits={}", limb_bits);
+    println!("cargo:limb_bits={}", limb_bits);
 
     let nail_bits = nail_bits
         .expect("Cannot determine GMP_NAIL_BITS from gmp.h");
