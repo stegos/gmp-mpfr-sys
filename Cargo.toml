@@ -18,7 +18,6 @@
 name = "gmp-mpfr-sys"
 version = "1.0.5"
 authors = ["Trevor Spiteri <trevor.spiteri@um.edu.mt>"]
-build = "build.rs"
 description = "Rust FFI bindings for GMP, MPFR and MPC"
 documentation = "https://docs.rs/gmp-mpfr-sys/"
 repository = "https://gitlab.com/tspiteri/gmp-mpfr-sys"
@@ -26,6 +25,8 @@ readme = "README.md"
 keywords = ["gmp", "mpfr", "mpc", "mathematics", "numerics"]
 categories = ["external-ffi-bindings", "science"]
 license = "LGPL-3.0+"
+build = "build.rs"
+links = "gmp"
 
 [features]
 default = ["mpfr", "mpc"]
