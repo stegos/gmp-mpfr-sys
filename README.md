@@ -29,7 +29,7 @@ libraries. The three modules of this crate are:
 * [`mpc`][sys mpc] provides external FFI bindings to MPC.
 
 If you want a high-level API, consider using the [`rug`][rug] crate,
-which provides big integer and floating-point numers. Its main
+which provides big integer and floating-point numbers. Its main
 features are:
 
 * big [integers][rug int] with arbitrary precision based on GMP,
