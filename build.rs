@@ -499,7 +499,7 @@ fn rustc_later_eq(major: i32, minor: i32) -> bool {
     let version =
         String::from_utf8(output.stdout).expect("unrecognized rustc version");
     if !version.starts_with("rustc ") {
-        panic!("unrecognized rustc version");
+        panic!("unrecognized rustc version: {}", version);
     }
     let remain = &version[6..];
     let dot = remain.find('.').expect("unrecognized rustc version");
