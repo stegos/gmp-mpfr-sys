@@ -347,18 +347,18 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
     }
     drop(reader);
 
-    let limb_bits = limb_bits
-        .expect("Cannot determine GMP_LIMB_BITS from gmp.h");
+    let limb_bits =
+        limb_bits.expect("Cannot determine GMP_LIMB_BITS from gmp.h");
     println!("cargo:limb_bits={}", limb_bits);
 
-    let nail_bits = nail_bits
-        .expect("Cannot determine GMP_NAIL_BITS from gmp.h");
+    let nail_bits =
+        nail_bits.expect("Cannot determine GMP_NAIL_BITS from gmp.h");
     if nail_bits > 0 {
         println!("cargo:rustc-cfg=nails");
     }
 
-    let long_long_limb = long_long_limb
-        .expect("Cannot determine _LONG_LONG_LIMB from gmp.h");
+    let long_long_limb =
+        long_long_limb.expect("Cannot determine _LONG_LONG_LIMB from gmp.h");
     let long_long_limb = if long_long_limb {
         println!("cargo:rustc-cfg=long_long_limb");
         "::std::os::raw::c_ulonglong"
@@ -496,8 +496,8 @@ fn rustc_later_eq(major: i32, minor: i32) -> bool {
         .arg("--version")
         .output()
         .expect("unable to run rustc --version");
-    let version = String::from_utf8(output.stdout)
-        .expect("unrecognized rustc version");
+    let version =
+        String::from_utf8(output.stdout).expect("unrecognized rustc version");
     if !version.starts_with("rustc ") {
         panic!("unrecognized rustc version");
     }

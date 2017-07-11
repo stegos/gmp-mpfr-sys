@@ -656,8 +656,8 @@ extern "C" {
     pub fn get_version() -> *const c_char;
 }
 /// See: [`MPC_VERSION`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION)
-pub const VERSION: c_int = (VERSION_MAJOR << 16) | (VERSION_MINOR << 8) |
-    VERSION_PATCHLEVEL;
+pub const VERSION: c_int =
+    (VERSION_MAJOR << 16) | (VERSION_MINOR << 8) | VERSION_PATCHLEVEL;
 /// See: [`MPC_VERSION_MAJOR`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fMAJOR)
 pub const VERSION_MAJOR: c_int = 1;
 /// See: [`MPC_VERSION_MINOR`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fMINOR)
@@ -665,8 +665,8 @@ pub const VERSION_MINOR: c_int = 0;
 /// See: [`MPC_VERSION_PATCHLEVEL`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fPATCHLEVEL)
 pub const VERSION_PATCHLEVEL: c_int = 3;
 /// See: [`MPC_VERSION_STRING`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fSTRING)
-pub const VERSION_STRING: *const c_char = b"1.0.3\0" as *const u8 as
-    *const c_char;
+pub const VERSION_STRING: *const c_char =
+    b"1.0.3\0" as *const u8 as *const c_char;
 /// See: [`MPC_VERSION_NUM`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fNUM)
 #[inline]
 pub extern "C" fn VERSION_NUM(
