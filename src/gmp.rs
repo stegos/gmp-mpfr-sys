@@ -1029,7 +1029,7 @@ extern "C" {
 pub unsafe fn mpq_numref(op: mpq_ptr) -> mpz_ptr {
     (&mut (*op).num) as mpz_ptr
 }
-/// Constant version of [`mpq_numref`](extern "C" fn.mpq_numref.html).
+/// Constant version of [`mpq_numref`](fn.mpq_numref.html).
 #[inline]
 pub unsafe extern "C" fn mpq_numref_const(op: mpq_srcptr) -> mpz_srcptr {
     (&(*op).num) as mpz_srcptr
@@ -1039,7 +1039,7 @@ pub unsafe extern "C" fn mpq_numref_const(op: mpq_srcptr) -> mpz_srcptr {
 pub unsafe fn mpq_denref(op: mpq_ptr) -> mpz_ptr {
     (&mut (*op).den) as mpz_ptr
 }
-/// Constant version of [`mpq_denref`](extern "C" fn.mpq_denref.html).
+/// Constant version of [`mpq_denref`](fn.mpq_denref.html).
 #[inline]
 pub unsafe extern "C" fn mpq_denref_const(op: mpq_srcptr) -> mpz_srcptr {
     (&(*op).den) as mpz_srcptr
