@@ -191,7 +191,7 @@
 //! [sys mpfr]: mpfr/index.html
 
 #![warn(missing_docs)]
-#![doc(html_root_url = "https://docs.rs/gmp-mpfr-sys/1.0.5/",
+#![doc(html_root_url = "https://docs.rs/gmp-mpfr-sys/1.0.6/",
        test(attr(deny(warnings))))]
 
 pub mod gmp;
