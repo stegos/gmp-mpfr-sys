@@ -1,3 +1,4 @@
+sincos-overflow
 mpf-compat-signed
 tsprintf-setlocale
 printf-errno
