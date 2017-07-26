@@ -46,7 +46,7 @@ fn main() {
     let profile = cargo_env("PROFILE");
     let check = there_is_env("CARGO_FEATURE_CTEST") ||
         (!there_is_env("CARGO_FEATURE_CNOTEST") &&
-             profile == OsString::from("release"));
+            profile == OsString::from("release"));
 
     // The cache dir is for testing purposes, it is *not* meant for
     // general use.
