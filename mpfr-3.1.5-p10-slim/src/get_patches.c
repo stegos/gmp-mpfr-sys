@@ -25,5 +25,5 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 const char *
 mpfr_get_patches (void)
 {
-  return "sincos-overflow mpf-compat-signed tsprintf-setlocale printf-errno vasprintf-overflow-check tests-buffer-size ret-macro strtofr vasprintf";
+  return "mpf-compat-header sincos-overflow mpf-compat-signed tsprintf-setlocale printf-errno vasprintf-overflow-check tests-buffer-size ret-macro strtofr vasprintf";
 }

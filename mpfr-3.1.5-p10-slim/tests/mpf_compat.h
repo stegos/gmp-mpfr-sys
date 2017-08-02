@@ -22,7 +22,7 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 
 #include <stdlib.h>
 
-#include "mpfr-impl.h"
+#include "mpfr-test.h"
 
 #ifdef MPFR
 #include "mpf2mpfr.h"
