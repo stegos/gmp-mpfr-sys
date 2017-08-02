@@ -32,7 +32,69 @@
 //!     mpfr::clear(&mut f);
 //! }
 //! ```
-
+//!
+//! The following example is a translation of the [MPFR
+//! sample](http://www.mpfr.org/sample.html) found on the MPFR
+//! website. The program computes a lower bound on 1 + 1/1! + 1/2! + …
+//! + 1/100! using 200-bit precision. The program writes:
+//!
+//! `Sum is 2.7182818284590452353602874713526624977572470936999595749669131`
+//!
+//! ```rust
+//! use gmp_mpfr_sys::mpfr::{self, mpfr_t, rnd_t};
+//! use std::ffi::CStr;
+//! use std::fmt::Write;
+//! use std::mem;
+//! use std::os::raw::c_int;
+//! use std::ptr;
+//!
+//! fn main() {
+//!     unsafe {
+//!         let mut s = mem::uninitialized();
+//!         let mut t = mem::uninitialized();
+//!         let mut u = mem::uninitialized();
+//!
+//!         mpfr::init2(&mut t, 200);
+//!         mpfr::set_d(&mut t, 1.0, rnd_t::RNDD);
+//!         mpfr::init2(&mut s, 200);
+//!         mpfr::set_d(&mut s, 1.0, rnd_t::RNDD);
+//!         mpfr::init2(&mut u, 200);
+//!         for i in 1..101 {
+//!             mpfr::mul_ui(&mut t, &t, i, rnd_t::RNDU);
+//!             mpfr::set_d(&mut u, 1.0, rnd_t::RNDD);
+//!             mpfr::div(&mut u, &u, &t, rnd_t::RNDD);
+//!             mpfr::add(&mut s, &s, &u, rnd_t::RNDD);
+//!         }
+//!         let sr = mpfr_to_string(10, 0, &s, rnd_t::RNDD);
+//!         println!("Sum is {}", sr);
+//!         mpfr::clear(&mut s);
+//!         mpfr::clear(&mut t);
+//!         mpfr::clear(&mut u);
+//! #   assert_eq!(
+//! #       sr,
+//! #       "2.7182818284590452353602874713526624977572470936999595749669131"
+//! #   );
+//!     }
+//! }
+//!
+//! unsafe fn mpfr_to_string(
+//!     base: c_int, n: usize, op: *const mpfr_t, rnd: rnd_t
+//! ) -> String {
+//!     let mut exp = mem::uninitialized();
+//!     let str = mpfr::get_str(ptr::null_mut(), &mut exp, base, n, op, rnd);
+//!     let mut buf = CStr::from_ptr(str).to_string_lossy().into_owned();
+//!     mpfr::free_str(str);
+//!     if mpfr::regular_p(op) != 0 {
+//!         let idx = if buf.starts_with("-") { 2 } else { 1 };
+//!         buf.insert(idx, '.');
+//!         if exp != 1 {
+//!             buf.push(if base <= 10 { 'e' } else { '@' });
+//!             write!(buf, "{}", exp - 1).unwrap();
+//!         }
+//!     }
+//!     buf
+//! }
+//! ```
 #![allow(non_camel_case_types, non_snake_case)]
 
 use gmp;

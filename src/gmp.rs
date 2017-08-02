@@ -30,7 +30,6 @@
 //!     gmp::mpz_clear(&mut z);
 //! }
 //! ```
-
 #![allow(non_camel_case_types)]
 
 use std::os::raw::{c_char, c_int, c_long, c_uchar, c_uint, c_ulong, c_ushort,
