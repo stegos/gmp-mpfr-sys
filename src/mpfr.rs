@@ -98,6 +98,7 @@
 #![allow(non_camel_case_types, non_snake_case)]
 
 use gmp;
+
 use std::mem;
 use std::os::raw::{c_char, c_int, c_long, c_ulong, c_void};
 

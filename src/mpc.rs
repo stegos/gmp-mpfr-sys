@@ -43,6 +43,7 @@
 
 use gmp;
 use mpfr;
+
 use std::os::raw::{c_char, c_int, c_long, c_ulong};
 
 #[inline]
