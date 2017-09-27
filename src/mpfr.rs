@@ -1565,8 +1565,8 @@ pub unsafe extern "C" fn div_2exp(
 /// See: [`mpfr_custom_get_size`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005fget_005fsize)
 #[inline]
 pub unsafe extern "C" fn custom_get_size(prec: prec_t) -> usize {
-    ((prec + gmp::NUMB_BITS as prec_t - 1) / gmp::NUMB_BITS as prec_t) as usize
-        * mem::size_of::<gmp::limb_t>()
+    let bits = prec_t::from(gmp::NUMB_BITS);
+    ((prec + bits - 1) / bits) as usize * mem::size_of::<gmp::limb_t>()
 }
 /// See: [`mpfr_custom_init`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005finit)
 #[inline]

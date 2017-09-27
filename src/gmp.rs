@@ -535,7 +535,7 @@ extern "C" {
 pub unsafe extern "C" fn mpz_perfect_square_p(op: mpz_srcptr) -> c_int {
     let op_size = (*op).size;
     if op_size > 0 {
-        mpn_perfect_square_p((*op).d, op_size as size_t)
+        mpn_perfect_square_p((*op).d, op_size.into())
     } else if op_size >= 0 {
         1
     } else {
@@ -691,7 +691,7 @@ extern "C" {
 pub unsafe extern "C" fn mpz_popcount(op: mpz_srcptr) -> bitcnt_t {
     let size = (*op).size;
     if size > 0 {
-        mpn_popcount((*op).d, size as size_t)
+        mpn_popcount((*op).d, size.into())
     } else if size < 0 {
         c_ulong::max_value()
     } else {
@@ -850,7 +850,7 @@ extern "C" {
 /// See: [`mpz_getlimbn`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fgetlimbn)
 #[inline]
 pub unsafe extern "C" fn mpz_getlimbn(op: mpz_srcptr, n: size_t) -> limb_t {
-    if n >= 0 && n < (*op).size.abs() as size_t {
+    if n >= 0 && n < (*op).size.abs().into() {
         *((*op).d.offset(n as isize))
     } else {
         0
