@@ -44,9 +44,9 @@ fn main() {
     let out_dir = PathBuf::from(cargo_env("OUT_DIR"));
     let jobs = cargo_env("NUM_JOBS");
     let profile = cargo_env("PROFILE");
-    let check = there_is_env("CARGO_FEATURE_CTEST") ||
-        (!there_is_env("CARGO_FEATURE_CNOTEST") &&
-            profile == OsString::from("release"));
+    let check = there_is_env("CARGO_FEATURE_CTEST")
+        || (!there_is_env("CARGO_FEATURE_CNOTEST")
+            && profile == OsString::from("release"));
 
     // The cache dir is for testing purposes, it is *not* meant for
     // general use.
@@ -387,7 +387,6 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
     let mut rs = create(out_file);
     write(&mut rs, &content, out_file);
     flush(&mut rs, out_file);
-
 }
 
 fn build_mpfr(

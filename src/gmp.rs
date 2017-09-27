@@ -769,23 +769,29 @@ macro_rules! mpz_fits {
         #[cfg(not(nails))]
         $(#[$attr])*
         #[inline]
-        pub unsafe extern "C" fn  $name(op: mpz_srcptr) -> c_int {
+        pub unsafe extern "C" fn $name(op: mpz_srcptr) -> c_int {
             let n = (*op).size;
             let p = (*op).d;
             let fits = n == 0 || (n == 1 && (*p) <= $max as limb_t);
-            if fits { 1 } else { 0 }
+            if fits {
+                1
+            } else {
+                0
+            }
         }
         #[cfg(nails)]
         $(#[$attr])*
         #[inline]
-        pub unsafe extern "C" fn  $name(op: mpz_srcptr) -> c_int {
+        pub unsafe extern "C" fn $name(op: mpz_srcptr) -> c_int {
             let n = (*op).size;
             let p = (*op).d;
-            let fits =
-                n == 0 || (n == 1 && (*p) <= $max as limb_t) ||
-                    (n == 2 &&
-                        (*(p.offset(1))) <= $max as limb_t >> NUMB_BITS);
-            if fits { 1 } else { 0 }
+            let fits = n == 0 || (n == 1 && (*p) <= $max as limb_t)
+                || (n == 2 && (*(p.offset(1))) <= $max as limb_t >> NUMB_BITS);
+            if fits {
+                1
+            } else {
+                0
+            }
         }
     }
 }
