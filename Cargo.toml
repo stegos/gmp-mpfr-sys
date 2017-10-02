@@ -28,6 +28,10 @@ license = "LGPL-3.0+"
 build = "build.rs"
 links = "gmp"
 
+[badges]
+
+maintenance = { status = "actively-developed" }
+
 [features]
 default = ["mpfr", "mpc"]
 
