@@ -170,7 +170,7 @@ Then, to build a crate with a dependency on this crate:
 [rug int]:  https://docs.rs/rug/*/rug/struct.Integer.html
 [rug rat]:  https://docs.rs/rug/*/rug/struct.Rational.html
 [rug]:      https://docs.rs/rug/
-[sys gmp]:  https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp_mpfr_sys/gmp/index.html
-[sys mpc]:  https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp_mpfr_sys/mpc/index.html
-[sys mpfr]: https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp_mpfr_sys/mpfr/index.html
-[sys]:      https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp_mpfr_sys/index.html
+[sys gmp]:  https://docs.rs/gmp-mpfr-sys/*/gmp_mpfr_sys/gmp/index.html
+[sys mpc]:  https://docs.rs/gmp-mpfr-sys/*/gmp_mpfr_sys/mpc/index.html
+[sys mpfr]: https://docs.rs/gmp-mpfr-sys/*/gmp_mpfr_sys/mpfr/index.html
+[sys]:      https://docs.rs/gmp-mpfr-sys/
