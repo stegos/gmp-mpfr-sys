@@ -185,7 +185,7 @@
 //! [rug flo]:  https://docs.rs/rug/*/rug/struct.Float.html
 //! [rug int]:  https://docs.rs/rug/*/rug/struct.Integer.html
 //! [rug rat]:  https://docs.rs/rug/*/rug/struct.Rational.html
-//! [rug]:      https://docs.rs/rug/
+//! [rug]:      https://docs.rs/rug/*/
 //! [sys gmp]:  gmp/index.html
 //! [sys mpc]:  mpc/index.html
 //! [sys mpfr]: mpfr/index.html

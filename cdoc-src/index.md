@@ -54,9 +54,5 @@ the [GNU LGPL][lgpl] and [GNU GPL][gpl] for details.
 [rug flo]:  https://docs.rs/rug/*/rug/struct.Float.html
 [rug int]:  https://docs.rs/rug/*/rug/struct.Integer.html
 [rug rat]:  https://docs.rs/rug/*/rug/struct.Rational.html
-[rug]:      https://docs.rs/rug/
-[rugcom]:   https://tspiteri.gitlab.io/gmp-mpfr/rugcom/
-[rugflo]:   https://tspiteri.gitlab.io/gmp-mpfr/rugflo/
-[rugint]:   https://tspiteri.gitlab.io/gmp-mpfr/rugint/
-[rugrat]:   https://tspiteri.gitlab.io/gmp-mpfr/rugrat/
-[sys]:      https://docs.rs/gmp-mpfr-sys/
+[rug]:      https://docs.rs/rug/*/
+[sys]:      https://docs.rs/gmp-mpfr-sys/^1.0.7/
