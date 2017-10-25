@@ -35,8 +35,9 @@
 //!
 //! The following example is a translation of the [MPFR
 //! sample](http://www.mpfr.org/sample.html) found on the MPFR
-//! website. The program computes a lower bound on 1 + 1/1! + 1/2! + …
-//! + 1/100! using 200-bit precision. The program writes:
+//! website. The program computes a lower bound on
+//! 1 + 1/1! + 1/2! + … + 1/100!
+//! using 200-bit precision. The program writes:
 //!
 //! `Sum is 2.7182818284590452353602874713526624977572470936999595749669131`
 //!
