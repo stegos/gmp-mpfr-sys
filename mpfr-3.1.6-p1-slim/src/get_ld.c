@@ -41,6 +41,9 @@ mpfr_get_ld (mpfr_srcptr x, mpfr_rnd_t rnd_mode)
       mpfr_exp_t sh; /* exponent shift, so that x/2^sh is in the double range */
       mpfr_t y, z;
       int sign;
+      MPFR_SAVE_EXPO_DECL (expo);
+
+      MPFR_SAVE_EXPO_MARK (expo);
 
       /* first round x to the target long double precision, so that
          all subsequent operations are exact (this avoids double rounding
@@ -103,6 +106,7 @@ mpfr_get_ld (mpfr_srcptr x, mpfr_rnd_t rnd_mode)
         }
       if (sign < 0)
         r = -r;
+      MPFR_SAVE_EXPO_FREE (expo);
       return r;
     }
 }
