@@ -55,4 +55,4 @@ the [GNU LGPL][lgpl] and [GNU GPL][gpl] for details.
 [rug int]:  https://docs.rs/rug/*/rug/struct.Integer.html
 [rug rat]:  https://docs.rs/rug/*/rug/struct.Rational.html
 [rug]:      https://docs.rs/rug/*/
-[sys]:      https://docs.rs/gmp-mpfr-sys/^1.0.7/
+[sys]:      https://docs.rs/gmp-mpfr-sys/^1.0.8/

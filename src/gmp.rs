@@ -772,7 +772,7 @@ macro_rules! mpz_fits {
         pub unsafe extern "C" fn $name(op: mpz_srcptr) -> c_int {
             let n = (*op).size;
             let p = (*op).d;
-            let fits = n == 0 || (n == 1 && (*p) <= $max as limb_t);
+            let fits = n == 0 || (n == 1 && (*p) <= limb_t::from($max));
             if fits {
                 1
             } else {
@@ -785,8 +785,9 @@ macro_rules! mpz_fits {
         pub unsafe extern "C" fn $name(op: mpz_srcptr) -> c_int {
             let n = (*op).size;
             let p = (*op).d;
-            let fits = n == 0 || (n == 1 && (*p) <= $max as limb_t)
-                || (n == 2 && (*(p.offset(1))) <= $max as limb_t >> NUMB_BITS);
+            let fits = n == 0 || (n == 1 && (*p) <= limb_t::from($max))
+                || (n == 2
+                    && (*(p.offset(1))) <= limb_t::from($max) >> NUMB_BITS);
             if fits {
                 1
             } else {
