@@ -117,18 +117,12 @@ pub struct mpf_t {
     pub d: *mut limb_t,
 }
 
-#[repr(C)]
-#[derive(Clone, Copy, Debug)]
-enum randalg_t {
-    _DEFAULT = 0,
-}
-
 /// See: [`gmp_randstate_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/GMP-Basics.html#index-gmp_005frandstate_005ft)
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct randstate_t {
     seed: mpz_t,
-    alg: randalg_t,
+    alg: c_int,
     algdata: *mut c_void,
 }
 
