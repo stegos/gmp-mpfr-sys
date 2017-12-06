@@ -106,6 +106,7 @@ use std::os::raw::{c_char, c_int, c_long, c_ulong, c_void};
 /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
+#[allow(deprecated)]
 pub enum rnd_t {
     /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
     RNDN = 0,
@@ -117,9 +118,11 @@ pub enum rnd_t {
     RNDD = 3,
     /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
     RNDA = 4,
-    /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
+    // for future support of faithful rounding:
+    #[doc(hidden)]
     RNDF = 5,
-    /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
+    #[doc(hidden)]
+    #[deprecated(since = "1.0.9", note = "do not use!")]
     RNDNA = -1,
 }
 

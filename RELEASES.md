@@ -1,3 +1,9 @@
+* Hide documentation for `mpfr::rnd_t::RNDF`; `MPFR_RNDF` is not
+  implemented yet by MPFR.
+* Deprecate and hide documentation for `mpfr::rnd_t::RNDNA`;
+  `MPFR_RNDNA` is not documented by MPFR, and *mpfr.h* says it should
+  not be used.
+
 Version 1.0.8 (2017-11-08)
 ==========================
 
