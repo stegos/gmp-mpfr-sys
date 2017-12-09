@@ -101,7 +101,10 @@
 use gmp;
 
 use std::mem;
-use std::os::raw::{c_char, c_int, c_long, c_ulong, c_void};
+use std::os::raw::{c_char, c_int, c_long, c_uint, c_ulong, c_void};
+
+/// See: [`mpfr_prec_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005fprec_005ft)
+pub type prec_t = c_long;
 
 /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
 #[repr(C)]
@@ -121,21 +124,22 @@ pub enum rnd_t {
     /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
     RNDF = 5,
     #[doc(hidden)]
-    #[deprecated(since = "1.0.9", note = "do not use!")]
+    #[deprecated(since = "1.1.0", note = "do not use!")]
     RNDNA = -1,
 }
 
-/// See: [`mpfr_prec_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005fprec_005ft)
-pub type prec_t = c_long;
+/// See: [`mpfr_flags_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005fflags_005ft)
+pub type flags_t = c_uint;
+
 /// See: [Exception Related Functions](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#Exception-Related-Functions)
 pub type exp_t = c_long;
 
 type uexp_t = c_ulong;
 
 /// See: [Nomenclature and Types](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#Nomenclature-and-Types)
-pub const PREC_MIN: prec_t = 2;
+pub const PREC_MIN: prec_t = 1;
 /// See: [Nomenclature and Types](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#Nomenclature-and-Types)
-pub const PREC_MAX: prec_t = (!(0 as uprec_t) >> 1) as prec_t;
+pub const PREC_MAX: prec_t = ((!(0 as uprec_t) >> 1) - 256) as prec_t;
 
 /// See: [`mpfr_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005ft)
 /// and [Internals](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#Internals)
@@ -161,12 +165,18 @@ pub const ZERO_KIND: c_int = 2;
 /// See: [`mpfr_custom_init_set`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005finit_005fset)
 pub const REGULAR_KIND: c_int = 3;
 
+/// See: [`mpfr_free_cache2`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffree_005fcache2)
+pub const FREE_LOCAL_CACHE: c_int = 1;
+/// See: [`mpfr_free_cache2`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffree_005fcache2)
+pub const FREE_GLOBAL_CACHE: c_int = 2;
+
 // Types for function declarations in this file.
 
 type uprec_t = c_ulong;
 type mpz_srcptr = *const gmp::mpz_t;
 type mpz_ptr = *mut gmp::mpz_t;
 type mpq_srcptr = *const gmp::mpq_t;
+type mpq_ptr = *mut gmp::mpq_t;
 type mpf_srcptr = *const gmp::mpf_t;
 type mpf_ptr = *mut gmp::mpf_t;
 type randstate_ptr = *mut gmp::randstate_t;
@@ -422,6 +432,9 @@ extern "C" {
     /// See: [`mpfr_get_z`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fz)
     #[link_name = "mpfr_get_z"]
     pub fn get_z(z: mpz_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
+    /// See: [`mpfr_get_q`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fq)
+    #[link_name = "mpfr_get_q"]
+    pub fn get_q(rop: mpq_ptr, op: mpfr_srcptr);
     /// See: [`mpfr_get_f`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fget_005ff)
     #[link_name = "mpfr_get_f"]
     pub fn get_f(rop: mpf_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
@@ -728,8 +741,18 @@ extern "C" {
     /// See: [`mpfr_cbrt`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fcbrt)
     #[link_name = "mpfr_cbrt"]
     pub fn cbrt(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
+    /// See: [`mpfr_rootn_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005frootn_005fui)
+    #[link_name = "mpfr_root"]
+    pub fn rootn_ui(
+        rop: mpfr_ptr,
+        op: mpfr_srcptr,
+        k: c_ulong,
+        rnd: rnd_t,
+    ) -> c_int;
     /// See: [`mpfr_root`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005froot)
     #[link_name = "mpfr_root"]
+    #[deprecated(since = "1.1.0",
+                 note = "replaced by the slightly different `rootn_ui`")]
     pub fn root(
         rop: mpfr_ptr,
         op: mpfr_srcptr,
@@ -965,12 +988,18 @@ extern "C" {
     /// See: [`mpfr_log`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005flog)
     #[link_name = "mpfr_log"]
     pub fn log(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
+    /// See: [`mpfr_log_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005flog_005fui)
+    #[link_name = "mpfr_log_ui"]
+    pub fn log_ui(rop: mpfr_ptr, op: c_ulong, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_log2`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005flog2)
     #[link_name = "mpfr_log2"]
     pub fn log2(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_log10`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005flog10)
     #[link_name = "mpfr_log10"]
     pub fn log10(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
+    /// See: [`mpfr_log1p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005flog1p)
+    #[link_name = "mpfr_log1p"]
+    pub fn log1p(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fexp)
     #[link_name = "mpfr_exp"]
     pub fn exp(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
@@ -980,6 +1009,9 @@ extern "C" {
     /// See: [`mpfr_exp10`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fexp10)
     #[link_name = "mpfr_exp10"]
     pub fn exp10(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
+    /// See: [`mpfr_expm1`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fexpm1)
+    #[link_name = "mpfr_expm1"]
+    pub fn expm1(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_cos`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fcos)
     #[link_name = "mpfr_cos"]
     pub fn cos(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
@@ -1061,12 +1093,6 @@ extern "C" {
     /// See: [`mpfr_fac_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffac_005fui)
     #[link_name = "mpfr_fac_ui"]
     pub fn fac_ui(rop: mpfr_ptr, op: c_ulong, rnd: rnd_t) -> c_int;
-    /// See: [`mpfr_log1p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005flog1p)
-    #[link_name = "mpfr_log1p"]
-    pub fn log1p(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
-    /// See: [`mpfr_expm1`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fexpm1)
-    #[link_name = "mpfr_expm1"]
-    pub fn expm1(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_eint`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005feint)
     #[link_name = "mpfr_eint"]
     pub fn eint(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
@@ -1076,6 +1102,14 @@ extern "C" {
     /// See: [`mpfr_gamma`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fgamma)
     #[link_name = "mpfr_gamma"]
     pub fn gamma(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
+    /// See: [`mpfr_gamma_inc`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fgamma_005finc)
+    #[link_name = "mpfr_gamma_inc"]
+    pub fn gamma_inc(
+        rop: mpfr_ptr,
+        op: mpfr_srcptr,
+        op2: mpfr_srcptr,
+        rnd: rnd_t,
+    ) -> c_int;
     /// See: [`mpfr_lngamma`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005flngamma)
     #[link_name = "mpfr_lngamma"]
     pub fn lngamma(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
@@ -1090,6 +1124,14 @@ extern "C" {
     /// See: [`mpfr_digamma`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fdigamma)
     #[link_name = "mpfr_digamma"]
     pub fn digamma(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
+    /// See: [`mpfr_beta`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fbeta)
+    #[link_name = "mpfr_beta"]
+    pub fn beta(
+        rop: mpfr_ptr,
+        op1: mpfr_srcptr,
+        op2: mpfr_srcptr,
+        rnd: rnd_t,
+    ) -> c_int;
     /// See: [`mpfr_zeta`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fzeta)
     #[link_name = "mpfr_zeta"]
     pub fn zeta(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
@@ -1138,6 +1180,26 @@ extern "C" {
         op3: mpfr_srcptr,
         rnd: rnd_t,
     ) -> c_int;
+    /// See: [`mpfr_fmma`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffmma)
+    #[link_name = "mpfr_fmma"]
+    pub fn fmma(
+        rop: mpfr_ptr,
+        op1: mpfr_srcptr,
+        op2: mpfr_srcptr,
+        op3: mpfr_srcptr,
+        op4: mpfr_srcptr,
+        rnd: rnd_t,
+    ) -> c_int;
+    /// See: [`mpfr_fmms`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffmms)
+    #[link_name = "mpfr_fmms"]
+    pub fn fmms(
+        rop: mpfr_ptr,
+        op1: mpfr_srcptr,
+        op2: mpfr_srcptr,
+        op3: mpfr_srcptr,
+        op4: mpfr_srcptr,
+        rnd: rnd_t,
+    ) -> c_int;
     /// See: [`mpfr_agm`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fagm)
     #[link_name = "mpfr_agm"]
     pub fn agm(
@@ -1172,6 +1234,9 @@ extern "C" {
     /// See: [`mpfr_free_cache`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffree_005fcache)
     #[link_name = "mpfr_free_cache"]
     pub fn free_cache();
+    /// See: [`mpfr_free_cache2`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffree_005fcache2)
+    #[link_name = "mpfr_free_cache2"]
+    pub fn free_cache2(way: c_int);
     /// See: [`mpfr_sum`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fsum)
     #[link_name = "mpfr_sum"]
     pub fn sum(
@@ -1227,6 +1292,11 @@ pub unsafe extern "C" fn round(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int {
     #[allow(deprecated)]
     rint(rop, op, rnd_t::RNDNA)
 }
+extern "C" {
+    /// See: [`mpfr_roundeven`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005froundeven)
+    #[link_name = "mpfr_roundeven"]
+    pub fn roundeven(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int;
+}
 /// See: [`mpfr_trunc`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ftrunc)
 #[inline]
 pub unsafe extern "C" fn trunc(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int {
@@ -1242,6 +1312,9 @@ extern "C" {
     /// See: [`mpfr_rint_round`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005frint_005fround)
     #[link_name = "mpfr_rint_round"]
     pub fn rint_round(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
+    /// See: [`mpfr_rint_roundeven`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005frint_005froundeven)
+    #[link_name = "mpfr_rint_roundeven"]
+    pub fn rint_roundeven(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_rint_trunc`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005frint_005ftrunc)
     #[link_name = "mpfr_rint_trunc"]
     pub fn rint_trunc(rop: mpfr_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
@@ -1260,6 +1333,15 @@ extern "C" {
     #[link_name = "mpfr_fmod"]
     pub fn fmod(
         r: mpfr_ptr,
+        x: mpfr_srcptr,
+        y: mpfr_srcptr,
+        rnd: rnd_t,
+    ) -> c_int;
+    /// See: [`mpfr_fmodquo`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffmodquo)
+    #[link_name = "mpfr_fmodquo"]
+    pub fn fmodquo(
+        r: mpfr_ptr,
+        q: *mut c_long,
         x: mpfr_srcptr,
         y: mpfr_srcptr,
         rnd: rnd_t,
@@ -1311,7 +1393,27 @@ extern "C" {
     /// See: [`mpfr_print_rnd_mode`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fprint_005frnd_005fmode)
     #[link_name = "mpfr_print_rnd_mode"]
     pub fn print_rnd_mode(rnd: rnd_t) -> *const c_char;
-
+}
+/// See: [`mpfr_round_nearest_away`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fround_005fnearest_005faway)
+#[macro_export]
+macro_rules! round_nearest_away {
+    ($foo:expr, $rop:expr $(, $op:expr)*) => {{
+        use std::os::raw::c_int;
+        type mpfr_ptr = *mut $crate::mpfr::mpfr_t;
+        let rop: mpfr_ptr = $rop;
+        extern "C" {
+            fn mpfr_round_nearest_away_begin(rop: mpfr_ptr);
+            fn mpfr_round_nearest_away_end(rop: mpfr_ptr, inex: c_int)
+                -> c_int;
+        }
+        mpfr_round_nearest_away_begin(rop);
+        mpfr_round_nearest_away_end(
+            rop,
+            $foo(rop $(, $op)*, $crate::mpfr::rnd_t::RNDN),
+        )
+    }};
+}
+extern "C" {
     // Miscellaneous Functions
 
     /// See: [`mpfr_nexttoward`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fnexttoward)
@@ -1345,14 +1447,21 @@ extern "C" {
     /// See: [`mpfr_urandom`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005furandom)
     #[link_name = "mpfr_urandom"]
     pub fn urandom(rop: mpfr_ptr, state: randstate_ptr, rnd: rnd_t) -> c_int;
+    /// See: [`mpfr_nrandom`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fnrandom)
+    #[link_name = "mpfr_nrandom"]
+    pub fn nrandom(rop1: mpfr_ptr, state: randstate_ptr, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_grandom`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fgrandom)
     #[link_name = "mpfr_grandom"]
+    #[deprecated(since = "1.1.0", note = "replaced by `nrandom`")]
     pub fn grandom(
         rop1: mpfr_ptr,
         rop2: mpfr_ptr,
         state: randstate_ptr,
         rnd: rnd_t,
     ) -> c_int;
+    /// See: [`mpfr_erandom`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ferandom)
+    #[link_name = "mpfr_erandom"]
+    pub fn erandom(rop1: mpfr_ptr, state: randstate_ptr, rnd: rnd_t) -> c_int;
 }
 /// See: [`mpfr_get_exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fexp)
 #[inline]
@@ -1426,12 +1535,18 @@ extern "C" {
     /// See: [`mpfr_buildopt_tls_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fbuildopt_005ftls_005fp)
     #[link_name = "mpfr_buildopt_tls_p"]
     pub fn buildopt_tls_p() -> c_int;
+    /// See: [`mpfr_buildopt_float128_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fbuildopt_005ffloat128_005fp)
+    #[link_name = "mpfr_buildopt_float128_p"]
+    pub fn buildopt_float128_p() -> c_int;
     /// See: [`mpfr_buildopt_decimal_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fbuildopt_005fdecimal_005fp)
     #[link_name = "mpfr_buildopt_decimal_p"]
     pub fn buildopt_decimal_p() -> c_int;
     /// See: [`mpfr_buildopt_gmpinternals_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fbuildopt_005fgmpinternals_005fp)
     #[link_name = "mpfr_buildopt_gmpinternals_p"]
     pub fn buildopt_gmpinternals_p() -> c_int;
+    /// See: [`mpfr_buildopt_sharedcache_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fbuildopt_005fsharedcache_005fp)
+    #[link_name = "mpfr_buildopt_sharedcache_p"]
+    pub fn buildopt_sharedcache_p() -> c_int;
     /// See: [`mpfr_buildopt_tune_case`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fbuildopt_005ftune_005fcase)
     #[link_name = "mpfr_buildopt_tune_case"]
     pub fn buildopt_tune_case() -> *const c_char;
@@ -1525,6 +1640,21 @@ extern "C" {
     /// See: [`mpfr_erangeflag_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ferangeflag_005fp)
     #[link_name = "mpfr_erangeflag_p"]
     pub fn erangeflag_p() -> c_int;
+    /// See: [`mpfr_flags_clear`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fflags_005fclear)
+    #[link_name = "mpfr_flags_clear"]
+    pub fn flags_clear(mask: flags_t);
+    /// See: [`mpfr_flags_set`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fflags_005fset)
+    #[link_name = "mpfr_flags_set"]
+    pub fn flags_set(mask: flags_t);
+    /// See: [`mpfr_flags_test `](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fflags_005ftest)
+    #[link_name = "mpfr_flags_test"]
+    pub fn flags_test(mask: flags_t) -> flags_t;
+    /// See: [`mpfr_flags_save`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fflags_005fsave)
+    #[link_name = "mpfr_flags_save"]
+    pub fn flags_save() -> flags_t;
+    /// See: [`mpfr_flags_restore`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fflags_005frestore)
+    #[link_name = "mpfr_flags_restore"]
+    pub fn flags_restore(flags: flags_t, mask: flags_t);
 
     // Compatibility with MPF
 
@@ -1630,6 +1760,7 @@ pub unsafe extern "C" fn custom_move(x: mpfr_ptr, new_position: *mut c_void) {
 mod tests {
     use mpfr;
     use std::ffi::CStr;
+    use std::mem;
 
     #[test]
     fn check_version() {
@@ -1646,5 +1777,33 @@ mod tests {
         assert_eq!(from_fn.to_str().unwrap(), version);
         let from_const_string = unsafe { CStr::from_ptr(mpfr::VERSION_STRING) };
         assert_eq!(from_const_string.to_str().unwrap(), version);
+    }
+
+    #[test]
+    fn check_round_nearest_away() {
+        unsafe {
+            let mut f = mem::uninitialized();
+            mpfr::init2(&mut f, 4);
+
+            // tie to even: 10101 becomes 10100
+            let dir_tie_even = mpfr::set_ui(&mut f, 21, mpfr::rnd_t::RNDN);
+            assert!(dir_tie_even < 0);
+            let tie_even = mpfr::get_ui(&f, mpfr::rnd_t::RNDN);
+            assert_eq!(tie_even, 20);
+
+            // tie away from zero, 10101 becomes 10110
+            let dir_tie_away = round_nearest_away!(mpfr::set_ui, &mut f, 21);
+            assert!(dir_tie_away > 0);
+            let tie_away = mpfr::get_ui(&f, mpfr::rnd_t::RNDN);
+            assert_eq!(tie_away, 22);
+
+            // tie away from zero, 101001 becomes 101000
+            let dir_tie_away2 = round_nearest_away!(mpfr::set_ui, &mut f, 41);
+            assert!(dir_tie_away2 < 0);
+            let tie_away2 = mpfr::get_ui(&f, mpfr::rnd_t::RNDN);
+            assert_eq!(tie_away2, 40);
+
+            mpfr::clear(&mut f);
+        }
     }
 }
