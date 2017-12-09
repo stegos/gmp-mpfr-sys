@@ -1,10 +1,9 @@
-Version 1.0.9
+Version 1.1.0
 =============
 
-* Hide documentation for `mpfr::rnd_t::RNDF`; `MPFR_RNDF` is not
-  implemented yet by MPFR.
+* Update MPFR 3.1.6-p1 -> 4.0.0.
 * Deprecate and hide documentation for `mpfr::rnd_t::RNDNA`;
-  `MPFR_RNDNA` is not documented by MPFR, and *mpfr.h* says it should
+  `MPFR_RNDNA` is not documented by MPFR, and mpfr.h says it should
   not be used.
 * Use `c_int` instead of `#[repr(C)] enum` for the private enumerated
   type inside `#[repr(C)] struct randstate_t`.

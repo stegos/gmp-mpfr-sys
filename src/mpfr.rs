@@ -118,8 +118,7 @@ pub enum rnd_t {
     RNDD = 3,
     /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
     RNDA = 4,
-    // for future support of faithful rounding:
-    #[doc(hidden)]
+    /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
     RNDF = 5,
     #[doc(hidden)]
     #[deprecated(since = "1.0.9", note = "do not use!")]
@@ -1225,6 +1224,7 @@ pub unsafe extern "C" fn floor(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int {
 /// See: [`mpfr_round`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fround)
 #[inline]
 pub unsafe extern "C" fn round(rop: mpfr_ptr, op: mpfr_srcptr) -> c_int {
+    #[allow(deprecated)]
     rint(rop, op, rnd_t::RNDNA)
 }
 /// See: [`mpfr_trunc`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ftrunc)
@@ -1402,14 +1402,14 @@ extern "C" {
 pub const VERSION: c_int =
     (VERSION_MAJOR << 16) | (VERSION_MINOR << 8) | VERSION_PATCHLEVEL;
 /// See: [`MPFR_VERSION_MAJOR`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-MPFR_005fVERSION_005fMAJOR)
-pub const VERSION_MAJOR: c_int = 3;
+pub const VERSION_MAJOR: c_int = 4;
 /// See: [`MPFR_VERSION_MINOR`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-MPFR_005fVERSION_005fMINOR)
-pub const VERSION_MINOR: c_int = 1;
+pub const VERSION_MINOR: c_int = 0;
 /// See: [`MPFR_VERSION_PATCHLEVEL`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-MPFR_005fVERSION_005fPATCHLEVEL)
-pub const VERSION_PATCHLEVEL: c_int = 6;
+pub const VERSION_PATCHLEVEL: c_int = 0;
 /// See: [`MPFR_VERSION_STRING`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-MPFR_005fVERSION_005fSTRING)
 pub const VERSION_STRING: *const c_char =
-    b"3.1.6-p1\0" as *const u8 as *const c_char;
+    b"4.0.0-rc1\0" as *const u8 as *const c_char;
 /// See: [`MPFR_VERSION_NUM`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-MPFR_005fVERSION_005fNUM)
 #[inline]
 pub extern "C" fn VERSION_NUM(
@@ -1633,7 +1633,7 @@ mod tests {
 
     #[test]
     fn check_version() {
-        let num_version = "3.1.6";
+        let num_version = "4.0.0";
         let from_constants = format!(
             "{}.{}.{}",
             mpfr::VERSION_MAJOR,
@@ -1641,7 +1641,7 @@ mod tests {
             mpfr::VERSION_PATCHLEVEL
         );
         assert_eq!(from_constants, num_version);
-        let version = "3.1.6-p1";
+        let version = "4.0.0-rc1";
         let from_fn = unsafe { CStr::from_ptr(mpfr::get_version()) };
         assert_eq!(from_fn.to_str().unwrap(), version);
         let from_const_string = unsafe { CStr::from_ptr(mpfr::VERSION_STRING) };
