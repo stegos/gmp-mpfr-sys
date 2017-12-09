@@ -222,7 +222,7 @@ extern "C" {
 /// See: [`mpz_get_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fget_005fui)
 #[inline]
 #[cfg(any(not(nails), long_long_limb))]
-pub unsafe fn mpz_get_ui(op: mpz_srcptr) -> c_ulong {
+pub unsafe extern "C" fn mpz_get_ui(op: mpz_srcptr) -> c_ulong {
     let p = (*op).d;
     let n = (*op).size;
     let l = (*p) as c_ulong;
@@ -235,7 +235,7 @@ pub unsafe fn mpz_get_ui(op: mpz_srcptr) -> c_ulong {
 /// See: [`mpz_get_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fget_005fui)
 #[inline]
 #[cfg(all(nails, not(long_long_limb)))]
-pub unsafe fn mpz_get_ui(op: mpz_srcptr) -> c_ulong {
+pub unsafe extern "C" fn mpz_get_ui(op: mpz_srcptr) -> c_ulong {
     let p = (*op).d;
     let n = (*op).size;
     let l = (*p);
@@ -1026,7 +1026,7 @@ extern "C" {
 
 /// See: [`mpq_numref`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Rational-Number-Functions.html#index-mpq_005fnumref)
 #[inline]
-pub unsafe fn mpq_numref(op: mpq_ptr) -> mpz_ptr {
+pub unsafe extern "C" fn mpq_numref(op: mpq_ptr) -> mpz_ptr {
     (&mut (*op).num) as mpz_ptr
 }
 /// Constant version of [`mpq_numref`](fn.mpq_numref.html).
@@ -1036,7 +1036,7 @@ pub unsafe extern "C" fn mpq_numref_const(op: mpq_srcptr) -> mpz_srcptr {
 }
 /// See: [`mpq_denref`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Rational-Number-Functions.html#index-mpq_005fdenref)
 #[inline]
-pub unsafe fn mpq_denref(op: mpq_ptr) -> mpz_ptr {
+pub unsafe extern "C" fn mpq_denref(op: mpq_ptr) -> mpz_ptr {
     (&mut (*op).den) as mpz_ptr
 }
 /// Constant version of [`mpq_denref`](fn.mpq_denref.html).
