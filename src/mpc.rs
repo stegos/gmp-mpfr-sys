@@ -290,8 +290,11 @@ extern "C" {
 pub unsafe extern "C" fn cmp_si(op1: mpc_srcptr, op2: c_long) -> c_int {
     cmp_si_si(op1, op2, 0)
 }
-
 extern "C" {
+    /// See: [`mpc_cmp_abs`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fcmp_005fabs)
+    #[link_name = "mpc_cmp_abs"]
+    pub fn cmp_abs(op1: mpc_srcptr, op2: mpc_srcptr) -> c_int;
+
     // Projection and Decomposing Functions
     /// See: [`mpc_real`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005freal)
     #[link_name = "mpc_real"]
@@ -597,6 +600,14 @@ extern "C" {
     /// See: [`mpc_log10`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005flog10)
     #[link_name = "mpc_log10"]
     pub fn log10(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
+    /// See: [`mpc_rootofunity`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005frootofunity)
+    #[link_name = "mpc_rootofunity"]
+    pub fn rootofunity(
+        rop: mpc_ptr,
+        n: c_ulong,
+        k: c_ulong,
+        rnd: rnd_t,
+    ) -> c_int;
 
     // Trigonometric Functions
 
@@ -661,12 +672,12 @@ pub const VERSION: c_int =
 /// See: [`MPC_VERSION_MAJOR`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fMAJOR)
 pub const VERSION_MAJOR: c_int = 1;
 /// See: [`MPC_VERSION_MINOR`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fMINOR)
-pub const VERSION_MINOR: c_int = 0;
+pub const VERSION_MINOR: c_int = 1;
 /// See: [`MPC_VERSION_PATCHLEVEL`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fPATCHLEVEL)
-pub const VERSION_PATCHLEVEL: c_int = 3;
+pub const VERSION_PATCHLEVEL: c_int = 0;
 /// See: [`MPC_VERSION_STRING`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fSTRING)
 pub const VERSION_STRING: *const c_char =
-    b"1.0.3\0" as *const u8 as *const c_char;
+    b"1.1\0" as *const u8 as *const c_char;
 /// See: [`MPC_VERSION_NUM`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fNUM)
 #[inline]
 pub extern "C" fn VERSION_NUM(
@@ -684,17 +695,19 @@ mod tests {
 
     #[test]
     fn check_version() {
-        let version = "1.0.3";
-        let from_fn = unsafe { CStr::from_ptr(mpc::get_version()) };
+        let version = "1.1.0";
         let from_constants = format!(
             "{}.{}.{}",
             mpc::VERSION_MAJOR,
             mpc::VERSION_MINOR,
             mpc::VERSION_PATCHLEVEL
         );
-        let from_const_string = unsafe { CStr::from_ptr(mpc::VERSION_STRING) };
-        assert_eq!(from_fn.to_str().unwrap(), version);
         assert_eq!(from_constants, version);
+
+        let version = "1.1";
+        let from_fn = unsafe { CStr::from_ptr(mpc::get_version()) };
+        assert_eq!(from_fn.to_str().unwrap(), version);
+        let from_const_string = unsafe { CStr::from_ptr(mpc::VERSION_STRING) };
         assert_eq!(from_const_string.to_str().unwrap(), version);
     }
 }

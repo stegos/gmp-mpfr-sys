@@ -19,7 +19,7 @@ MPFRVERP="$MPFRVER"
 MPFRTAR="$TARDIR/mpfr-$MPFRVER.tar.xz"
 MPFRPATCH="$TARDIR/mpfr-$MPFRVERP-allpatches"
 
-MPCVER=1.0.3
+MPCVER=1.1-rc1
 MPCVERP="$MPCVER"
 MPCTAR="$TARDIR/mpc-$MPCVER.tar.gz"
 MPCPATCH="$TARDIR/mpc-$MPCVERP-allpatches"
@@ -61,9 +61,6 @@ rm -rf ac*.m4 ChangeLog configure.ac m4
 find doc -name \*.tex\* -o -type f -delete
 sed -i.rm~ '/^ac_config_files=/s/[^ ]*doc[^ ]*.Makefile//g' configure
 sed -i.rm~ '/^SUBDIRS = /s/doc//g' Makefile.in
-sed -i.rm~ 's/mpfr_fmma/mpc_fmma/g' src/mul.c
-sed -i.rm~ 's/mpfr_add_one_ulp (x, GMP_RNDN)/(mpfr_sgn (x) > 0 ? mpfr_nextabove (x) : mpfr_nextbelow (x))/' src/mpc-impl.h
-sed -i.rm~ 's/mpfr_sub_one_ulp (x, GMP_RNDN)/(mpfr_sgn (x) > 0 ? mpfr_nextbelow (x) : mpfr_nextabove (x))/' src/mpc-impl.h
 chmod u+w * doc/*
 cd ..
 

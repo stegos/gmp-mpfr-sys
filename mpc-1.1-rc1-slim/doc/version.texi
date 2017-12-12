@@ -1,0 +1,4 @@
+@set UPDATED 12 December 2017
+@set UPDATED-MONTH December 2017
+@set EDITION 1.1-rc1
+@set VERSION 1.1-rc1
