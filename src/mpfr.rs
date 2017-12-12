@@ -1784,6 +1784,11 @@ mod tests {
             let mut f = mem::uninitialized();
             mpfr::init2(&mut f, 4);
 
+            // mpfr_round_nearest_away needs emin > emin_min
+            if mpfr::get_emin() == mpfr::get_emin_min() {
+                mpfr::set_emin(mpfr::get_emin_min() + 1);
+            }
+
             // tie to even: 10101 becomes 10100
             let dir_tie_even = mpfr::set_ui(&mut f, 21, mpfr::rnd_t::RNDN);
             assert!(dir_tie_even < 0);
