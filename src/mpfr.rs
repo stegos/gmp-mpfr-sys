@@ -1396,15 +1396,14 @@ extern "C" {
 }
 /// See: [`mpfr_round_nearest_away`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fround_005fnearest_005faway)
 #[macro_export]
-macro_rules! round_nearest_away {
+macro_rules! mpfr_round_nearest_away {
     ($foo:expr, $rop:expr $(, $op:expr)*) => {{
         use std::os::raw::c_int;
         type mpfr_ptr = *mut $crate::mpfr::mpfr_t;
         let rop: mpfr_ptr = $rop;
         extern "C" {
             fn mpfr_round_nearest_away_begin(rop: mpfr_ptr);
-            fn mpfr_round_nearest_away_end(rop: mpfr_ptr, inex: c_int)
-                -> c_int;
+            fn mpfr_round_nearest_away_end(rop: mpfr_ptr, inex: c_int) -> c_int;
         }
         mpfr_round_nearest_away_begin(rop);
         mpfr_round_nearest_away_end(
@@ -1792,13 +1791,15 @@ mod tests {
             assert_eq!(tie_even, 20);
 
             // tie away from zero, 10101 becomes 10110
-            let dir_tie_away = round_nearest_away!(mpfr::set_ui, &mut f, 21);
+            let dir_tie_away =
+                mpfr_round_nearest_away!(mpfr::set_ui, &mut f, 21);
             assert!(dir_tie_away > 0);
             let tie_away = mpfr::get_ui(&f, mpfr::rnd_t::RNDN);
             assert_eq!(tie_away, 22);
 
             // tie away from zero, 101001 becomes 101000
-            let dir_tie_away2 = round_nearest_away!(mpfr::set_ui, &mut f, 41);
+            let dir_tie_away2 =
+                mpfr_round_nearest_away!(mpfr::set_ui, &mut f, 41);
             assert!(dir_tie_away2 < 0);
             let tie_away2 = mpfr::get_ui(&f, mpfr::rnd_t::RNDN);
             assert_eq!(tie_away2, 40);
