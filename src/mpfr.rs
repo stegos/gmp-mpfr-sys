@@ -106,6 +106,7 @@ use std::os::raw::{c_char, c_int, c_long, c_uint, c_ulong, c_void};
 /// See: [`mpfr_prec_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005fprec_005ft)
 pub type prec_t = c_long;
 
+// TODO: breaking change: do not use enum
 /// See: [`mpfr_rnd_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft)
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
