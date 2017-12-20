@@ -36,7 +36,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 const GMP_DIR: &'static str = "gmp-6.1.2-slim";
-const MPFR_DIR: &'static str = "mpfr-4.0.0-rc1-slim";
+const MPFR_DIR: &'static str = "mpfr-4.0.0-rc2-slim";
 const MPC_DIR: &'static str = "mpc-1.1-rc1-slim";
 
 fn main() {
