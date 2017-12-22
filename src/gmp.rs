@@ -1801,18 +1801,16 @@ extern "C" {
 // Custom Allocation
 
 /// See: [`allocate_function`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Custom-Allocation.html#index-allocate_005ffunction)
-pub type allocate_function = Option<
-    extern "C" fn(alloc_size: usize) -> *mut c_void,
->;
+pub type allocate_function =
+    Option<extern "C" fn(alloc_size: usize) -> *mut c_void>;
 /// See: [`reallocate_function`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Custom-Allocation.html#index-reallocate_005ffunction)
 pub type reallocate_function = Option<
     unsafe extern "C" fn(ptr: *mut c_void, old_size: usize, new_size: usize)
         -> *mut c_void,
 >;
 /// See: [`free_function`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Custom-Allocation.html#index-free_005ffunction)
-pub type free_function = Option<
-    unsafe extern "C" fn(ptr: *mut c_void, size: usize),
->;
+pub type free_function =
+    Option<unsafe extern "C" fn(ptr: *mut c_void, size: usize)>;
 extern "C" {
     /// See: [`mp_set_memory_functions`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Custom-Allocation.html#index-mp_005fset_005fmemory_005ffunctions)
     #[link_name = "__gmp_set_memory_functions"]
