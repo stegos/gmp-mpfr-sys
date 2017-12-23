@@ -103,11 +103,11 @@ Note that the the `mpc` feature depends on, and will enable, the
 
 ### Building on GNU/Linux
 
-To build on GNU/Linux, simply make sure you have `diffutils`, `gcc`
-and `make` installed on your system. For example on Fedora:
+To build on GNU/Linux, simply make sure you have `diffutils`, `gcc`,
+`make` and `m4` installed on your system. For example on Fedora:
 
 ```sh
-sudo dnf install diffutils gcc make
+sudo dnf install diffutils gcc make m4
 ```
 
 ### Building on macOS
