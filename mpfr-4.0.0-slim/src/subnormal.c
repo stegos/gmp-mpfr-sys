@@ -144,8 +144,11 @@ mpfr_subnormalize (mpfr_ptr y, int old_inexact, mpfr_rnd_t rnd)
                 {
                   if (SAME_SIGN (inexact, MPFR_INT_SIGN (y)))
                     mpfr_nexttozero (dest);
-                  else
-                    mpfr_nexttoinf (dest);
+                  else  /* subnormal range, thus no overflow */
+                    {
+                      mpfr_nexttoinf (dest);
+                      MPFR_ASSERTD(!MPFR_IS_INF (dest));
+                    }
                   inexact = -inexact;
                 }
             }

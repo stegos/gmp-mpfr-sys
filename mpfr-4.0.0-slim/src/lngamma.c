@@ -350,7 +350,10 @@ GAMMA_FUNC (mpfr_ptr y, mpfr_srcptr z0, mpfr_rnd_t rnd)
              ulp(u)/2 + (2-z0)*max(1,log(2-z0))*2^(1-w)
              = (1/2 + (2-z0)*max(1,log(2-z0))*2^(1-E(u))) ulp(u) */
           d = (double) MPFR_GET_EXP(s) * 0.694; /* upper bound for log(2-z0) */
-          err_u = MPFR_GET_EXP(s) + __gmpfr_ceil_log2 (d) + 1 - MPFR_GET_EXP(u);
+          if (MPFR_IS_ZERO(u)) /* in that case the error on u is zero */
+            err_u = 0;
+          else
+            err_u = MPFR_GET_EXP(s) + __gmpfr_ceil_log2 (d) + 1 - MPFR_GET_EXP(u);
           err_u = (err_u >= 0) ? err_u + 1 : 0;
           /* now the error on u is bounded by 2^err_u ulps */
 
@@ -397,11 +400,15 @@ GAMMA_FUNC (mpfr_ptr y, mpfr_srcptr z0, mpfr_rnd_t rnd)
             }
           else
             {
-              err_s += 1 - MPFR_GET_EXP(v);
+              /* if v = 0 here, it was 1 before the call to mpfr_log,
+                 thus the error on v was zero */
+              if (!MPFR_IS_ZERO(v))
+                err_s += 1 - MPFR_GET_EXP(v);
               err_s = (err_s >= 0) ? err_s + 1 : 0;
               /* the error on v is bounded by 2^err_s ulps */
               err_u += MPFR_GET_EXP(u); /* absolute error on u */
-              err_s += MPFR_GET_EXP(v); /* absolute error on v */
+              if (!MPFR_IS_ZERO(v)) /* same as above */
+                err_s += MPFR_GET_EXP(v); /* absolute error on v */
               mpfr_sub (s, v, u, MPFR_RNDN);
               /* the total error on s is bounded by ulp(s)/2 + 2^(err_u-w)
                  + 2^(err_s-w) <= ulp(s)/2 + 2^(max(err_u,err_s)+1-w) */
