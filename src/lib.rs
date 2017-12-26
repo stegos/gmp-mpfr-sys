@@ -34,6 +34,8 @@
 //!
 //! ## Basic use
 //!
+//! This crate required rustc version 1.17.0.
+//!
 //! This crate provides a low-level interface to GMP, MPFR and MPC in
 //! three modules. The documentation of the three modules contains
 //! links for each function, constant and type into the respective
