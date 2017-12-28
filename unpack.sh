@@ -27,7 +27,7 @@ MPCPATCH="$TARDIR/mpc-$MPCVERP-allpatches"
 # GMP
 # 1. Remove ChangeLog, doc/*.info*
 # 2. Remove demos section in configure
-# 3. Remove doc*Makefile, demos*Makefile from ac_config_files in configure
+# 3. Remove *doc*Makefile, *demos*Makefile from ac_config_files in configure
 # 4. Remove doc and demos from SUBDIRS in Makefile.in
 tar xf "$GMPTAR"
 mv gmp-$GMPVER gmp-$GMPVERP-c
@@ -37,14 +37,14 @@ if [ -f "$GMPPATCH" ]; then
 fi
 rm ChangeLog doc/*.info*
 sed -i.rm~ '/Configs for demos/,/Create config.m4/{//!d}' configure
-sed -i.rm~ '/^ac_config_files=/s/[^ ]*\(doc\|demos\)[^ ]*.Makefile//g' \
+sed -i.rm~ '/^ac_config_files=/s/[^ ]*\(doc\|demos\)[^ ]\{1,\}Makefile//g' \
     configure
 sed -i.rm~ '/^SUBDIRS = /s/doc\|demos//g' Makefile.in
 cd ..
 
 # MPFR
 # 1. Remove ChangeLog, doc/*.info, doc/*.html
-# 2. Remove doc*Makefile, mpfr.pc from ac_config_files in configure
+# 2. Remove *doc*Makefile, mpfr.pc from ac_config_files in configure
 # 3. Remove doc from SUBDIRS in Makefile.in
 # 4. Remove $(pkgconfig_DATA) from DATA in Makefile.in
 tar xf "$MPFRTAR"
@@ -54,14 +54,14 @@ if [ -f "$MPFRPATCH" ]; then
 	patch -N -Z -p1 < "$MPFRPATCH" > /dev/null
 fi
 rm ChangeLog doc/*.info doc/*.html
-sed -i.rm~ '/^ac_config_files=/s/\([^ ]*doc[^ ]*.Makefile\|mpfr.pc\)//g' configure
+sed -i.rm~ '/^ac_config_files=/s/\([^ ]*doc[^ ]\{1,\}Makefile\|mpfr.pc\)//g' configure
 sed -i.rm~ '/^SUBDIRS = /s/doc//g' Makefile.in
 sed -i.rm~ '/^DATA = /s/\$(pkgconfig_DATA)//g' Makefile.in
 cd ..
 
 # MPC
 # 1. Remove ChangeLog, doc/*.info
-# 2. Remove doc*Makefile from ac_config_files in configure
+# 2. Remove *doc*Makefile from ac_config_files in configure
 # 3. Remove doc from SUBDIRS in Makefile.in
 tar xf "$MPCTAR"
 mv mpc-$MPCVER mpc-$MPCVERP-c
@@ -70,7 +70,7 @@ if [ -f "$MPCPATCH" ]; then
 	patch -N -Z -p1 < "$MPCPATCH" > /dev/null
 fi
 rm ChangeLog doc/*.info
-sed -i.rm~ '/^ac_config_files=/s/[^ ]*doc[^ ]*.Makefile//g' configure
+sed -i.rm~ '/^ac_config_files=/s/[^ ]*doc[^ ]\{1,\}Makefile//g' configure
 sed -i.rm~ '/^SUBDIRS = /s/doc//g' Makefile.in
 cd ..
 
