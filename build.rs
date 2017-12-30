@@ -523,15 +523,15 @@ fn remove_dir(dir: &Path) {
         return;
     }
     assert!(dir.is_dir(), "Not a directory: {}", dir.display());
-    fs::remove_dir_all(dir).unwrap_or_else(
-        |_| panic!("Unable to remove directory: {}", dir.display()),
-    );
+    fs::remove_dir_all(dir).unwrap_or_else(|_| {
+        panic!("Unable to remove directory: {}", dir.display())
+    });
 }
 
 fn create_dir(dir: &Path) {
-    fs::create_dir_all(dir).unwrap_or_else(
-        |_| panic!("Unable to create directory: {}", dir.display()),
-    );
+    fs::create_dir_all(dir).unwrap_or_else(|_| {
+        panic!("Unable to create directory: {}", dir.display())
+    });
 }
 
 fn dir_relative(dir: &Path, rel_to: &Path) -> OsString {
