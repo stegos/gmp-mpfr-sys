@@ -480,42 +480,9 @@ fn check_mingw(feature_mpfr: bool, _feature_mpc: bool) {
         }
     }
 
-    // link to gcc_eh
+    // link to gcc_eh and pthread
     println!("cargo:rustc-link-lib=static=gcc_eh");
-
-    // also link to pthread, but only if rustc version >= 1.18
-    if rustc_later_eq(1, 18) {
-        println!("cargo:rustc-link-lib=static=pthread");
-    }
-}
-
-fn rustc_later_eq(major: i32, minor: i32) -> bool {
-    let rustc = cargo_env("RUSTC");
-    let output = Command::new(rustc)
-        .arg("--version")
-        .output()
-        .expect("unable to run rustc --version");
-    let version =
-        String::from_utf8(output.stdout).expect("unrecognized rustc version");
-    if !version.starts_with("rustc ") {
-        panic!("unrecognized rustc version: {}", version);
-    }
-    let remain = &version[6..];
-    let dot = remain.find('.').expect("unrecognized rustc version");
-    let ver_major = remain[0..dot]
-        .parse::<i32>()
-        .expect("unrecognized rustc version");
-    if ver_major < major {
-        return false;
-    } else if ver_major > major {
-        return true;
-    }
-    let remain = &remain[dot + 1..];
-    let dot = remain.find('.').expect("unrecognized rustc version");
-    let ver_minor = remain[0..dot]
-        .parse::<i32>()
-        .expect("unrecognized rustc version");
-    ver_minor >= minor
+    println!("cargo:rustc-link-lib=static=pthread");
 }
 
 fn remove_dir(dir: &Path) {

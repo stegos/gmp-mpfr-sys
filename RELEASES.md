@@ -1,6 +1,7 @@
 Version 1.1.0
 =============
 
+* Requires rustc version 1.18.0.
 * Update MPFR 3.1.6-p1 -> 4.0.0.
 * Update MPC 1.0.3 -> 1.1.
 * Deprecate and hide documentation for `mpfr::rnd_t::RNDNA`;
