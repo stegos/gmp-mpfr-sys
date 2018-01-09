@@ -18,7 +18,7 @@ by the Free Software Foundation, either version 3 of the License, or
 
 ## Basic use
 
-This crate required rustc version 1.18.0.
+This crate required rustc version 1.17.0.
 
 This crate provides a low-level interface to GMP, MPFR and MPC in
 three modules. The [documentation][sys] of the three modules contains
