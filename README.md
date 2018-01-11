@@ -2,11 +2,14 @@
 
 The `gmp-mpfr-sys` crate provides Rust FFI bindings for:
 
-* the [GNU Multiple Precision Arithmetic Library][gmp] (GMP),
-* the [GNU MPFR Library][mpfr], a library for multiple-precision
-  floating-point computations, and
-* [GNU MPC][mpc], a library for the arithmetic of complex numbers with
-  arbitrarily high precision.
+* the [GNU Multiple Precision Arithmetic Library][gmp] (GMP) version
+  6.1.2, a library for arbitrary precision arithmetic,
+* the [GNU MPFR Library][mpfr] version 4.0.0, a library for
+  multiple-precision floating-point computations with correct
+  rounding, and
+* [GNU MPC][mpc] version 1.1.0, a library for the arithmetic of
+  complex numbers with arbitrarily high precision and correct
+  rounding.
 
 The source of the three libraries is included in the package.
 
@@ -74,7 +77,7 @@ to the crate root and add `gmp-mpfr-sys` as a dependency in
 
 ```toml
 [dependencies]
-gmp-mpfr-sys = "1.0"
+gmp-mpfr-sys = "1.1.0"
 ```
 
 ### Optional features
@@ -86,7 +89,7 @@ disable them add this to `Cargo.toml`:
 
 ```toml
 [dependencies.gmp-mpfr-sys]
-version = "1.0"
+version = "1.1.0"
 default-features = false
 ```
 
@@ -94,7 +97,7 @@ To use features selectively, you can add this to `Cargo.toml`:
 
 ```toml
 [dependencies.gmp-mpfr-sys]
-version = "1.0"
+version = "1.1.0"
 default-features = false
 # Pick which features to use
 features = ["mpfr"]
@@ -163,7 +166,7 @@ Then, to build a crate with a dependency on this crate:
 [gpl]:      https://www.gnu.org/licenses/gpl-3.0.html
 [lgpl]:     https://www.gnu.org/licenses/lgpl-3.0.en.html
 [mpc doc]:  https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/index.html
-[mpc]:      http://www.multiprecision.org/
+[mpc]:      http://www.multiprecision.org/mpc/
 [mpfr doc]: https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/index.html
 [mpfr]:     http://www.mpfr.org/
 [msys]:     https://msys2.github.io/
@@ -172,7 +175,7 @@ Then, to build a crate with a dependency on this crate:
 [rug int]:  https://docs.rs/rug/*/rug/struct.Integer.html
 [rug rat]:  https://docs.rs/rug/*/rug/struct.Rational.html
 [rug]:      https://docs.rs/rug/*/rug/index.html
-[sys gmp]:  https://docs.rs/gmp-mpfr-sys/~1.0.8/gmp_mpfr_sys/gmp/index.html
-[sys mpc]:  https://docs.rs/gmp-mpfr-sys/~1.0.8/gmp_mpfr_sys/mpc/index.html
-[sys mpfr]: https://docs.rs/gmp-mpfr-sys/~1.0.8/gmp_mpfr_sys/mpfr/index.html
-[sys]:      https://docs.rs/gmp-mpfr-sys/~1.0.8/gmp_mpfr_sys/index.html
+[sys gmp]:  https://docs.rs/gmp-mpfr-sys/~1.1.0/gmp_mpfr_sys/gmp/index.html
+[sys mpc]:  https://docs.rs/gmp-mpfr-sys/~1.1.0/gmp_mpfr_sys/mpc/index.html
+[sys mpfr]: https://docs.rs/gmp-mpfr-sys/~1.1.0/gmp_mpfr_sys/mpfr/index.html
+[sys]:      https://docs.rs/gmp-mpfr-sys/~1.1.0/gmp_mpfr_sys/index.html

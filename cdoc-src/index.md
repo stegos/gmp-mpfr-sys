@@ -3,11 +3,12 @@
 The following C libraries provide numbers with arbitrarily large
 precision:
 
-* the [GNU Multiple Precision Arithmetic Library][gmp] (GMP),
+* the [GNU Multiple Precision Arithmetic Library][gmp] (GMP), a
+  library for arbitrary precision arithmetic,
 * the [GNU MPFR Library][mpfr], a library for multiple-precision
-  floating-point computations, and
+  floating-point computations with correct rounding, and
 * [GNU MPC][mpc], a library for the arithmetic of complex numbers with
-  arbitrarily high precision.
+  arbitrarily high precision and correct rounding.
 
 Low-level Rust bindings are provided in the [`gmp-mpfr-sys`][sys]
 crate. This crate can be used to write higher-level bindings, or to
@@ -55,4 +56,4 @@ the [GNU LGPL][lgpl] and [GNU GPL][gpl] for details.
 [rug int]:  https://docs.rs/rug/*/rug/struct.Integer.html
 [rug rat]:  https://docs.rs/rug/*/rug/struct.Rational.html
 [rug]:      https://docs.rs/rug/*/rug/index.html
-[sys]:      https://docs.rs/gmp-mpfr-sys/~1.0.8/gmp_mpfr_sys/index.html
+[sys]:      https://docs.rs/gmp-mpfr-sys/~1.1.0/gmp_mpfr_sys/index.html

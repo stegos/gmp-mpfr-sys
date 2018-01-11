@@ -2,7 +2,7 @@ Version 1.1.0
 =============
 
 * Update MPFR 3.1.6-p1 -> 4.0.0.
-* Update MPC 1.0.3 -> 1.1.
+* Update MPC 1.0.3 -> 1.1.0.
 * Deprecate and hide documentation for `mpfr::rnd_t::RNDNA`;
   `MPFR_RNDNA` is not documented by MPFR, and mpfr.h says it should
   not be used.

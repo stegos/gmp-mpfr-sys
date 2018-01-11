@@ -18,11 +18,14 @@
 //!
 //! The `gmp-mpfr-sys` crate provides Rust FFI bindings for:
 //!
-//! * the [GNU Multiple Precision Arithmetic Library][gmp] (GMP),
-//! * the [GNU MPFR Library][mpfr], a library for multiple-precision
-//!   floating-point computations, and
-//! * [GNU MPC][mpc], a library for the arithmetic of complex numbers
-//!   with arbitrarily high precision.
+//! * the [GNU Multiple Precision Arithmetic Library][gmp] (GMP)
+//!   version 6.1.2, a library for arbitrary precision arithmetic,
+//! * the [GNU MPFR Library][mpfr] version 4.0.0, a library for
+//!   multiple-precision floating-point computations with correct
+//!   rounding, and
+//! * [GNU MPC][mpc] version 1.1.0, a library for the arithmetic of
+//!   complex numbers with arbitrarily high precision and correct
+//!   rounding.
 //!
 //! The source of the three libraries is included in the package.
 //!
@@ -90,7 +93,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! gmp-mpfr-sys = "1.0"
+//! gmp-mpfr-sys = "1.1.0"
 //! ```
 //!
 //! ### Optional features
@@ -102,7 +105,7 @@
 //!
 //! ```toml
 //! [dependencies.gmp-mpfr-sys]
-//! version = "1.0"
+//! version = "1.1.0"
 //! default-features = false
 //! ```
 //!
@@ -110,7 +113,7 @@
 //!
 //! ```toml
 //! [dependencies.gmp-mpfr-sys]
-//! version = "1.0"
+//! version = "1.1.0"
 //! default-features = false
 //! # Pick which features to use
 //! features = ["mpfr"]
@@ -193,7 +196,7 @@
 //! [sys mpc]:  mpc/index.html
 //! [sys mpfr]: mpfr/index.html
 #![warn(missing_docs)]
-#![doc(html_root_url = "https://docs.rs/gmp-mpfr-sys/~1.0.8")]
+#![doc(html_root_url = "https://docs.rs/gmp-mpfr-sys/~1.1.0")]
 #![doc(test(attr(deny(warnings))))]
 
 pub mod gmp;
