@@ -677,7 +677,7 @@ pub const VERSION_MINOR: c_int = 1;
 pub const VERSION_PATCHLEVEL: c_int = 0;
 /// See: [`MPC_VERSION_STRING`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fSTRING)
 pub const VERSION_STRING: *const c_char =
-    b"1.1\0" as *const u8 as *const c_char;
+    b"1.1.0\0" as *const u8 as *const c_char;
 /// See: [`MPC_VERSION_NUM`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fNUM)
 #[inline]
 pub extern "C" fn VERSION_NUM(
@@ -704,7 +704,6 @@ mod tests {
         );
         assert_eq!(from_constants, version);
 
-        let version = "1.1";
         let from_fn = unsafe { CStr::from_ptr(mpc::get_version()) };
         assert_eq!(from_fn.to_str().unwrap(), version);
         let from_const_string = unsafe { CStr::from_ptr(mpc::VERSION_STRING) };
