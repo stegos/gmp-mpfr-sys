@@ -183,7 +183,7 @@
 //! [gpl]:      https://www.gnu.org/licenses/gpl-3.0.html
 //! [lgpl]:     https://www.gnu.org/licenses/lgpl-3.0.en.html
 //! [mpc doc]:  https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/index.html
-//! [mpc]:      http://www.multiprecision.org/
+//! [mpc]:      http://www.multiprecision.org/mpc/
 //! [mpfr doc]: https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/index.html
 //! [mpfr]:     http://www.mpfr.org/
 //! [msys]:     https://msys2.github.io/
