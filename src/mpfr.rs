@@ -1242,7 +1242,7 @@ extern "C" {
     #[link_name = "mpfr_sum"]
     pub fn sum(
         rop: mpfr_ptr,
-        tab: *mut mpfr_ptr,
+        tab: *const mpfr_ptr,
         n: c_ulong,
         rnd: rnd_t,
     ) -> c_int;
