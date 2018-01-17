@@ -1238,14 +1238,11 @@ extern "C" {
     /// See: [`mpfr_free_cache2`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffree_005fcache2)
     #[link_name = "mpfr_free_cache2"]
     pub fn free_cache2(way: c_int);
-    // Since Rust coerces `*mut` to `*const`, we can use
-    // `*const mpfr_srcptr` instead of `*const mpfr_ptr` for the `tab`
-    // parameter of `sum`.
     /// See: [`mpfr_sum`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fsum)
     #[link_name = "mpfr_sum"]
     pub fn sum(
         rop: mpfr_ptr,
-        tab: *const mpfr_srcptr,
+        tab: *const mpfr_ptr,
         n: c_ulong,
         rnd: rnd_t,
     ) -> c_int;

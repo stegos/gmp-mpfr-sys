@@ -1,5 +1,5 @@
-* Change the type of the `tab` parameter of `mpfr::sum` to
-  `*const *const mpfr_t` instead of `*mut *mut mpfr_t`.
+* Fix the type of the `tab` parameter of `mpfr::sum` to
+  `*const *mut mpfr_t` instead of `*mut *mut mpfr_t`.
 
 Version 1.1.0 (2018-01-12)
 ==========================
