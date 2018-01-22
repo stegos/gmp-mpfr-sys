@@ -103,8 +103,8 @@
 //!
 //! 1. `DEP_GMP_LIMB_BITS` contains the number of bits per limb, which
 //!    is 32 or 64.
-//! 2. `DEP_GMP_LIB_DIR` contains the directory path containing the
-//!    header and library files generated.
+//! 2. `DEP_GMP_LIB_DIR` contains the path of the directory containing
+//!    the header (*.h*) and library (*.a*) files generated.
 //!
 //! A dependent crate can use these two environment variables in its
 //! build script.
