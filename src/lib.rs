@@ -96,6 +96,19 @@
 //! gmp-mpfr-sys = "1.1.0"
 //! ```
 //!
+//! ### Metadata
+//!
+//! The `gmp-mpfr-sys` passes two pieces of metadata to its
+//! dependents:
+//!
+//! 1. `DEP_GMP_LIMB_BITS` contains the number of bits per limb, which
+//!    is 32 or 64.
+//! 2. `DEP_GMP_LIB_DIR` contains the directory path containing the
+//!    header and library files generated.
+//!
+//! A dependent crate can use these two environment variables in its
+//! build script.
+//!
 //! ### Optional features
 //!
 //! The `gmp-mpfr-sys` crate has two optional features `mpfr` and

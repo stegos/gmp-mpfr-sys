@@ -80,6 +80,18 @@ to the crate root and add `gmp-mpfr-sys` as a dependency in
 gmp-mpfr-sys = "1.1.0"
 ```
 
+### Metadata
+
+The `gmp-mpfr-sys` passes two pieces of metadata to its dependents:
+
+1. `DEP_GMP_LIMB_BITS` contains the number of bits per limb, which is
+   32 or 64.
+2. `DEP_GMP_LIB_DIR` contains the directory path containing the header
+   and library files generated.
+
+A dependent crate can use these two environment variables in its build
+script.
+
 ### Optional features
 
 The `gmp-mpfr-sys` crate has two optional features `mpfr` and `mpc` to
@@ -142,10 +154,10 @@ To install MSYS2:
    pacman -S pacman-mirrors
    pacman -S diffutils make mingw-w64-x86_64-gcc
    ```
-   
+
    (32-bit: Install `mingw-w64-i686-gcc` instead of
    `mingw-w64-x86_64-gcc`.)
-   
+
 Then, to build a crate with a dependency on this crate:
 
 1. Launch the MSYS MinGW 64-bit terminal from the start menu. (32-bit:
