@@ -82,7 +82,8 @@ gmp-mpfr-sys = "1.1.0"
 
 ### Metadata
 
-The `gmp-mpfr-sys` passes two pieces of metadata to its dependents:
+The `gmp-mpfr-sys` crate passes two pieces of metadata to its
+dependents:
 
 1. `DEP_GMP_LIMB_BITS` contains the number of bits per limb, which is
    32 or 64.

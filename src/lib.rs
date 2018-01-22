@@ -98,7 +98,7 @@
 //!
 //! ### Metadata
 //!
-//! The `gmp-mpfr-sys` passes two pieces of metadata to its
+//! The `gmp-mpfr-sys` crate passes two pieces of metadata to its
 //! dependents:
 //!
 //! 1. `DEP_GMP_LIMB_BITS` contains the number of bits per limb, which
