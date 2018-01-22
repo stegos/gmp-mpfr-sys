@@ -443,6 +443,7 @@ fn write_link_info(lib_dir: &Path, feature_mpfr: bool, feature_mpc: bool) {
             lib_dir.display()
         )
     });
+    println!("cargo:lib_dir={}", lib_search);
     println!("cargo:rustc-link-search=native={}", lib_search);
     if feature_mpc {
         println!("cargo:rustc-link-lib=static=mpc");
