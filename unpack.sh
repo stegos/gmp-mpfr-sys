@@ -35,7 +35,7 @@ cd gmp-$GMPVERP-c
 if [ -f "$GMPPATCH" ]; then
 	patch -N -Z -p1 < "$GMPPATCH" > /dev/null
 fi
-rm ChangeLog doc/*.info*
+rm ChangeLog doc/*.info* doc/*.tex
 sed -i.rm~ '/Configs for demos/,/Create config.m4/{//!d}' configure
 sed -i.rm~ '/^ac_config_files=/s/[^ ]*\(doc\|demos\)[^ ]\{1,\}Makefile//g' \
     configure
@@ -53,7 +53,7 @@ cd mpfr-$MPFRVERP-c
 if [ -f "$MPFRPATCH" ]; then
 	patch -N -Z -p1 < "$MPFRPATCH" > /dev/null
 fi
-rm ChangeLog doc/*.info doc/*.html
+rm ChangeLog doc/*.info doc/*.tex
 sed -i.rm~ '/^ac_config_files=/s/\([^ ]*doc[^ ]\{1,\}Makefile\|mpfr.pc\)//g' configure
 sed -i.rm~ '/^SUBDIRS = /s/doc//g' Makefile.in
 sed -i.rm~ '/^DATA = /s/\$(pkgconfig_DATA)//g' Makefile.in
@@ -69,7 +69,8 @@ cd mpc-$MPCVERP-c
 if [ -f "$MPCPATCH" ]; then
 	patch -N -Z -p1 < "$MPCPATCH" > /dev/null
 fi
-rm ChangeLog doc/*.info
+chmod -R u+w *
+rm ChangeLog doc/*.info doc/*.tex
 sed -i.rm~ '/^ac_config_files=/s/[^ ]*doc[^ ]\{1,\}Makefile//g' configure
 sed -i.rm~ '/^SUBDIRS = /s/doc//g' Makefile.in
 cd ..
