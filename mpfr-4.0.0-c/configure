@@ -17799,7 +17799,7 @@ if $EGREP -q -e '-dev$' $srcdir/VERSION; then
     $srcdir/tests/*.c\``
 fi
 
-ac_config_files="$ac_config_files Makefile   src/Makefile tests/Makefile tune/Makefile src/mparam.h:src/mparam_h.in tools/bench/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile tests/Makefile tune/Makefile src/mparam.h:src/mparam_h.in tools/bench/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure

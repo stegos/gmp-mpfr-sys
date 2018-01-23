@@ -14680,7 +14680,7 @@ fi
    fi
 
 
-ac_config_files="$ac_config_files Makefile src/Makefile tests/Makefile  tools/Makefile tools/bench/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile tests/Makefile tools/Makefile tools/bench/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure

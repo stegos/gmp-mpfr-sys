@@ -367,7 +367,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src tests  tools
+SUBDIRS = src tests tools
 EXTRA_HEADERS = src/mpc-log.h
 include_HEADERS = src/mpc.h @MPC_LOG_H@
 EXTRA_DIST = doc/fdl-1.3.texi src/mpc-log.h Makefile.vc
@@ -390,6 +390,15 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu Makefile'; \
 	$(am__cd) $(top_srcdir) && \
 	  $(AUTOMAKE) --gnu Makefile
+# Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+# 	@case '$?' in \
+# 	  *config.status*) \
+# 	    echo ' $(SHELL) ./config.status'; \
+# 	    $(SHELL) ./config.status;; \
+# 	  *) \
+# 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe)'; \
+# 	    cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe);; \
+# 	esac;
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
