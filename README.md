@@ -80,6 +80,18 @@ to the crate root and add `gmp-mpfr-sys` as a dependency in
 gmp-mpfr-sys = "1.1.0"
 ```
 
+If the C libraries have a major version bump with some deprecated
+functions removed, but no features are removed in the Rust bindings,
+then `gmp-mpfr-sys` will have a minor version bump rather than a major
+version bump. This allows more compatiblity across crates that use the
+Rust bindings but do not use the C libraries directly.
+
+If on the other hand a dependent crate includes a C library that
+directly uses the header (*.h*) and library (*.a*) files built using
+C, it can be a good idea to depend on version `"~1.1.0"` instead of
+version `"1.1.0"` in order to ensure backwards compatibility at the C
+level as well.
+
 ### Metadata
 
 The `gmp-mpfr-sys` crate passes two pieces of metadata to its
