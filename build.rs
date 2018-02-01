@@ -29,9 +29,8 @@
 
 use std::env;
 use std::ffi::{OsStr, OsString};
-use std::fs;
-use std::fs::File;
-use std::io::{self, BufRead, BufReader, BufWriter, Write};
+use std::fs::{self, File};
+use std::io::{BufRead, BufReader, BufWriter, Result as IoResult, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -39,11 +38,29 @@ const GMP_DIR: &'static str = "gmp-6.1.2-c";
 const MPFR_DIR: &'static str = "mpfr-4.0.0-c";
 const MPC_DIR: &'static str = "mpc-1.1.0-c";
 
+#[derive(Clone, Copy, PartialEq)]
+enum Target {
+    Mingw,
+    Other,
+}
+
 fn main() {
     let src_dir = PathBuf::from(cargo_env("CARGO_MANIFEST_DIR"));
     let out_dir = PathBuf::from(cargo_env("OUT_DIR"));
     let jobs = cargo_env("NUM_JOBS");
     let profile = cargo_env("PROFILE");
+
+    let target = cargo_env("TARGET")
+        .into_string()
+        .expect("cannot convert environment variable TARGET into a `String`");
+    let target = if target.ends_with("-windows-msvc") {
+        panic!("Windows MSVC target is not supported (linking would fail).")
+    } else if target.ends_with("-windows-gnu") {
+        Target::Mingw
+    } else {
+        Target::Other
+    };
+
     let check = there_is_env("CARGO_FEATURE_CTEST")
         || (!there_is_env("CARGO_FEATURE_CNOTEST")
             && profile == OsString::from("release"));
@@ -71,48 +88,41 @@ fn main() {
     };
 
     // make sure we have target directory
-    create_dir(&lib_dir);
+    create_dir_or_panic(&lib_dir);
     let (compile_gmp, compile_mpfr, compile_mpc) =
         need_compile(&cache_dir, check, &gmp_ah, &mpfr_ah, &mpc_ah);
 
     if compile_gmp {
-        remove_dir(&build_dir);
-        create_dir(&build_dir);
-        symlink(
-            &build_dir,
-            &dir_relative(&build_dir, &src_dir.join(GMP_DIR)),
-            Some(&OsString::from("gmp-src")),
-        );
+        remove_dir_or_panic(&build_dir);
+        create_dir_or_panic(&build_dir);
+        link_or_copy_dir(&src_dir.join(GMP_DIR), &build_dir, "gmp-src", target);
         let (ref a, ref h) = gmp_ah;
         build_gmp(&build_dir, &jobs, check, a, h);
     }
     if compile_mpfr {
-        symlink(
+        link_or_copy_dir(
+            &src_dir.join(MPFR_DIR),
             &build_dir,
-            &dir_relative(&build_dir, &src_dir.join(MPFR_DIR)),
-            Some(&OsString::from("mpfr-src")),
+            "mpfr-src",
+            target,
         );
         let (ref a, ref h) = *mpfr_ah.as_ref().unwrap();
         build_mpfr(&build_dir, &jobs, check, a, h);
     }
     if compile_mpc {
-        symlink(
-            &build_dir,
-            &dir_relative(&build_dir, &src_dir.join(MPC_DIR)),
-            Some(&OsString::from("mpc-src")),
-        );
+        link_or_copy_dir(&src_dir.join(MPC_DIR), &build_dir, "mpc-src", target);
         let (ref a, ref h) = *mpc_ah.as_ref().unwrap();
         build_mpc(&build_dir, &jobs, check, a, h);
     }
     if compile_gmp {
-        remove_dir(&build_dir);
+        remove_dir_or_panic(&build_dir);
         if let Some(ref dir) = cache_dir {
             // ignore error, do not bail if saving cache fails
             save_cache(dir, check, &gmp_ah, &mpfr_ah, &mpc_ah).is_err();
         }
     }
     process_gmp_header(&gmp_ah.1, &out_dir.join("gmp_h.rs"));
-    write_link_info(&lib_dir, mpfr_ah.is_some(), mpc_ah.is_some());
+    write_link_info(&lib_dir, mpfr_ah.is_some(), mpc_ah.is_some(), target);
 }
 
 fn need_compile(
@@ -157,7 +167,7 @@ fn save_cache(
     gmp_ah: &(PathBuf, PathBuf),
     mpfr_ah: &Option<(PathBuf, PathBuf)>,
     mpc_ah: &Option<(PathBuf, PathBuf)>,
-) -> Result<(), io::Error> {
+) -> IoResult<()> {
     let req_check = if check { "check" } else { "nocheck" };
     let req_libs = if mpc_ah.is_some() {
         "gmp_mpfr_mpc"
@@ -167,17 +177,17 @@ fn save_cache(
         "gmp"
     };
     let dir = cache_dir.join(req_check).join(req_libs);
-    fs::create_dir_all(&dir)?;
+    create_dir(&dir)?;
     let (ref a, ref h) = *gmp_ah;
-    fs::copy(a, dir.join("libgmp.a"))?;
-    fs::copy(h, dir.join("gmp.h"))?;
+    copy_file(a, dir.join("libgmp.a"))?;
+    copy_file(h, dir.join("gmp.h"))?;
     if let Some((ref a, ref h)) = *mpfr_ah {
-        fs::copy(a, dir.join("libmpfr.a"))?;
-        fs::copy(h, dir.join("mpfr.h"))?;
+        copy_file(a, dir.join("libmpfr.a"))?;
+        copy_file(h, dir.join("mpfr.h"))?;
     }
     if let Some((ref a, ref h)) = *mpc_ah {
-        fs::copy(a, dir.join("libmpc.a"))?;
-        fs::copy(h, dir.join("mpc.h"))?;
+        copy_file(a, dir.join("libmpc.a"))?;
+        copy_file(h, dir.join("mpc.h"))?;
     }
     Ok(())
 }
@@ -197,8 +207,8 @@ fn load_cache(
         if mpfr_ah.is_none() {
             let dir = check_dir.join("gmp");
             let (ref a, ref h) = *gmp_ah;
-            let mut ok = fs::copy(dir.join("libgmp.a"), a).is_ok();
-            ok = ok && fs::copy(dir.join("gmp.h"), h).is_ok();
+            let mut ok = copy_file(dir.join("libgmp.a"), a).is_ok();
+            ok = ok && copy_file(dir.join("gmp.h"), h).is_ok();
             if ok {
                 return true;
             }
@@ -207,11 +217,11 @@ fn load_cache(
         if mpc_ah.is_none() {
             let dir = check_dir.join("gmp_mpfr");
             let (ref a, ref h) = *gmp_ah;
-            let mut ok = fs::copy(dir.join("libgmp.a"), a).is_ok();
-            ok = ok && fs::copy(dir.join("gmp.h"), h).is_ok();
+            let mut ok = copy_file(dir.join("libgmp.a"), a).is_ok();
+            ok = ok && copy_file(dir.join("gmp.h"), h).is_ok();
             if let Some((ref a, ref h)) = *mpfr_ah {
-                ok = ok && fs::copy(dir.join("libmpfr.a"), a).is_ok();
-                ok = ok && fs::copy(dir.join("mpfr.h"), h).is_ok();
+                ok = ok && copy_file(dir.join("libmpfr.a"), a).is_ok();
+                ok = ok && copy_file(dir.join("mpfr.h"), h).is_ok();
             }
             if ok {
                 return true;
@@ -220,15 +230,15 @@ fn load_cache(
         // finally try "gmp_mpfr_mpc" directory
         let dir = check_dir.join("gmp_mpfr_mpc");
         let (ref a, ref h) = *gmp_ah;
-        let mut ok = fs::copy(dir.join("libgmp.a"), a).is_ok();
-        ok = ok && fs::copy(dir.join("gmp.h"), h).is_ok();
+        let mut ok = copy_file(dir.join("libgmp.a"), a).is_ok();
+        ok = ok && copy_file(dir.join("gmp.h"), h).is_ok();
         if let Some((ref a, ref h)) = *mpfr_ah {
-            ok = ok && fs::copy(dir.join("libmpfr.a"), a).is_ok();
-            ok = ok && fs::copy(dir.join("mpfr.h"), h).is_ok();
+            ok = ok && copy_file(dir.join("libmpfr.a"), a).is_ok();
+            ok = ok && copy_file(dir.join("mpfr.h"), h).is_ok();
         }
         if let Some((ref a, ref h)) = *mpc_ah {
-            ok = ok && fs::copy(dir.join("libmpc.a"), a).is_ok();
-            ok = ok && fs::copy(dir.join("mpc.h"), h).is_ok();
+            ok = ok && copy_file(dir.join("libmpc.a"), a).is_ok();
+            ok = ok && copy_file(dir.join("mpc.h"), h).is_ok();
         }
         if ok {
             return true;
@@ -291,15 +301,15 @@ fn build_gmp(
     header: &Path,
 ) {
     let build_dir = top_build_dir.join("gmp-build");
-    create_dir(&build_dir);
-    println!("$ cd \"{}\"", build_dir.display());
+    create_dir_or_panic(&build_dir);
+    println!("$ cd {:?}", build_dir);
     let conf = "../gmp-src/configure --enable-fat --disable-shared --with-pic";
     configure(&build_dir, &OsString::from(conf));
     make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join(".libs").join("libgmp.a");
-    copy_file(&build_lib, &lib);
+    copy_file_or_panic(&build_lib, &lib);
     let build_header = build_dir.join("gmp.h");
-    copy_file(&build_header, &header);
+    copy_file_or_panic(&build_header, &header);
 }
 
 fn process_gmp_header(header: &Path, out_file: &Path) {
@@ -397,17 +407,17 @@ fn build_mpfr(
     header: &Path,
 ) {
     let build_dir = top_build_dir.join("mpfr-build");
-    create_dir(&build_dir);
-    println!("$ cd {}", build_dir.display());
+    create_dir_or_panic(&build_dir);
+    println!("$ cd {:?}", build_dir);
     symlink(&build_dir, &OsString::from("../gmp-build"), None);
     let conf = "../mpfr-src/configure --enable-thread-safe --disable-shared \
                 --with-gmp-build=../gmp-build --with-pic";
     configure(&build_dir, &OsString::from(conf));
     make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join("src").join(".libs").join("libmpfr.a");
-    copy_file(&build_lib, &lib);
+    copy_file_or_panic(&build_lib, &lib);
     let src_header = top_build_dir.join("mpfr-src").join("src").join("mpfr.h");
-    copy_file(&src_header, &header);
+    copy_file_or_panic(&src_header, &header);
 }
 
 fn build_mpc(
@@ -418,8 +428,8 @@ fn build_mpc(
     header: &Path,
 ) {
     let build_dir = top_build_dir.join("mpc-build");
-    create_dir(&build_dir);
-    println!("$ cd {}", build_dir.display());
+    create_dir_or_panic(&build_dir);
+    println!("$ cd {:?}", build_dir);
     symlink(&build_dir, &OsString::from("../mpfr-src"), None);
     symlink(&build_dir, &OsString::from("../mpfr-build"), None);
     symlink(&build_dir, &OsString::from("../gmp-build"), None);
@@ -431,12 +441,17 @@ fn build_mpc(
     configure(&build_dir, &OsString::from(conf));
     make_and_check(&build_dir, &jobs, check);
     let build_lib = build_dir.join("src").join(".libs").join("libmpc.a");
-    copy_file(&build_lib, &lib);
+    copy_file_or_panic(&build_lib, &lib);
     let src_header = top_build_dir.join("mpc-src").join("src").join("mpc.h");
-    copy_file(&src_header, &header);
+    copy_file_or_panic(&src_header, &header);
 }
 
-fn write_link_info(lib_dir: &Path, feature_mpfr: bool, feature_mpc: bool) {
+fn write_link_info(
+    lib_dir: &Path,
+    feature_mpfr: bool,
+    feature_mpc: bool,
+    target: Target,
+) {
     let lib_search = lib_dir.to_str().unwrap_or_else(|| {
         panic!(
             "Path contains unsupported characters, can only make {}",
@@ -452,7 +467,9 @@ fn write_link_info(lib_dir: &Path, feature_mpfr: bool, feature_mpc: bool) {
         println!("cargo:rustc-link-lib=static=mpfr");
     }
     println!("cargo:rustc-link-lib=static=gmp");
-    check_mingw(feature_mpfr, feature_mpc);
+    if target == Target::Mingw {
+        add_mingw_libs(feature_mpfr, feature_mpc);
+    }
 }
 
 fn cargo_env(name: &str) -> OsString {
@@ -465,20 +482,10 @@ fn there_is_env(name: &str) -> bool {
     env::var_os(name).is_some()
 }
 
-fn check_mingw(feature_mpfr: bool, _feature_mpc: bool) {
+fn add_mingw_libs(feature_mpfr: bool, _feature_mpc: bool) {
     // extra libraries needed only for mpfr because of thread-local storage
     if !feature_mpfr {
         return;
-    }
-
-    for check in &["HOST", "TARGET"] {
-        if !cargo_env(check)
-            .into_string()
-            .map(|s| s.ends_with("-windows-gnu"))
-            .unwrap_or(false)
-        {
-            return;
-        }
     }
 
     // link to gcc_eh
@@ -519,59 +526,39 @@ fn rustc_later_eq(major: i32, minor: i32) -> bool {
     ver_minor >= minor
 }
 
-fn remove_dir(dir: &Path) {
+fn remove_dir(dir: &Path) -> IoResult<()> {
     if !dir.exists() {
-        return;
+        return Ok(());
     }
-    assert!(dir.is_dir(), "Not a directory: {}", dir.display());
-    fs::remove_dir_all(dir).unwrap_or_else(|_| {
-        panic!("Unable to remove directory: {}", dir.display())
-    });
+    assert!(dir.is_dir(), "Not a directory: {:?}", dir);
+    println!("$ rm -r {:?}", dir);
+    fs::remove_dir_all(dir)
 }
 
-fn create_dir(dir: &Path) {
-    fs::create_dir_all(dir).unwrap_or_else(|_| {
-        panic!("Unable to create directory: {}", dir.display())
-    });
+fn remove_dir_or_panic(dir: &Path) {
+    remove_dir(dir)
+        .unwrap_or_else(|_| panic!("Unable to remove directory: {:?}", dir));
 }
 
-fn dir_relative(dir: &Path, rel_to: &Path) -> OsString {
-    let (mut diri, mut reli) = (dir.components(), rel_to.components());
-    let (mut dirc, mut relc) = (diri.next(), reli.next());
-    let mut some_common = false;
-    while let (Some(d), Some(r)) = (dirc, relc) {
-        if d != r {
-            break;
-        }
-        some_common = true;
-        dirc = diri.next();
-        relc = reli.next();
-    }
-    assert!(
-        some_common,
-        "cannot access {} from {} using relative paths",
-        rel_to.display(),
-        dir.display()
-    );
-    let mut ret = OsString::new();
-    while dirc.is_some() {
-        if !ret.is_empty() {
-            ret.push("/");
-        }
-        ret.push("..");
-        dirc = diri.next();
-    }
-    while let Some(r) = relc {
-        if !ret.is_empty() {
-            ret.push("/");
-        }
-        ret.push(r);
-        relc = reli.next();
-    }
-    if ret.is_empty() {
-        ret.push(".");
-    }
-    ret
+fn create_dir(dir: &Path) -> IoResult<()> {
+    println!("$ mkdir -p {:?}", dir);
+    fs::create_dir_all(dir)
+}
+
+fn create_dir_or_panic(dir: &Path) {
+    create_dir(dir)
+        .unwrap_or_else(|_| panic!("Unable to create directory: {:?}", dir));
+}
+
+fn copy_file(src: &Path, dst: &Path) -> IoResult<u64> {
+    println!("$ cp {:?} {:?}", src, dst);
+    fs::copy(src, dst)
+}
+
+fn copy_file_or_panic(src: &Path, dst: &Path) {
+    copy_file(src, dst).unwrap_or_else(|_| {
+        panic!("Unable to copy {:?} -> {:?}", src, dst);
+    });
 }
 
 fn configure(build_dir: &Path, conf_line: &OsStr) {
@@ -595,10 +582,15 @@ fn make_and_check(build_dir: &Path, jobs: &OsStr, check: bool) {
     }
 }
 
-fn copy_file(src: &Path, dst: &Path) {
-    fs::copy(&src, &dst).unwrap_or_else(|_| {
-        panic!("Unable to copy {} -> {}", src.display(), dst.display());
-    });
+fn link_or_copy_dir(src: &Path, dst: &Path, dst_name: &str, target: Target) {
+    println!("$ cd {:?}", dst);
+    if target == Target::Mingw {
+        let mut c = Command::new("cp");
+        c.current_dir(dst).arg("-R").arg(src).arg(dst_name);
+        execute(c);
+    } else {
+        symlink(dst, src.as_os_str(), Some(&OsString::from(dst_name)));
+    }
 }
 
 fn symlink(dir: &Path, link: &OsStr, name: Option<&OsStr>) {
@@ -626,13 +618,13 @@ fn execute(mut command: Command) {
 
 fn open(name: &Path) -> BufReader<File> {
     let file = File::open(name)
-        .unwrap_or_else(|_| panic!("Cannot open file: {}", name.display()));
+        .unwrap_or_else(|_| panic!("Cannot open file: {:?}", name));
     BufReader::new(file)
 }
 
 fn create(name: &Path) -> BufWriter<File> {
     let file = File::create(name)
-        .unwrap_or_else(|_| panic!("Cannot create file: {}", name.display()));
+        .unwrap_or_else(|_| panic!("Cannot create file: {:?}", name));
     BufWriter::new(file)
 }
 
@@ -643,17 +635,17 @@ fn read_line(
 ) -> usize {
     reader
         .read_line(buf)
-        .unwrap_or_else(|_| panic!("Cannot read from: {}", name.display()))
+        .unwrap_or_else(|_| panic!("Cannot read from: {:?}", name))
 }
 
 fn write(writer: &mut BufWriter<File>, buf: &str, name: &Path) {
     writer
         .write(buf.as_bytes())
-        .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
+        .unwrap_or_else(|_| panic!("Cannot write to: {:?}", name));
 }
 
 fn flush(writer: &mut BufWriter<File>, name: &Path) {
     writer
         .flush()
-        .unwrap_or_else(|_| panic!("Cannot write to: {}", name.display()));
+        .unwrap_or_else(|_| panic!("Cannot write to: {:?}", name));
 }

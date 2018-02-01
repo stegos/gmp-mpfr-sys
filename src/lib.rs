@@ -196,12 +196,6 @@
 //!
 //! 2. Change to the crate directory.
 //!
-//!    Note that building the GMP, MPFR and MPC libraries in MSYS with
-//!    absolute paths does not work very well, so relative paths are
-//!    used. If your crate is inside `C:\msys64` and the `.cargo`
-//!    directory is outside `C:\msys64`, this will not work. Please
-//!    move your crate to the same side of `C:\msys64` as `.cargo`.
-//!
 //! 3. Build the crate using `cargo`.
 //!
 //! [gmp doc]:  https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/index.html
