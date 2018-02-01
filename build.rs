@@ -179,15 +179,15 @@ fn save_cache(
     let dir = cache_dir.join(req_check).join(req_libs);
     create_dir(&dir)?;
     let (ref a, ref h) = *gmp_ah;
-    copy_file(a, dir.join("libgmp.a"))?;
-    copy_file(h, dir.join("gmp.h"))?;
+    copy_file(a, &dir.join("libgmp.a"))?;
+    copy_file(h, &dir.join("gmp.h"))?;
     if let Some((ref a, ref h)) = *mpfr_ah {
-        copy_file(a, dir.join("libmpfr.a"))?;
-        copy_file(h, dir.join("mpfr.h"))?;
+        copy_file(a, &dir.join("libmpfr.a"))?;
+        copy_file(h, &dir.join("mpfr.h"))?;
     }
     if let Some((ref a, ref h)) = *mpc_ah {
-        copy_file(a, dir.join("libmpc.a"))?;
-        copy_file(h, dir.join("mpc.h"))?;
+        copy_file(a, &dir.join("libmpc.a"))?;
+        copy_file(h, &dir.join("mpc.h"))?;
     }
     Ok(())
 }
@@ -207,8 +207,8 @@ fn load_cache(
         if mpfr_ah.is_none() {
             let dir = check_dir.join("gmp");
             let (ref a, ref h) = *gmp_ah;
-            let mut ok = copy_file(dir.join("libgmp.a"), a).is_ok();
-            ok = ok && copy_file(dir.join("gmp.h"), h).is_ok();
+            let mut ok = copy_file(&dir.join("libgmp.a"), a).is_ok();
+            ok = ok && copy_file(&dir.join("gmp.h"), h).is_ok();
             if ok {
                 return true;
             }
@@ -217,11 +217,11 @@ fn load_cache(
         if mpc_ah.is_none() {
             let dir = check_dir.join("gmp_mpfr");
             let (ref a, ref h) = *gmp_ah;
-            let mut ok = copy_file(dir.join("libgmp.a"), a).is_ok();
-            ok = ok && copy_file(dir.join("gmp.h"), h).is_ok();
+            let mut ok = copy_file(&dir.join("libgmp.a"), a).is_ok();
+            ok = ok && copy_file(&dir.join("gmp.h"), h).is_ok();
             if let Some((ref a, ref h)) = *mpfr_ah {
-                ok = ok && copy_file(dir.join("libmpfr.a"), a).is_ok();
-                ok = ok && copy_file(dir.join("mpfr.h"), h).is_ok();
+                ok = ok && copy_file(&dir.join("libmpfr.a"), a).is_ok();
+                ok = ok && copy_file(&dir.join("mpfr.h"), h).is_ok();
             }
             if ok {
                 return true;
@@ -230,15 +230,15 @@ fn load_cache(
         // finally try "gmp_mpfr_mpc" directory
         let dir = check_dir.join("gmp_mpfr_mpc");
         let (ref a, ref h) = *gmp_ah;
-        let mut ok = copy_file(dir.join("libgmp.a"), a).is_ok();
-        ok = ok && copy_file(dir.join("gmp.h"), h).is_ok();
+        let mut ok = copy_file(&dir.join("libgmp.a"), a).is_ok();
+        ok = ok && copy_file(&dir.join("gmp.h"), h).is_ok();
         if let Some((ref a, ref h)) = *mpfr_ah {
-            ok = ok && copy_file(dir.join("libmpfr.a"), a).is_ok();
-            ok = ok && copy_file(dir.join("mpfr.h"), h).is_ok();
+            ok = ok && copy_file(&dir.join("libmpfr.a"), a).is_ok();
+            ok = ok && copy_file(&dir.join("mpfr.h"), h).is_ok();
         }
         if let Some((ref a, ref h)) = *mpc_ah {
-            ok = ok && copy_file(dir.join("libmpc.a"), a).is_ok();
-            ok = ok && copy_file(dir.join("mpc.h"), h).is_ok();
+            ok = ok && copy_file(&dir.join("libmpc.a"), a).is_ok();
+            ok = ok && copy_file(&dir.join("mpc.h"), h).is_ok();
         }
         if ok {
             return true;
