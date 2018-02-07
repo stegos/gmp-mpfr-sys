@@ -19,9 +19,7 @@ by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version. See the full text of the
 [GNU LGPL][lgpl] and [GNU GPL][gpl] for details.
 
-## Basic use
-
-This crate required rustc version 1.13.0.
+## Basic features
 
 This crate provides a low-level interface to GMP, MPFR and MPC in
 three modules. The [documentation][sys] of the three modules contains
@@ -70,6 +68,8 @@ The bindings do not cover undocumented or obsolete functions and
 macros.
 
 ## Usage
+
+This crate required rustc version 1.13.0 or later.
 
 To use `gmp-mpfr-sys` in your crate, add `extern crate gmp_mpfr_sys;`
 to the crate root and add `gmp-mpfr-sys` as a dependency in
