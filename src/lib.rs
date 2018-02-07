@@ -20,7 +20,7 @@
 //!
 //! * the [GNU Multiple Precision Arithmetic Library][gmp] (GMP)
 //!   version 6.1.2, a library for arbitrary precision arithmetic,
-//! * the [GNU MPFR Library][mpfr] version 4.0.0, a library for
+//! * the [GNU MPFR Library][mpfr] version 4.0.1, a library for
 //!   multiple-precision floating-point computations with correct
 //!   rounding, and
 //! * [GNU MPC][mpc] version 1.1.0, a library for the arithmetic of

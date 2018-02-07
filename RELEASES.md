@@ -1,3 +1,4 @@
+* Update MPFR 4.0.0 -> 4.0.1.
 * Fix the type of the `tab` parameter of `mpfr::sum` to
   `*const *mut mpfr_t` instead of `*mut *mut mpfr_t`.
 * Document `DEP_GMP_LIMB_BITS` build script metadata.
