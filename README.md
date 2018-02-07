@@ -94,15 +94,19 @@ level as well.
 
 ### Metadata
 
-The `gmp-mpfr-sys` crate passes two pieces of metadata to its
-dependents:
+The `gmp-mpfr-sys` crate passes some metadata to its dependents:
 
 1. `DEP_GMP_LIMB_BITS` contains the number of bits per limb, which is
    32 or 64.
 2. `DEP_GMP_LIB_DIR` contains the path of the directory containing the
-   header (*.h*) and library (*.a*) files generated.
+   library (*.a) files generated.
+3. `DEP_GMP_INCLUDE_DIR` contains the path of the directory containing
+   the header (*.h) files corresponding to the libraries.
+4. `DEP_GMP_OUT_DIR` contains the path of the directory that contains
+   the two directories mentioned above, that is the path of the parent
+   directory of the library and header directories.
 
-A dependent crate can use these two environment variables in its build
+A dependent crate can use these environment variables in its build
 script.
 
 ### Optional features

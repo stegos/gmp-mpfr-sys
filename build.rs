@@ -45,8 +45,10 @@ enum Target {
 }
 
 struct Environment {
-    build_dir: PathBuf,
+    out_dir: PathBuf,
     lib_dir: PathBuf,
+    include_dir: PathBuf,
+    build_dir: PathBuf,
     cache_dir: Option<PathBuf>,
     jobs: OsString,
     target: Target,
@@ -84,31 +86,37 @@ fn main() {
             && cargo_env("PROFILE") == OsString::from("release"));
 
     let env = Environment {
-        build_dir: out_dir.join("build"),
+        out_dir: out_dir.clone(),
         lib_dir: out_dir.join("lib"),
+        include_dir: out_dir.join("include"),
+        build_dir: out_dir.join("build"),
         cache_dir: cache_dir,
         jobs: cargo_env("NUM_JOBS"),
         target: target,
         make_check: make_check,
     };
 
-    let gmp_ah = (env.lib_dir.join("libgmp.a"), env.lib_dir.join("gmp.h"));
+    // make sure we have target directories
+    create_dir_or_panic(&env.lib_dir);
+    create_dir_or_panic(&env.include_dir);
+
+    let gmp_ah = (env.lib_dir.join("libgmp.a"), env.include_dir.join("gmp.h"));
     let mpc_ah = if there_is_env("CARGO_FEATURE_MPC") {
-        Some((env.lib_dir.join("libmpc.a"), env.lib_dir.join("mpc.h")))
+        Some((env.lib_dir.join("libmpc.a"), env.include_dir.join("mpc.h")))
     } else {
         None
     };
     let mpfr_ah = if mpc_ah.is_some() || there_is_env("CARGO_FEATURE_MPFR") {
-        Some((env.lib_dir.join("libmpfr.a"), env.lib_dir.join("mpfr.h")))
+        Some((
+            env.lib_dir.join("libmpfr.a"),
+            env.include_dir.join("mpfr.h"),
+        ))
     } else {
         None
     };
 
-    // make sure we have target directory
-    create_dir_or_panic(&env.lib_dir);
     let (compile_gmp, compile_mpfr, compile_mpc) =
         need_compile(&env, &gmp_ah, &mpfr_ah, &mpc_ah);
-
     if compile_gmp {
         remove_dir_or_panic(&env.build_dir);
         create_dir_or_panic(&env.build_dir);
@@ -467,14 +475,28 @@ fn build_mpc(env: &Environment, lib: &Path, header: &Path) {
 }
 
 fn write_link_info(env: &Environment, feature_mpfr: bool, feature_mpc: bool) {
-    let lib_search = env.lib_dir.to_str().unwrap_or_else(|| {
+    let out_str = env.out_dir.to_str().unwrap_or_else(|| {
+        panic!(
+            "Path contains unsupported characters, can only make {}",
+            env.out_dir.display()
+        )
+    });
+    let lib_str = env.lib_dir.to_str().unwrap_or_else(|| {
         panic!(
             "Path contains unsupported characters, can only make {}",
             env.lib_dir.display()
         )
     });
-    println!("cargo:lib_dir={}", lib_search);
-    println!("cargo:rustc-link-search=native={}", lib_search);
+    let include_str = env.include_dir.to_str().unwrap_or_else(|| {
+        panic!(
+            "Path contains unsupported characters, can only make {}",
+            env.include_dir.display()
+        )
+    });
+    println!("cargo:out_dir={}", out_str);
+    println!("cargo:lib_dir={}", lib_str);
+    println!("cargo:include_dir={}", include_str);
+    println!("cargo:rustc-link-search=native={}", lib_str);
     if feature_mpc {
         println!("cargo:rustc-link-lib=static=mpc");
     }
