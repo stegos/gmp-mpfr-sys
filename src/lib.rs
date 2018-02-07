@@ -115,14 +115,15 @@
 //!
 //! 1. `DEP_GMP_LIMB_BITS` contains the number of bits per limb, which
 //!    is 32 or 64.
-//! 2. `DEP_GMP_LIB_DIR` contains the path of the directory containing
-//!    the library (*.a) files generated.
-//! 3. `DEP_GMP_INCLUDE_DIR` contains the path of the directory
-//!    containing the header (*.h) files corresponding to the
-//!    libraries.
-//! 4. `DEP_GMP_OUT_DIR` contains the path of the directory that
-//!    contains the two directories mentioned above, that is the path
-//!    of the parent directory of the library and header directories.
+//! 2. `DEP_GMP_OUT_DIR` contains the path of a directory that
+//!    contains two subdirectories: the first subdirectory is named
+//!    *lib* and contains the generated library (*.a*) files, and the
+//!    second subdirectory is named *include* and contains the
+//!    corresponding header (*.h*) files.
+//! 3. `DEP_GMP_LIB_DIR` contains the path of the *lib* subdirectory
+//!    of the `DEP_GMP_OUT_DIR` directory.
+//! 4. `DEP_GMP_INCLUDE_DIR` contains the path of the *include*
+//!    subdirectory of the `DEP_GMP_OUT_DIR` directory.
 //!
 //! A dependent crate can use these environment variables in its build
 //! script.
