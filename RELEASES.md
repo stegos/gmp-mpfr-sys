@@ -2,7 +2,8 @@
 * Fix the type of the `tab` parameter of `mpfr::sum` to
   `*const *mut mpfr_t` instead of `*mut *mut mpfr_t`.
 * Document `DEP_GMP_LIMB_BITS` build script metadata.
-* Add `DEP_GMP_LIB_DIR` build script metadata.
+* Add `DEP_GMP_LIB_DIR`, `DEP_GMP_INCLUDE_DIR`, and `DEP_GMP_OUT_DIR`
+  build script metadata.
 
 Version 1.1.0 (2018-01-12)
 ==========================
