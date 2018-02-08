@@ -43,8 +43,6 @@ features are:
 * multi-precision [complex numbers][rug com] with correct rounding
   based on MPC.
 
-## Notes
-
 ### Name prefixes
 
 Since modules and enumerated types provide namespacing, most prefixes
