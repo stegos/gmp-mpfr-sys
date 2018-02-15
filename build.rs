@@ -122,7 +122,7 @@ fn main() {
         check_for_msvc(&env);
         remove_dir_or_panic(&env.build_dir);
         create_dir_or_panic(&env.build_dir);
-        check_for_mingw_bug_47048(&env);
+        check_for_bug_47048(&env);
         link_or_copy_dir(
             &src_dir.join(GMP_DIR),
             &env.build_dir,
@@ -528,7 +528,7 @@ fn check_for_msvc(env: &Environment) {
     }
 }
 
-fn check_for_mingw_bug_47048(env: &Environment) {
+fn check_for_bug_47048(env: &Environment) {
     if env.target != Target::Mingw {
         return;
     }
@@ -553,6 +553,7 @@ fn check_for_mingw_bug_47048(env: &Environment) {
 
     cmd = Command::new("gcc");
     cmd.current_dir(&try_dir)
+        .arg("c_main.c")
         .arg("-L.")
         .arg("-lsay_hi")
         .arg("-o")
@@ -772,21 +773,21 @@ fn flush(writer: &mut BufWriter<File>, name: &Path) {
         .unwrap_or_else(|_| panic!("Cannot write to: {:?}", name));
 }
 
-const BUG_47048_SAY_HI_C: &str = "\
+const BUG_47048_SAY_HI_C: &'static str = r#"/* say_hi.c */
 #include <stdio.h>
 void say_hi(void) {
-    fprintf(stdout, \"hi!\n\");
+    fprintf(stdout, "hi!\n");
 }
-";
-const BUG_47048_C_MAIN_C: &str = "\
+"#;
+const BUG_47048_C_MAIN_C: &'static str = r#"/* c_main.c */
 void say_hi(void);
 int main(void) {
     say_hi();
     return 0;
 }
-";
-const BUG_47048_R_MAIN_RS: &str = "\
-extern \"C\" {
+"#;
+const BUG_47048_R_MAIN_RS: &'static str = r#"// r_main.rs
+extern "C" {
     fn say_hi();
 }
 fn main() {
@@ -794,4 +795,4 @@ fn main() {
         say_hi();
     }
 }
-";
+"#;
