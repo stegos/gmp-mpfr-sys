@@ -41,6 +41,7 @@ const MPC_DIR: &'static str = "mpc-1.1.0-c";
 #[derive(Clone, Copy, PartialEq)]
 enum Target {
     Mingw,
+    Msvc,
     Other,
 }
 
@@ -73,9 +74,9 @@ fn main() {
     let target = target
         .into_string()
         .expect("cannot convert environment variable TARGET into a `String`");
-    let target = if target.ends_with("-windows-msvc") {
-        panic!("Windows MSVC target is not supported (linking would fail)")
-    } else if target.ends_with("-windows-gnu") {
+    let target = if target.contains("-windows-msvc") {
+        Target::Msvc
+    } else if target.contains("-windows-gnu") {
         Target::Mingw
     } else {
         Target::Other
@@ -118,8 +119,10 @@ fn main() {
     let (compile_gmp, compile_mpfr, compile_mpc) =
         need_compile(&env, &gmp_ah, &mpfr_ah, &mpc_ah);
     if compile_gmp {
+        check_for_msvc(&env);
         remove_dir_or_panic(&env.build_dir);
         create_dir_or_panic(&env.build_dir);
+        check_for_mingw_bug_47048(&env);
         link_or_copy_dir(
             &src_dir.join(GMP_DIR),
             &env.build_dir,
@@ -519,6 +522,69 @@ fn there_is_env(name: &str) -> bool {
     env::var_os(name).is_some()
 }
 
+fn check_for_msvc(env: &Environment) {
+    if env.target == Target::Msvc {
+        panic!("Windows MSVC target is not supported (linking would fail)");
+    }
+}
+
+fn check_for_mingw_bug_47048(env: &Environment) {
+    if env.target != Target::Mingw {
+        return;
+    }
+    let try_dir = env.build_dir.join("try_47048");
+    let rustc = cargo_env("RUSTC");
+    create_dir_or_panic(&try_dir);
+    create_file_or_panic(&try_dir.join("say_hi.c"), BUG_47048_SAY_HI_C);
+    create_file_or_panic(&try_dir.join("c_main.c"), BUG_47048_C_MAIN_C);
+    create_file_or_panic(&try_dir.join("r_main.rs"), BUG_47048_R_MAIN_RS);
+    let mut cmd;
+
+    cmd = Command::new("gcc");
+    cmd.current_dir(&try_dir).arg("-c").arg("say_hi.c");
+    execute(cmd);
+
+    cmd = Command::new("ar");
+    cmd.current_dir(&try_dir)
+        .arg("cr")
+        .arg("libsay_hi.a")
+        .arg("say_hi.o");
+    execute(cmd);
+
+    cmd = Command::new("gcc");
+    cmd.current_dir(&try_dir)
+        .arg("-L.")
+        .arg("-lsay_hi")
+        .arg("-o")
+        .arg("c_main.exe");
+    execute(cmd);
+
+    // try simple rustc command that should work, so that failure
+    // really is the bug being checked for
+    cmd = Command::new(&rustc);
+    cmd.arg("--version");
+    execute(cmd);
+
+    cmd = Command::new(&rustc);
+    cmd.current_dir(&try_dir)
+        .arg("r_main.rs")
+        .arg("-L.")
+        .arg("-lsay_hi")
+        .arg("-o")
+        .arg("r_main.exe");
+    println!("$ {:?}", cmd);
+    let status = cmd.status()
+        .unwrap_or_else(|_| panic!("Unable to execute: {:?}", cmd));
+    if !status.success() {
+        panic!(
+            "Detected bug 47048; more details and possible workarounds at: \
+             https://github.com/rust-lang/rust/issues/47048"
+        );
+    }
+
+    remove_dir_or_panic(&try_dir);
+}
+
 fn add_mingw_libs(feature_mpfr: bool, _feature_mpc: bool) {
     // extra libraries needed only for mpfr because of thread-local storage
     if !feature_mpfr {
@@ -585,6 +651,14 @@ fn create_dir(dir: &Path) -> IoResult<()> {
 fn create_dir_or_panic(dir: &Path) {
     create_dir(dir)
         .unwrap_or_else(|_| panic!("Unable to create directory: {:?}", dir));
+}
+
+fn create_file_or_panic(filename: &Path, contents: &str) {
+    println!("$ printf '%s' {:?}... > {:?}", &contents[0..10], filename);
+    let mut file = File::create(filename)
+        .unwrap_or_else(|_| panic!("Unable to create file: {:?}", filename));
+    file.write_all(contents.as_bytes())
+        .unwrap_or_else(|_| panic!("Unable to write to file: {:?}", filename));
 }
 
 fn copy_file(src: &Path, dst: &Path) -> IoResult<u64> {
@@ -697,3 +771,27 @@ fn flush(writer: &mut BufWriter<File>, name: &Path) {
         .flush()
         .unwrap_or_else(|_| panic!("Cannot write to: {:?}", name));
 }
+
+const BUG_47048_SAY_HI_C: &str = "\
+#include <stdio.h>
+void say_hi(void) {
+    fprintf(stdout, \"hi!\n\");
+}
+";
+const BUG_47048_C_MAIN_C: &str = "\
+void say_hi(void);
+int main(void) {
+    say_hi();
+    return 0;
+}
+";
+const BUG_47048_R_MAIN_RS: &str = "\
+extern \"C\" {
+    fn say_hi();
+}
+fn main() {
+    unsafe {
+        say_hi();
+    }
+}
+";
