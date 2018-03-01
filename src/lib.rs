@@ -91,7 +91,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! gmp-mpfr-sys = "1.1.0"
+//! gmp-mpfr-sys = "1.1"
 //! ```
 //!
 //! If the C libraries have a major version bump with some deprecated
@@ -103,8 +103,8 @@
 //!
 //! If on the other hand a dependent crate includes a C library that
 //! directly uses the header (*.h*) and library (*.a*) files built
-//! using C, it can be a good idea to depend on version `"~1.1.0"`
-//! instead of version `"1.1.0"` in order to ensure backwards
+//! using C, it can be a good idea to depend on version `"~1.1"`
+//! instead of version `"1.1"` in order to ensure backwards
 //! compatibility at the C level as well.
 //!
 //! ### Metadata
@@ -135,15 +135,15 @@
 //!
 //! ```toml
 //! [dependencies.gmp-mpfr-sys]
-//! version = "1.1.0"
+//! version = "1.1"
 //! default-features = false
 //! ```
-//!
+//!p
 //! To use features selectively, you can add this to `Cargo.toml`:
 //!
 //! ```toml
 //! [dependencies.gmp-mpfr-sys]
-//! version = "1.1.0"
+//! version = "1.1"
 //! default-features = false
 //! # Pick which features to use
 //! features = ["mpfr"]
@@ -220,7 +220,7 @@
 //! [sys mpc]:  mpc/index.html
 //! [sys mpfr]: mpfr/index.html
 #![warn(missing_docs)]
-#![doc(html_root_url = "https://docs.rs/gmp-mpfr-sys/~1.1.0")]
+#![doc(html_root_url = "https://docs.rs/gmp-mpfr-sys/~1.1")]
 #![doc(test(attr(deny(warnings))))]
 
 pub mod gmp;

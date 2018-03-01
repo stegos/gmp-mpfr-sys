@@ -75,7 +75,7 @@ to the crate root and add `gmp-mpfr-sys` as a dependency in
 
 ```toml
 [dependencies]
-gmp-mpfr-sys = "1.1.0"
+gmp-mpfr-sys = "1.1"
 ```
 
 If the C libraries have a major version bump with some deprecated
@@ -86,8 +86,8 @@ Rust bindings but do not use the C libraries directly.
 
 If on the other hand a dependent crate includes a C library that
 directly uses the header (*.h*) and library (*.a*) files built using
-C, it can be a good idea to depend on version `"~1.1.0"` instead of
-version `"1.1.0"` in order to ensure backwards compatibility at the C
+C, it can be a good idea to depend on version `"~1.1"` instead of
+version `"1.1"` in order to ensure backwards compatibility at the C
 level as well.
 
 ### Metadata
@@ -118,7 +118,7 @@ disable them add this to `Cargo.toml`:
 
 ```toml
 [dependencies.gmp-mpfr-sys]
-version = "1.1.0"
+version = "1.1"
 default-features = false
 ```
 
@@ -126,7 +126,7 @@ To use features selectively, you can add this to `Cargo.toml`:
 
 ```toml
 [dependencies.gmp-mpfr-sys]
-version = "1.1.0"
+version = "1.1"
 default-features = false
 # Pick which features to use
 features = ["mpfr"]
@@ -198,7 +198,7 @@ Then, to build a crate with a dependency on this crate:
 [rug int]:  https://docs.rs/rug/*/rug/struct.Integer.html
 [rug rat]:  https://docs.rs/rug/*/rug/struct.Rational.html
 [rug]:      https://crates.io/crates/rug
-[sys gmp]:  https://docs.rs/gmp-mpfr-sys/~1.1.0/gmp_mpfr_sys/gmp/index.html
-[sys mpc]:  https://docs.rs/gmp-mpfr-sys/~1.1.0/gmp_mpfr_sys/mpc/index.html
-[sys mpfr]: https://docs.rs/gmp-mpfr-sys/~1.1.0/gmp_mpfr_sys/mpfr/index.html
-[sys]:      https://docs.rs/gmp-mpfr-sys/~1.1.0/gmp_mpfr_sys/index.html
+[sys gmp]:  https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/gmp/index.html
+[sys mpc]:  https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpc/index.html
+[sys mpfr]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpfr/index.html
+[sys]:      https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/index.html
