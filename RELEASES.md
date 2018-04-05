@@ -1,4 +1,4 @@
-Version 1.1.2 (unrealease)
+Version 1.1.2 (2018-04-05)
 ==========================
 
 * Add missing MPFR and MPC functions with `uj` and `sj`, using

@@ -16,7 +16,7 @@
 
 [package]
 name = "gmp-mpfr-sys"
-version = "1.1.1"
+version = "1.1.2"
 authors = ["Trevor Spiteri <trevor.spiteri@um.edu.mt>"]
 description = "Rust FFI bindings for GMP, MPFR and MPC"
 documentation = "https://docs.rs/gmp-mpfr-sys"
@@ -30,12 +30,6 @@ links = "gmp"
 
 [features]
 default = ["mpfr", "mpc"]
-
-# Libraries built:
-# gmp: always built
-# mpfr: built when mpfr or mpc features are required (default)
-# mpc: built when mpc feature is required (default)
-
 mpfr = []
 mpc = ["mpfr"]
 
