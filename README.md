@@ -19,7 +19,7 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ### Version 1.1.2 news
 
-* Some missing functions were added to the [`mfpr`] module: [`dump`],
+* Some missing functions were added to the [`mpfr`] module: [`dump`],
   [`get_sj`], [`get_uj`], [`set_sj_2exp`], [`set_sj`][`mpfr::set_sj`],
   [`set_uj_2exp`] and [`set_uj`][`mpfr::set_uj`].
 * Some missing functions were added to the [`mpc`] module:
