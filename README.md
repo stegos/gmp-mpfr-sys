@@ -29,7 +29,7 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ### Older releases
 
-Details on older releases can be found in [`*RELEASES.md*].
+Details on older releases can be found in [*RELEASES.md*].
 
 [*RELEASES.md*]: https://gitlab.com/tspiteri/gmp-mpfr-sys/blob/master/RELEASES.md
 [`dump`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpfr/fn.dump.html
@@ -76,7 +76,7 @@ are *not* shortened to `mpfr::t` or `mpc::t`.
 ### Types
 
 Unlike in the C libraries, the types [`gmp::mpz_t`], [`gmp::mpq_t`],
-[`gmp::mpf_t`], [`gmp::rand_state_t`], [`mpfr::mpfr_t`] and
+[`gmp::mpf_t`], [`gmp::randstate_t`], [`mpfr::mpfr_t`] and
 [`mpc::mpc_t`] are defined directly as structs, not as single-element
 arrays.
 
@@ -220,7 +220,11 @@ Then, to build a crate with a dependency on this crate:
 [`MPFR_RNDN`]: https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#Rounding-Modes
 [`Rational`]: https://docs.rs/rug/*/rug/struct.Rational.html
 [`enum MPFR_RND_T`]: https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005frnd_005ft
+[`gmp::mpf_t`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/gmp/struct.mpf_t.html
+[`gmp::mpq_t`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/gmp/struct.mpq_t.html
 [`gmp::mpz_init`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/gmp/fn.mpz_init.html
+[`gmp::mpz_t`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/gmp/struct.mpz_t.html
+[`gmp::randstate_t`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/gmp/struct.randstate_t.html
 [`gmp::set_memory_functions`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/gmp/fn.set_memory_functions.html
 [`mp_set_memory_functions`]: https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Custom-Allocation.html#index-mp_005fset_005fmemory_005ffunctions
 [`mpc::mpc_t`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpc/struct.mpc_t.html
