@@ -863,9 +863,6 @@ using the following steps:
   1. http://repo.msys2.org/mingw/i686/mingw-w64-i686-crt-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
   2. http://repo.msys2.org/mingw/i686/mingw-w64-i686-headers-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
 
-* (Optional) Verify the two packages; signatures are available at:
-  http://repo.msys2.org/mingw/i686/
-
 * Downgrade using the following bash command:
   pacman -U mingw-w64-i686-{crt,headers}-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
 
@@ -882,9 +879,6 @@ using the following steps:
 * Download the following two packages:
   1. http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-crt-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
   2. http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-headers-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
-
-* (Optional) Verify the two packages; signatures are available at:
-  http://repo.msys2.org/mingw/x86_64/
 
 * Downgrade using the following bash command:
   pacman -U mingw-w64-x86_64-{crt,headers}-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
