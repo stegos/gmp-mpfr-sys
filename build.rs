@@ -31,6 +31,7 @@ use std::env;
 use std::ffi::{OsStr, OsString};
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader, BufWriter, Result as IoResult, Write};
+use std::mem;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -569,6 +570,7 @@ fn check_for_bug_47048(env: &Environment) {
     let try_dir = env.build_dir.join("try_47048");
     let rustc = cargo_env("RUSTC");
     create_dir_or_panic(&try_dir);
+    println!("$ cd {:?}", try_dir);
     create_file_or_panic(&try_dir.join("say_hi.c"), BUG_47048_SAY_HI_C);
     create_file_or_panic(&try_dir.join("c_main.c"), BUG_47048_C_MAIN_C);
     create_file_or_panic(&try_dir.join("r_main.rs"), BUG_47048_R_MAIN_RS);
@@ -576,24 +578,22 @@ fn check_for_bug_47048(env: &Environment) {
 
     cmd = Command::new("gcc");
     cmd.current_dir(&try_dir)
-        .arg("-c")
-        .arg("say_hi.c");
+        .args(&["-c", "say_hi.c"]);
     execute(cmd);
 
     cmd = Command::new("ar");
     cmd.current_dir(&try_dir)
-        .arg("cr")
-        .arg("libsay_hi.a")
-        .arg("say_hi.o");
+        .args(&["cr", "libsay_hi.a", "say_hi.o"]);
     execute(cmd);
 
     cmd = Command::new("gcc");
-    cmd.current_dir(&try_dir)
-        .arg("c_main.c")
-        .arg("-L.")
-        .arg("-lsay_hi")
-        .arg("-o")
-        .arg("c_main.exe");
+    cmd.current_dir(&try_dir).args(&[
+        "c_main.c",
+        "-L.",
+        "-lsay_hi",
+        "-o",
+        "c_main.exe",
+    ]);
     execute(cmd);
 
     // try simple rustc command that should work, so that failure
@@ -603,20 +603,23 @@ fn check_for_bug_47048(env: &Environment) {
     execute(cmd);
 
     cmd = Command::new(&rustc);
-    cmd.current_dir(&try_dir)
-        .arg("r_main.rs")
-        .arg("-L.")
-        .arg("-lsay_hi")
-        .arg("-o")
-        .arg("r_main.exe");
+    cmd.current_dir(&try_dir).args(&[
+        "r_main.rs",
+        "-L.",
+        "-lsay_hi",
+        "-o",
+        "r_main.exe",
+    ]);
     println!("$ {:?}", cmd);
     let status = cmd.status()
         .unwrap_or_else(|_| panic!("Unable to execute: {:?}", cmd));
     if !status.success() {
-        panic!(
-            "Detected bug 47048; more details and possible workarounds at: \
-             https://github.com/rust-lang/rust/issues/47048"
-        );
+        let message = match mem::size_of::<usize>() {
+            4 => BUG_47048_MESSAGE_32,
+            8 => BUG_47048_MESSAGE_64,
+            _ => unreachable!(),
+        };
+        panic!("{}", message);
     }
 
     remove_dir_or_panic(&try_dir);
@@ -830,6 +833,7 @@ void say_hi(void) {
     fprintf(stdout, "hi!\n");
 }
 "#;
+
 const BUG_47048_C_MAIN_C: &'static str = r#"/* c_main.c */
 void say_hi(void);
 int main(void) {
@@ -837,6 +841,7 @@ int main(void) {
     return 0;
 }
 "#;
+
 const BUG_47048_R_MAIN_RS: &'static str = r#"// r_main.rs
 extern "C" {
     fn say_hi();
@@ -846,4 +851,44 @@ fn main() {
         say_hi();
     }
 }
+"#;
+
+const BUG_47048_MESSAGE_32: &'static str = r#"
+Detected rustc bug 47048.
+
+As a workaround, you can downgrade the MinGW headers and crt packages
+using the following steps:
+
+* Download the following two packages:
+  1. http://repo.msys2.org/mingw/i686/mingw-w64-i686-crt-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
+  2. http://repo.msys2.org/mingw/i686/mingw-w64-i686-headers-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
+
+* (Optional) Verify the two packages; signatures are available at:
+  http://repo.msys2.org/mingw/i686/
+
+* Downgrade using the following bash command:
+  pacman -U mingw-w64-i686-{crt,headers}-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
+
+More details at: https://github.com/rust-lang/rust/issues/47048
+
+"#;
+
+const BUG_47048_MESSAGE_64: &'static str = r#"
+Detected rustc bug 47048.
+
+As a workaround, you can downgrade the MinGW headers and crt packages
+using the following steps:
+
+* Download the following two packages:
+  1. http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-crt-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
+  2. http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-headers-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
+
+* (Optional) Verify the two packages; signatures are available at:
+  http://repo.msys2.org/mingw/x86_64/
+
+* Downgrade using the following bash command:
+  pacman -U mingw-w64-x86_64-{crt,headers}-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
+
+More details at: https://github.com/rust-lang/rust/issues/47048
+
 "#;
