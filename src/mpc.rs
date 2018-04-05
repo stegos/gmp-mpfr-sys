@@ -14,31 +14,35 @@
 // License and a copy of the GNU General Public License along with
 // this program. If not, see <http://www.gnu.org/licenses/>.
 
-//! Function and type bindings for the MPC library.
-//!
-//! # Examples
-//!
-//! ```rust
-//! use gmp_mpfr_sys::mpc;
-//! use gmp_mpfr_sys::mpfr;
-//! use std::f64;
-//! use std::mem;
-//! let one_third = 1.0_f64 / 3.0;
-//! let neg_inf = f64::NEG_INFINITY;
-//! unsafe {
-//!     let mut c = mem::uninitialized();
-//!     mpc::init3(&mut c, 53, 53);
-//!     let dirs = mpc::set_d_d(&mut c, one_third, neg_inf, mpc::RNDNN);
-//!     assert_eq!(dirs, 0);
-//!     let re_ptr = mpc::realref_const(&c);
-//!     let re = mpfr::get_d(re_ptr, mpfr::rnd_t::RNDN);
-//!     assert_eq!(re, one_third);
-//!     let im_ptr = mpc::imagref_const(&c);
-//!     let im = mpfr::get_d(im_ptr, mpfr::rnd_t::RNDN);
-//!     assert_eq!(im, neg_inf);
-//!     mpc::clear(&mut c);
-//! }
-//! ```
+/*!
+Function and type bindings for the [MPC] library.
+
+# Examples
+
+```rust
+use gmp_mpfr_sys::mpc;
+use gmp_mpfr_sys::mpfr;
+use std::f64;
+use std::mem;
+let one_third = 1.0_f64 / 3.0;
+let neg_inf = f64::NEG_INFINITY;
+unsafe {
+    let mut c = mem::uninitialized();
+    mpc::init3(&mut c, 53, 53);
+    let dirs = mpc::set_d_d(&mut c, one_third, neg_inf, mpc::RNDNN);
+    assert_eq!(dirs, 0);
+    let re_ptr = mpc::realref_const(&c);
+    let re = mpfr::get_d(re_ptr, mpfr::rnd_t::RNDN);
+    assert_eq!(re, one_third);
+    let im_ptr = mpc::imagref_const(&c);
+    let im = mpfr::get_d(im_ptr, mpfr::rnd_t::RNDN);
+    assert_eq!(im, neg_inf);
+    mpc::clear(&mut c);
+}
+```
+
+[MPC]: http://www.multiprecision.org/mpc/
+*/
 #![allow(non_camel_case_types, non_snake_case)]
 
 use gmp;

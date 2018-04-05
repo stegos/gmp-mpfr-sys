@@ -14,22 +14,26 @@
 // License and a copy of the GNU General Public License along with
 // this program. If not, see <http://www.gnu.org/licenses/>.
 
-//! Function and type bindings for the GMP library.
-//!
-//! # Examples
-//!
-//! ```rust
-//! use gmp_mpfr_sys::gmp;
-//! use std::mem;
-//! unsafe {
-//!     let mut z = mem::uninitialized();
-//!     gmp::mpz_init(&mut z);
-//!     gmp::mpz_set_ui(&mut z, 15);
-//!     let u = gmp::mpz_get_ui(&z);
-//!     assert_eq!(u, 15);
-//!     gmp::mpz_clear(&mut z);
-//! }
-//! ```
+/*!
+Function and type bindings for the [GMP] library.
+
+# Examples
+
+```rust
+use gmp_mpfr_sys::gmp;
+use std::mem;
+unsafe {
+    let mut z = mem::uninitialized();
+    gmp::mpz_init(&mut z);
+    gmp::mpz_set_ui(&mut z, 15);
+    let u = gmp::mpz_get_ui(&z);
+    assert_eq!(u, 15);
+    gmp::mpz_clear(&mut z);
+}
+```
+
+[GMP]: https://gmplib.org/
+*/
 #![allow(non_camel_case_types)]
 
 use std::os::raw::{c_char, c_int, c_long, c_uchar, c_uint, c_ulong, c_ushort,
