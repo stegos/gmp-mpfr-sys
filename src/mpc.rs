@@ -44,7 +44,7 @@
 use gmp;
 use mpfr;
 
-use std::os::raw::{c_char, c_int, c_long, c_ulong};
+use std::os::raw::{c_char, c_int, c_long, c_longlong, c_ulong, c_ulonglong};
 
 #[inline]
 extern "C" fn INEX_NEG(inex: c_int) -> c_int {
@@ -172,6 +172,12 @@ extern "C" {
     /// See: [`mpc_set_si`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fsi)
     #[link_name = "mpc_set_si"]
     pub fn set_si(rop: mpc_ptr, op: c_long, rnd: rnd_t) -> c_int;
+    /// See: [`mpc_set_uj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fuj)
+    #[link_name = "mpc_set_uj"]
+    pub fn set_uj(rop: mpc_ptr, op: c_ulonglong, rnd: rnd_t) -> c_int;
+    /// See: [`mpc_set_sj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fsj)
+    #[link_name = "mpc_set_sj"]
+    pub fn set_sj(rop: mpc_ptr, op: c_longlong, rnd: rnd_t) -> c_int;
     /// See: [`mpc_set_d`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fd)
     #[link_name = "mpc_set_d"]
     pub fn set_d(rop: mpc_ptr, op: f64, rnd: rnd_t) -> c_int;
@@ -201,6 +207,22 @@ extern "C" {
         rop: mpc_ptr,
         op1: c_long,
         op2: c_long,
+        rnd: rnd_t,
+    ) -> c_int;
+    /// See: [`mpc_set_uj_uj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fuj_005fuj)
+    #[link_name = "mpc_set_uj_uj"]
+    pub fn set_uj_uj(
+        rop: mpc_ptr,
+        op1: c_ulonglong,
+        op2: c_ulonglong,
+        rnd: rnd_t,
+    ) -> c_int;
+    /// See: [`mpc_set_sj_sj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fsj_005fsj)
+    #[link_name = "mpc_set_sj_sj"]
+    pub fn set_sj_sj(
+        rop: mpc_ptr,
+        op1: c_longlong,
+        op2: c_longlong,
         rnd: rnd_t,
     ) -> c_int;
     /// See: [`mpc_set_d_d`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fd_005fd)

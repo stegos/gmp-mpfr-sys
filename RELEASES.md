@@ -1,3 +1,10 @@
+Version 1.1.2 (unrealease)
+==========================
+
+* Add missing MPFR and MPC functions with `uj` and `sj`, using
+  `c_ulonglong` and `c_longlong` respectively.
+* Add missing MPFR `dump` function.
+
 Version 1.1.1 (2018-02-09)
 ==========================
 

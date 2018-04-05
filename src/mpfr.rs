@@ -101,7 +101,8 @@
 use gmp;
 
 use std::mem;
-use std::os::raw::{c_char, c_int, c_long, c_uint, c_ulong, c_void};
+use std::os::raw::{c_char, c_int, c_long, c_longlong, c_uint, c_ulong,
+                   c_ulonglong, c_void};
 
 /// See: [`mpfr_prec_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005fprec_005ft)
 pub type prec_t = c_long;
@@ -250,6 +251,12 @@ extern "C" {
     /// See: [`mpfr_set_si`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fsi)
     #[link_name = "mpfr_set_si"]
     pub fn set_si(rop: mpfr_ptr, op: c_long, rnd: rnd_t) -> c_int;
+    /// See: [`mpfr_set_uj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fuj)
+    #[link_name = "mpfr_set_uj"]
+    pub fn set_uj(rop: mpfr_ptr, op: c_ulonglong, rnd: rnd_t) -> c_int;
+    /// See: [`mpfr_set_sj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fsj)
+    #[link_name = "mpfr_set_sj"]
+    pub fn set_sj(rop: mpfr_ptr, op: c_longlong, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_set_flt`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fflt)
     #[link_name = "mpfr_set_flt"]
     pub fn set_flt(rop: mpfr_ptr, op: f32, rnd: rnd_t) -> c_int;
@@ -278,6 +285,22 @@ extern "C" {
     pub fn set_si_2exp(
         rop: mpfr_ptr,
         op: c_long,
+        e: exp_t,
+        rnd: rnd_t,
+    ) -> c_int;
+    /// See: [`mpfr_set_uj_2exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fuj_005f2exp)
+    #[link_name = "mpfr_set_uj_2exp"]
+    pub fn set_uj_2exp(
+        rop: mpfr_ptr,
+        op: c_ulonglong,
+        e: exp_t,
+        rnd: rnd_t,
+    ) -> c_int;
+    /// See: [`mpfr_set_sj_2exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fsj_005f2exp)
+    #[link_name = "mpfr_set_sj_2exp"]
+    pub fn set_sj_2exp(
+        rop: mpfr_ptr,
+        op: c_longlong,
         e: exp_t,
         rnd: rnd_t,
     ) -> c_int;
@@ -416,6 +439,12 @@ extern "C" {
     /// See: [`mpfr_get_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fui)
     #[link_name = "mpfr_get_ui"]
     pub fn get_ui(op: mpfr_srcptr, rnd: rnd_t) -> c_ulong;
+    /// See: [`mpfr_get_sj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fsj)
+    #[link_name = "mpfr_get_sj"]
+    pub fn get_sj(op: mpfr_srcptr, rnd: rnd_t) -> c_longlong;
+    /// See: [`mpfr_get_uj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fuj)
+    #[link_name = "mpfr_get_uj"]
+    pub fn get_uj(op: mpfr_srcptr, rnd: rnd_t) -> c_ulonglong;
     /// See: [`mpfr_get_d_2exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fd_005f2exp)
     #[link_name = "mpfr_get_d_2exp"]
     pub fn get_d_2exp(exp: *mut c_long, op: mpfr_srcptr, rnd: rnd_t) -> f64;
@@ -1247,6 +1276,12 @@ extern "C" {
         rnd: rnd_t,
     ) -> c_int;
 
+    // Input and Output Functions
+
+    /// See: [`mpfr_dump`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fdump)
+    #[link_name = "mpfr_dump"]
+    pub fn dump(op: mpfr_srcptr);
+
     // Formatted Output Functions
 
     /// See: [`mpfr_printf`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fprintf)
@@ -1715,7 +1750,11 @@ pub unsafe extern "C" fn custom_init_set(
     prec: prec_t,
     significand: *mut c_void,
 ) {
-    let (t, s) = if kind >= 0 { (kind, 1) } else { (-kind, -1) };
+    let (t, s) = if kind >= 0 {
+        (kind, 1)
+    } else {
+        (-kind, -1)
+    };
     let e = match t {
         REGULAR_KIND => exp,
         NAN_KIND => EXP_NAN,
@@ -1761,6 +1800,7 @@ mod tests {
     use mpfr;
     use std::ffi::CStr;
     use std::mem;
+    use std::os::raw::{c_longlong, c_ulonglong};
 
     #[test]
     fn check_version() {
@@ -1811,6 +1851,34 @@ mod tests {
             assert_eq!(tie_away2, 40);
 
             mpfr::clear(&mut f);
+        }
+    }
+
+    #[test]
+    fn check_intmax_longlong_64() {
+        unsafe {
+            assert_eq!(
+                mem::size_of::<u64>(),
+                mem::size_of::<c_ulonglong>()
+            );
+            assert_eq!(
+                mem::size_of::<i64>(),
+                mem::size_of::<c_longlong>()
+            );
+
+            let mut f = mem::uninitialized();
+            mpfr::init2(&mut f, 100);
+            mpfr::set_ui_2exp(&mut f, 1, 62, mpfr::rnd_t::RNDN);
+            // 1<<62 fits in intmax
+            assert_ne!(mpfr::fits_intmax_p(&f, mpfr::rnd_t::RNDN), 0);
+            mpfr::mul_2ui(&mut f, &f, 1, mpfr::rnd_t::RNDN);
+            // 1<<63 does not fit in intmax
+            assert_eq!(mpfr::fits_intmax_p(&f, mpfr::rnd_t::RNDN), 0);
+            // 1<<63 fit in uintmax
+            assert_ne!(mpfr::fits_uintmax_p(&f, mpfr::rnd_t::RNDN), 0);
+            mpfr::mul_2ui(&mut f, &f, 1, mpfr::rnd_t::RNDN);
+            // 1<<64 does not fit in uintmax
+            assert_eq!(mpfr::fits_uintmax_p(&f, mpfr::rnd_t::RNDN), 0);
         }
     }
 }
