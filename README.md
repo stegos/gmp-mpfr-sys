@@ -17,13 +17,12 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
-### Version 1.1.2
+### Version 1.1.2 news
 
-* Some missing functions were added to the [`mfpr`][sys mpfr] module:
-  [`dump`], [`get_sj`], [`get_uj`], [`set_sj_2exp`],
-  [`set_sj`][`mpfr::set_sj`], [`set_uj_2exp`] and
-  [`set_uj`][`mpfr::set_uj`].
-* Some missing functions were added to the [`mpc`][sys mpc] module:
+* Some missing functions were added to the [`mfpr`] module: [`dump`],
+  [`get_sj`], [`get_uj`], [`set_sj_2exp`], [`set_sj`][`mpfr::set_sj`],
+  [`set_uj_2exp`] and [`set_uj`][`mpfr::set_uj`].
+* Some missing functions were added to the [`mpc`] module:
   [`set_sj_sj`], [`set_sj`][`mpc::set_sj`], [`set_uj_uj`] and
   [`set_uj`][`mpc::set_uj`].
 
@@ -48,9 +47,9 @@ Details on older releases can be found in [*RELEASES.md*].
 
 This crate contains three modules:
 
-* [`gmp`][sys gmp] provides external FFI bindings to [GMP].
-* [`mpfr`][sys mpfr] provides external FFI bindings to [MPFR].
-* [`mpc`][sys mpc] provides external FFI bindings to [MPC].
+* [`gmp`] provides external FFI bindings to [GMP].
+* [`mpfr`] provides external FFI bindings to [MPFR].
+* [`mpc`] provides external FFI bindings to [MPC].
 
 If you want a high-level API, consider using [Rug][rug crate], a crate
 which provides big integer and floating-point numbers. Its main
@@ -100,7 +99,7 @@ You also need to declare it by adding this to your crate root (usually
 *lib.rs* or *main.rs*):
 
 ```rust
-extern crate gmp-mpfr-sys;
+extern crate gmp_mpfr_sys;
 ```
 
 This crate required rustc version 1.13.0 or later.
@@ -226,14 +225,14 @@ Then, to build a crate with a dependency on this crate:
 [`gmp::mpz_t`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/gmp/struct.mpz_t.html
 [`gmp::randstate_t`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/gmp/struct.randstate_t.html
 [`gmp::set_memory_functions`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/gmp/fn.set_memory_functions.html
+[`gmp`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/gmp/index.html
 [`mp_set_memory_functions`]: https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Custom-Allocation.html#index-mp_005fset_005fmemory_005ffunctions
 [`mpc::mpc_t`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpc/struct.mpc_t.html
+[`mpc`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpc/index.html
 [`mpfr::mpfr_t`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpfr/struct.mpfr_t.html
 [`mpfr::rnd_t::RNDN`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpfr/enum.rnd_t.html#variant.RNDN
+[`mpfr`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpfr/index.html
 [`mpz_init`]: https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005finit
 [msys]:     https://msys2.github.io/
 [rug crate]: https://crates.io/crates/rug
 [sys crate]: https://crates.io/crates/gmp-mpfr-sys
-[sys gmp]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/gmp/index.html
-[sys mpc]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpc/index.html
-[sys mpfr]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpfr/index.html
