@@ -17,7 +17,7 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
-### Version 1.1.2 news
+### Version 1.1.3 news
 
 * Some missing functions were added to the [`mpfr`] module: [`dump`],
   [`get_sj`], [`get_uj`], [`set_sj_2exp`], [`set_sj`][`mpfr::set_sj`],

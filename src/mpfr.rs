@@ -256,10 +256,10 @@ extern "C" {
     #[link_name = "mpfr_set_si"]
     pub fn set_si(rop: mpfr_ptr, op: c_long, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_set_uj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fuj)
-    #[link_name = "mpfr_set_uj"]
+    #[link_name = "__gmpfr_set_uj"]
     pub fn set_uj(rop: mpfr_ptr, op: c_ulonglong, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_set_sj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fsj)
-    #[link_name = "mpfr_set_sj"]
+    #[link_name = "__gmpfr_set_sj"]
     pub fn set_sj(rop: mpfr_ptr, op: c_longlong, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_set_flt`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fflt)
     #[link_name = "mpfr_set_flt"]
@@ -293,7 +293,7 @@ extern "C" {
         rnd: rnd_t,
     ) -> c_int;
     /// See: [`mpfr_set_uj_2exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fuj_005f2exp)
-    #[link_name = "mpfr_set_uj_2exp"]
+    #[link_name = "__gmpfr_set_uj_2exp"]
     pub fn set_uj_2exp(
         rop: mpfr_ptr,
         op: c_ulonglong,
@@ -301,7 +301,7 @@ extern "C" {
         rnd: rnd_t,
     ) -> c_int;
     /// See: [`mpfr_set_sj_2exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fsj_005f2exp)
-    #[link_name = "mpfr_set_sj_2exp"]
+    #[link_name = "__gmpfr_set_sj_2exp"]
     pub fn set_sj_2exp(
         rop: mpfr_ptr,
         op: c_longlong,
@@ -444,10 +444,10 @@ extern "C" {
     #[link_name = "mpfr_get_ui"]
     pub fn get_ui(op: mpfr_srcptr, rnd: rnd_t) -> c_ulong;
     /// See: [`mpfr_get_sj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fsj)
-    #[link_name = "mpfr_get_sj"]
+    #[link_name = "__gmpfr_mpfr_get_sj"]
     pub fn get_sj(op: mpfr_srcptr, rnd: rnd_t) -> c_longlong;
     /// See: [`mpfr_get_uj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fuj)
-    #[link_name = "mpfr_get_uj"]
+    #[link_name = "__gmpfr_mpfr_get_uj"]
     pub fn get_uj(op: mpfr_srcptr, rnd: rnd_t) -> c_ulonglong;
     /// See: [`mpfr_get_d_2exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fd_005f2exp)
     #[link_name = "mpfr_get_d_2exp"]
