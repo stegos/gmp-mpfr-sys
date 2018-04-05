@@ -1,26 +1,23 @@
 % Arbitrary-precision numbers
 
-The following C libraries provide numbers with arbitrarily large
+The following [GNU] C libraries provide numbers with arbitrarily large
 precision:
 
-* the [GNU Multiple Precision Arithmetic Library][gmp] (GMP), a
-  library for arbitrary precision arithmetic,
-* the [GNU MPFR Library][mpfr], a library for multiple-precision
-  floating-point computations with correct rounding, and
-* [GNU MPC][mpc], a library for the arithmetic of complex numbers with
-  arbitrarily high precision and correct rounding.
+* [GMP] for integers and rational numbers,
+* [MPFR] for floating-point numbers, and
+* [MPC] for complex numbers.
 
-Low-level Rust bindings are provided in the [`gmp-mpfr-sys`][sys]
+Low-level Rust bindings are provided in the [gmp-mpfr-sys][sys crate]
 crate. This crate can be used to write higher-level bindings, or to
 use the C functions directly.
 
-The [`rug`][rug] crate is a high-level Rust library that provides:
+The [Rug][rug crate] crate is a high-level Rust library that provides:
 
-* big [integers][rug int] with arbitrarily large precision,
-* big [rational numbers][rug rat] with arbitrarily large precision,
-* multi-precision [floating-point numbers][rug flo] with correct
+* bignum [integers][`Integer`] with arbitrary precision,
+* bignum [rational numbers][`Rational`] with arbitrary precision,
+* multi-precision [floating-point numbers][`Float`] with correct
   rounding, and
-* multi-precision [complex numbers][rug com] with correct rounding.
+* multi-precision [complex numbers][`Complex`] with correct rounding.
 
 ## Documentation
 
@@ -32,8 +29,8 @@ C libraries:
 
 Rust crates:
 
-* [`gmp-mpfr-sys`][sys]
-* [`rug`][rug]
+* [gmp-mpfr-sys][sys]
+* [Rug][rug]
 
 ## License
 
@@ -41,19 +38,22 @@ These libraries are free software: you can redistribute them and/or
 modify them under the terms of the GNU Lesser General Public License
 as published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version. See the full text of
-the [GNU LGPL][lgpl] and [GNU GPL][gpl] for details.
+the [GNU LGPL] and [GNU GPL] for details.
 
-[gmp doc]:  https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/index.html
-[gmp]:      https://gmplib.org/
-[gpl]:      https://www.gnu.org/licenses/gpl-3.0.html
-[lgpl]:     https://www.gnu.org/licenses/lgpl-3.0.en.html
-[mpc doc]:  https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/index.html
-[mpc]:      http://www.multiprecision.org/mpc/
+[GMP]: https://gmplib.org/
+[GNU GPL]: https://www.gnu.org/licenses/gpl-3.0.html
+[GNU LGPL]: https://www.gnu.org/licenses/lgpl-3.0.en.html
+[GNU]: https://www.gnu.org/
+[MPC]: http://www.multiprecision.org/mpc/
+[MPFR]: http://www.mpfr.org/
+[`Complex`]: https://docs.rs/rug/*/rug/struct.Complex.html
+[`Float`]: https://docs.rs/rug/*/rug/struct.Float.html
+[`Integer`]: https://docs.rs/rug/*/rug/struct.Integer.html
+[`Rational`]: https://docs.rs/rug/*/rug/struct.Rational.html
+[gmp doc]: https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/index.html
+[mpc doc]: https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/index.html
 [mpfr doc]: https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/index.html
-[mpfr]:     http://www.mpfr.org/
-[rug com]:  https://docs.rs/rug/*/rug/struct.Complex.html
-[rug flo]:  https://docs.rs/rug/*/rug/struct.Float.html
-[rug int]:  https://docs.rs/rug/*/rug/struct.Integer.html
-[rug rat]:  https://docs.rs/rug/*/rug/struct.Rational.html
-[rug]:      https://docs.rs/rug/*/rug/index.html
-[sys]:      https://docs.rs/gmp-mpfr-sys/~1.1.0/gmp_mpfr_sys/index.html
+[rug crate]: https://crates.io/crates/rug
+[rug]: https://docs.rs/rug/*/rug/index.html
+[sys crate]: https://crates.io/crates/gmp-mpfr-sys
+[sys]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/index.html
