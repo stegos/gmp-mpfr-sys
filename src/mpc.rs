@@ -48,6 +48,7 @@ unsafe {
 use gmp;
 use mpfr;
 
+use libc::FILE;
 use std::os::raw::{c_char, c_int, c_long, c_longlong, c_ulong, c_ulonglong};
 
 #[inline]
@@ -271,7 +272,7 @@ extern "C" {
     #[link_name = "mpc_swap"]
     pub fn swap(op1: mpc_ptr, op2: mpc_ptr);
 
-    // String Input and Output
+    // String and Stream Input and Output
 
     /// See: [`mpc_strtoc`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fstrtoc)
     #[link_name = "mpc_strtoc"]
@@ -301,6 +302,24 @@ extern "C" {
     /// See: [`mpc_free_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005ffree_005fstr)
     #[link_name = "mpc_free_str"]
     pub fn free_str(rop: *mut c_char);
+    /// See: [`mpc_inp_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005finp_005fstr)
+    #[link_name = "mpc_inp_str"]
+    pub fn inp_str(
+        rop: mpc_ptr,
+        stream: *mut FILE,
+        read: *mut usize,
+        base: c_int,
+        rnd: rnd_t,
+    ) -> c_int;
+    /// See: [`mpc_out_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fout_005fstr)
+    #[link_name = "mpc_out_str"]
+    pub fn out_str(
+        stream: *mut FILE,
+        base: c_int,
+        n_digits: usize,
+        op: mpc_srcptr,
+        rnd: rnd_t,
+    ) -> usize;
 
     // Comparison Functions
 

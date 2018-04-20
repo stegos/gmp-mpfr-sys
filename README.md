@@ -17,31 +17,16 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
-### Version 1.1.3 news
+### Version 1.1.4 news
 
-* Some missing functions were added to the [`mpfr`] module: [`dump`],
-  [`get_sj`], [`get_uj`], [`set_sj_2exp`], [`set_sj`][`mpfr::set_sj`],
-  [`set_uj_2exp`] and [`set_uj`][`mpfr::set_uj`].
-* Some missing functions were added to the [`mpc`] module:
-  [`set_sj_sj`], [`set_sj`][`mpc::set_sj`], [`set_uj_uj`] and
-  [`set_uj`][`mpc::set_uj`].
+* Missing functions taking [`*mut FILE`][`libc::FILE`] arguments were
+  added to the [`gmp`], [`mpfr`] and [`mpc`] modules.
 
-### Older releases
+[`libc::FILE`]: https://docs.rs/libc/^0.2/libc/enum.FILE.html
 
-Details on older releases can be found in [*RELEASES.md*].
+### Other releases
 
-[*RELEASES.md*]: https://gitlab.com/tspiteri/gmp-mpfr-sys/blob/master/RELEASES.md
-[`dump`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpfr/fn.dump.html
-[`get_sj`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpfr/fn.get_sj.html
-[`get_uj`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpfr/fn.get_uj.html
-[`set_sj_2exp`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpfr/fn.set_sj_2exp.html
-[`mpfr::set_sj`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpfr/fn.set_sj.html
-[`set_uj_2exp`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpfr/fn.set_uj_2exp.html
-[`mpfr::set_uj`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpfr/fn.set_uj.html
-[`set_sj_sj`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpc/fn.set_sj_sj.html
-[`mpc::set_sj`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpc/fn.set_sj.html
-[`set_uj_uj`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpc/fn.set_uj_uj.html
-[`mpc::set_uj`]: https://docs.rs/gmp-mpfr-sys/~1.1/gmp_mpfr_sys/mpc/fn.set_uj.html
+Details on other releases can be found in [*RELEASES.md*].
 
 ## Basic features
 
@@ -207,6 +192,7 @@ Then, to build a crate with a dependency on this crate:
 3. Build the crate using `cargo`.
 
 [*Cargo.toml*]: https://doc.rust-lang.org/cargo/guide/dependencies.html
+[*RELEASES.md*]: https://gitlab.com/tspiteri/gmp-mpfr-sys/blob/master/RELEASES.md
 [GMP]: https://gmplib.org/
 [GNU GPL]: https://www.gnu.org/licenses/gpl-3.0.html
 [GNU LGPL]: https://www.gnu.org/licenses/lgpl-3.0.en.html

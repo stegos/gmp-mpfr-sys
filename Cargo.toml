@@ -44,3 +44,6 @@ mpc = ["mpfr"]
 
 ctest = []
 cnotest = []
+
+[dependencies]
+libc = "0.2"

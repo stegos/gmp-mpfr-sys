@@ -1,3 +1,9 @@
+Version 1.1.4 (unreleased)
+==========================
+
+* Add missing GMP, MPFR and MPC functions that take a `*mut FILE`
+  argument.
+
 Version 1.1.3 (2018-04-05)
 ==========================
 

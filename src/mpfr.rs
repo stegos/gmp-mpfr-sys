@@ -104,6 +104,7 @@ unsafe fn mpfr_to_string(
 
 use gmp;
 
+use libc::FILE;
 use std::mem;
 use std::os::raw::{c_char, c_int, c_long, c_longlong, c_uint, c_ulong,
                    c_ulonglong, c_void};
@@ -1282,12 +1283,38 @@ extern "C" {
 
     // Input and Output Functions
 
+    /// See: [`mpfr_out_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fout_005fstr)
+    #[link_name = "__gmpfr_out_str"]
+    pub fn out_str(
+        stream: *mut FILE,
+        base: c_int,
+        n: usize,
+        op: mpfr_srcptr,
+        rnd: rnd_t,
+    ) -> usize;
+    /// See: [`mpfr_inp_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005finp_005fstr)
+    #[link_name = "__gmpfr_inp_str"]
+    pub fn inp_str(
+        rop: mpfr_ptr,
+        stream: *mut FILE,
+        base: c_int,
+        rnd: rnd_t,
+    ) -> usize;
+    /// See: [`mpfr_fpif_export`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffpip_005fexport)
+    #[link_name = "__gmpfr_fpif_export"]
+    pub fn fpif_export(stream: *mut FILE, op: mpfr_ptr) -> c_int;
+    /// See: [`mpfr_fpif_import`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffpip_005fimport)
+    #[link_name = "__gmpfr_fpif_import"]
+    pub fn fpif_import(op: mpfr_ptr, stream: *mut FILE) -> c_int;
     /// See: [`mpfr_dump`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fdump)
     #[link_name = "mpfr_dump"]
     pub fn dump(op: mpfr_srcptr);
 
     // Formatted Output Functions
 
+    /// See: [`mpfr_fprintf`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffprintf)
+    #[link_name = "__gmpfr_fprintf"]
+    pub fn fprintf(stream: *mut FILE, template: *const c_char, ...) -> c_int;
     /// See: [`mpfr_printf`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fprintf)
     #[link_name = "mpfr_printf"]
     pub fn printf(template: *const c_char, ...) -> c_int;
