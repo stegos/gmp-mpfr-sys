@@ -46,4 +46,4 @@ ctest = []
 cnotest = []
 
 [dependencies]
-libc = ">= 0.1, < 0.3"
+libc = "0.2"
