@@ -723,16 +723,52 @@ extern "C" {
     // Input and Ouput Functions
 
     /// See: [`mpz_out_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fout_005fstr)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `mpz_out_str(stream, base, op)` with
+    /// `mpz_out_str(stream as *mut _, base, op)`.
     #[link_name = "__gmpz_out_str"]
     pub fn mpz_out_str(stream: *mut FILE, base: c_int, op: mpz_srcptr)
         -> usize;
     /// See: [`mpz_inp_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005finp_005fstr)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `mpz_inp_str(rop, stream, base)` with
+    /// `mpz_inp_str(rop, stream as *mut _, base)`.
     #[link_name = "__gmpz_inp_str"]
     pub fn mpz_inp_str(rop: mpz_ptr, stream: *mut FILE, base: c_int) -> usize;
     /// See: [`mpz_out_raw`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fout_005fraw)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `mpz_out_raw(stream, op)` with
+    /// `mpz_out_raw(stream as *mut _, op)`.
     #[link_name = "__gmpz_out_raw"]
     pub fn mpz_out_raw(stream: *mut FILE, op: mpz_srcptr) -> usize;
     /// See: [`mpz_inp_raw`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005finp_005fraw)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `mpz_inp_raw(rop, stream)` with
+    /// `mpz_inp_raw(rop, stream as *mut _)`.
     #[link_name = "__gmpz_inp_raw"]
     pub fn mpz_inp_raw(rop: mpz_ptr, stream: *mut FILE) -> usize;
 
@@ -1082,10 +1118,28 @@ extern "C" {
     // Input and Output Functions
 
     /// See: [`mpq_out_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Rational-Number-Functions.html#index-mpq_005fout_005fstr)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `mpq_out_str(stream, base, op)` with
+    /// `mpq_out_str(stream as *mut _, base, op)`.
     #[link_name = "__gmpq_out_str"]
     pub fn mpq_out_str(stream: *mut FILE, base: c_int, op: mpq_srcptr)
         -> usize;
     /// See: [`mpq_inp_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Rational-Number-Functions.html#index-mpq_005finp_005fstr)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `mpq_inp_str(rop, stream, base)` with
+    /// `mpq_inp_str(rop, stream as *mut _, base)`.
     #[link_name = "__gmpq_inp_str"]
     pub fn mpq_inp_str(rop: mpq_ptr, stream: *mut FILE, base: c_int) -> usize;
 }
@@ -1293,6 +1347,15 @@ pub unsafe extern "C" fn mpf_sgn(op: mpf_srcptr) -> c_int {
 
 extern "C" {
     /// See: [`mpf_out_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Floating_002dpoint-Functions.html#index-mpf_005fout_005fstr)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `mpf_out_str(stream, base, n_digits, op)` with
+    /// `mpf_out_str(stream as *mut _, base, n_digits, op)`.
     #[link_name = "__gmpf_out_str"]
     pub fn mpf_out_str(
         stream: *mut FILE,
@@ -1301,6 +1364,15 @@ extern "C" {
         op: mpf_srcptr,
     ) -> usize;
     /// See: [`mpf_inp_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Floating_002dpoint-Functions.html#index-mpf_005finp_005fstr)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `mpf_inp_str(rop, stream, base)` with
+    /// `mpf_inp_str(rop, stream as *mut _, base)`.
     #[link_name = "__gmpf_inp_str"]
     pub fn mpf_inp_str(rop: mpf_ptr, stream: *mut FILE, base: c_int) -> usize;
 
@@ -1817,6 +1889,15 @@ extern "C" {
     #[link_name = "__gmp_printf"]
     pub fn printf(fmt: *const c_char, ...) -> c_int;
     /// See: [`gmp_fprintf`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Formatted-Output.html#index-gmp_005ffprintf)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `fprintf(fp, fmt, ...)` with
+    /// `fprintf(fp as *mut _, fmt, ...)`.
     #[link_name = "__gmp_fprintf"]
     pub fn fprintf(fp: *mut FILE, fmt: *const c_char, ...) -> c_int;
     /// See: [`gmp_sprintf`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Formatted-Output.html#index-gmp_005fsprintf)
@@ -1842,6 +1923,14 @@ extern "C" {
     #[link_name = "__gmp_scanf"]
     pub fn scanf(fmt: *const c_char, ...) -> c_int;
     /// See: [`gmp_fscanf`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Formatted-Input.html#index-gmp_005ffscanf)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `fscanf(fp, fmt, ...)` with `fscanf(fp as *mut _, fmt, ...)`.
     #[link_name = "__gmp_fscanf"]
     pub fn fscanf(fp: *mut FILE, fmt: *const c_char, ...) -> c_int;
     /// See: [`gmp_sscanf`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Formatted-Input.html#index-gmp_005fsscanf)

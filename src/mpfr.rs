@@ -1284,6 +1284,15 @@ extern "C" {
     // Input and Output Functions
 
     /// See: [`mpfr_out_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fout_005fstr)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `out_str(stream, base, n, op, rnd)` with
+    /// `out_str(stream as *mut _, base, n, op, rnd)`.
     #[link_name = "__gmpfr_out_str"]
     pub fn out_str(
         stream: *mut FILE,
@@ -1293,6 +1302,15 @@ extern "C" {
         rnd: rnd_t,
     ) -> usize;
     /// See: [`mpfr_inp_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005finp_005fstr)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `inp_str(rop, stream, base, rnd)` with
+    /// `inp_str(rop, stream as *mut _, base, rnd)`.
     #[link_name = "__gmpfr_inp_str"]
     pub fn inp_str(
         rop: mpfr_ptr,
@@ -1301,9 +1319,27 @@ extern "C" {
         rnd: rnd_t,
     ) -> usize;
     /// See: [`mpfr_fpif_export`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffpip_005fexport)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `fpif_export(stream, op)` with
+    /// `fpif_export(stream as *mut _, op)`.
     #[link_name = "__gmpfr_fpif_export"]
     pub fn fpif_export(stream: *mut FILE, op: mpfr_ptr) -> c_int;
     /// See: [`mpfr_fpif_import`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffpip_005fimport)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `fpif_import(op, stream)` with
+    /// `fpif_import(op, stream as *mut _)`.
     #[link_name = "__gmpfr_fpif_import"]
     pub fn fpif_import(op: mpfr_ptr, stream: *mut FILE) -> c_int;
     /// See: [`mpfr_dump`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fdump)
@@ -1313,6 +1349,15 @@ extern "C" {
     // Formatted Output Functions
 
     /// See: [`mpfr_fprintf`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005ffprintf)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `fprintf(stream, template, ...)` with
+    /// `fprintf(stream as *mut _, template, ...)`.
     #[link_name = "__gmpfr_fprintf"]
     pub fn fprintf(stream: *mut FILE, template: *const c_char, ...) -> c_int;
     /// See: [`mpfr_printf`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fprintf)

@@ -303,6 +303,15 @@ extern "C" {
     #[link_name = "mpc_free_str"]
     pub fn free_str(rop: *mut c_char);
     /// See: [`mpc_inp_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005finp_005fstr)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `inp_str(rop, stream, read, base, rnd)` with
+    /// `inp_str(rop, stream as *mut _, read, base, rnd)`.
     #[link_name = "mpc_inp_str"]
     pub fn inp_str(
         rop: mpc_ptr,
@@ -312,6 +321,15 @@ extern "C" {
         rnd: rnd_t,
     ) -> c_int;
     /// See: [`mpc_out_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fout_005fstr)
+    ///
+    /// # Compatibility note
+    ///
+    /// The type `*mut libc::FILE` is from version 0.2 of the libc
+    /// crate. If this function is required to work with a pointer
+    /// obtained from an incompatible version of the libc crate, such
+    /// as version 0.1, this can be achieved by replacing
+    /// `out_str(stream, base, n_digits, op, rnd)` with
+    /// `out_str(stream as *mut _, base, n_digits, op, rnd)`.
     #[link_name = "mpc_out_str"]
     pub fn out_str(
         stream: *mut FILE,
