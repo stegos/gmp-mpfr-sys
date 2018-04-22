@@ -234,7 +234,7 @@ Then, to build a crate with a dependency on this crate:
 extern crate libc;
 
 pub mod gmp;
-#[cfg(feature = "mpfr")]
-pub mod mpfr;
 #[cfg(feature = "mpc")]
 pub mod mpc;
+#[cfg(feature = "mpfr")]
+pub mod mpfr;
