@@ -17,6 +17,10 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
+### Version 1.1.5 news
+
+* MPFR was updated from version 4.0.1 to version 4.0.1-p6.
+
 ### Version 1.1.4 news
 
 * Missing functions taking [`*mut FILE`][`libc::FILE`] arguments were
