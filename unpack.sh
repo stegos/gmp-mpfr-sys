@@ -44,7 +44,7 @@ sed -i.rm~ -e '/^SUBDIRS = /s/ doc\| demos//g' Makefile.in
 cd ..
 
 # MPFR
-# 1. Remove ChangeLog, doc/*.info, doc/*.tex
+# 1. Remove ChangeLog, doc/*.info*, doc/*.tex
 # 2. Remove doc/Makefile, mpfr.pc from ac_config_files in configure
 # 3. Remove doc from SUBDIRS in Makefile.in
 # 4. Remove $(pkgconfig_DATA) from DATA in Makefile.in
@@ -54,14 +54,14 @@ cd mpfr-$MPFRVERP-c
 if [ -f "$MPFRPATCH" ]; then
     patch -N -Z -p1 < "$MPFRPATCH" > /dev/null
 fi
-rm ChangeLog doc/*.info doc/*.tex
+rm ChangeLog doc/*.info* doc/*.tex
 sed -i.rm~ -e '/^ac_config_files=/s,\( doc/Makefile\| mpfr.pc\),,g' configure
 sed -i.rm~ '/^SUBDIRS = /s/ doc//g' Makefile.in
 sed -i.rm~ '/^DATA = /s/ \$(pkgconfig_DATA)//g' Makefile.in
 cd ..
 
 # MPC
-# 1. Remove ChangeLog, doc/*.info, doc/*.tex
+# 1. Remove ChangeLog, doc/*.info*, doc/*.tex
 # 2. Remove doc/Makefile from ac_config_files in configure
 # 3. Remove doc from SUBDIRS in Makefile.in
 tar xf "$MPCTAR"
@@ -71,7 +71,7 @@ if [ -f "$MPCPATCH" ]; then
     patch -N -Z -p1 < "$MPCPATCH" > /dev/null
 fi
 chmod -R u+w *
-rm ChangeLog doc/*.info doc/*.tex
+rm ChangeLog doc/*.info* doc/*.tex
 sed -i.rm~ '/^ac_config_files=/s, doc/Makefile,,g' configure
 sed -i.rm~ '/^SUBDIRS = /s/ doc//g' Makefile.in
 cd ..
