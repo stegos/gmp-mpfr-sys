@@ -36,7 +36,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 const GMP_DIR: &'static str = "gmp-6.1.2-c";
-const MPFR_DIR: &'static str = "mpfr-4.0.1-c";
+const MPFR_DIR: &'static str = "mpfr-4.0.1-p6-c";
 const MPC_DIR: &'static str = "mpc-1.1.0-c";
 
 #[derive(Clone, Copy, PartialEq)]
