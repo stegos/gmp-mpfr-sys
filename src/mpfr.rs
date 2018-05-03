@@ -106,8 +106,9 @@ use gmp;
 
 use libc::FILE;
 use std::mem;
-use std::os::raw::{c_char, c_int, c_long, c_longlong, c_uint, c_ulong,
-                   c_ulonglong, c_void};
+use std::os::raw::{
+    c_char, c_int, c_long, c_longlong, c_uint, c_ulong, c_ulonglong, c_void,
+};
 
 /// See: [`mpfr_prec_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005fprec_005ft)
 pub type prec_t = c_long;
@@ -1782,11 +1783,7 @@ pub unsafe extern "C" fn custom_init_set(
     prec: prec_t,
     significand: *mut c_void,
 ) {
-    let (t, s) = if kind >= 0 {
-        (kind, 1)
-    } else {
-        (-kind, -1)
-    };
+    let (t, s) = if kind >= 0 { (kind, 1) } else { (-kind, -1) };
     let e = match t {
         REGULAR_KIND => exp,
         NAN_KIND => EXP_NAN,
@@ -1889,14 +1886,8 @@ mod tests {
     #[test]
     fn check_intmax_longlong_64() {
         unsafe {
-            assert_eq!(
-                mem::size_of::<u64>(),
-                mem::size_of::<c_ulonglong>()
-            );
-            assert_eq!(
-                mem::size_of::<i64>(),
-                mem::size_of::<c_longlong>()
-            );
+            assert_eq!(mem::size_of::<u64>(), mem::size_of::<c_ulonglong>());
+            assert_eq!(mem::size_of::<i64>(), mem::size_of::<c_longlong>());
 
             let mut f = mem::uninitialized();
             mpfr::init2(&mut f, 100);

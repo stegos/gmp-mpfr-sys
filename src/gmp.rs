@@ -37,8 +37,9 @@ unsafe {
 #![allow(non_camel_case_types)]
 
 use libc::FILE;
-use std::os::raw::{c_char, c_int, c_long, c_uchar, c_uint, c_ulong, c_ushort,
-                   c_void};
+use std::os::raw::{
+    c_char, c_int, c_long, c_uchar, c_uint, c_ulong, c_ushort, c_void,
+};
 
 include!(concat!(env!("OUT_DIR"), "/gmp_h.rs"));
 

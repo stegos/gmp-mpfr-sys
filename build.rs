@@ -71,10 +71,7 @@ fn main() {
 
     let host = cargo_env("HOST");
     let target = cargo_env("TARGET");
-    assert_eq!(
-        host, target,
-        "cross compilation is not supported"
-    );
+    assert_eq!(host, target, "cross compilation is not supported");
     let target = target
         .into_string()
         .expect("cannot convert environment variable TARGET into a `String`");
@@ -105,15 +102,9 @@ fn main() {
     create_dir_or_panic(&env.lib_dir);
     create_dir_or_panic(&env.include_dir);
 
-    let gmp_ah = (
-        env.lib_dir.join("libgmp.a"),
-        env.include_dir.join("gmp.h"),
-    );
+    let gmp_ah = (env.lib_dir.join("libgmp.a"), env.include_dir.join("gmp.h"));
     let mpc_ah = if there_is_env("CARGO_FEATURE_MPC") {
-        Some((
-            env.lib_dir.join("libmpc.a"),
-            env.include_dir.join("mpc.h"),
-        ))
+        Some((env.lib_dir.join("libmpc.a"), env.include_dir.join("mpc.h")))
     } else {
         None
     };
@@ -210,11 +201,7 @@ fn save_cache(
         Some(ref s) => s,
         None => return false,
     };
-    let req_check = if env.make_check {
-        "check"
-    } else {
-        "nocheck"
-    };
+    let req_check = if env.make_check { "check" } else { "nocheck" };
     let req_libs = if mpc_ah.is_some() {
         "gmp_mpfr_mpc"
     } else if mpfr_ah.is_some() {
@@ -384,17 +371,11 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
         }
         let s = "#define GMP_LIMB_BITS";
         if let Some(start) = buf.find(s) {
-            limb_bits = buf[(start + s.len())..]
-                .trim()
-                .parse::<i32>()
-                .ok();
+            limb_bits = buf[(start + s.len())..].trim().parse::<i32>().ok();
         }
         let s = "#define GMP_NAIL_BITS";
         if let Some(start) = buf.find(s) {
-            nail_bits = buf[(start + s.len())..]
-                .trim()
-                .parse::<i32>()
-                .ok();
+            nail_bits = buf[(start + s.len())..].trim().parse::<i32>().ok();
         }
         let s = "#define __GMP_CC";
         if let Some(start) = buf.find(s) {
@@ -469,15 +450,9 @@ fn build_mpfr(env: &Environment, lib: &Path, header: &Path) {
                 --with-gmp-build=../gmp-build --with-pic";
     configure(&build_dir, &OsString::from(conf));
     make_and_check(env, &build_dir);
-    let build_lib = build_dir
-        .join("src")
-        .join(".libs")
-        .join("libmpfr.a");
+    let build_lib = build_dir.join("src").join(".libs").join("libmpfr.a");
     copy_file_or_panic(&build_lib, &lib);
-    let src_header = env.build_dir
-        .join("mpfr-src")
-        .join("src")
-        .join("mpfr.h");
+    let src_header = env.build_dir.join("mpfr-src").join("src").join("mpfr.h");
     copy_file_or_panic(&src_header, &header);
 }
 
@@ -497,15 +472,9 @@ fn build_mpc(env: &Environment, lib: &Path, header: &Path) {
                 --with-gmp-lib=../gmp-build/.libs --with-pic";
     configure(&build_dir, &OsString::from(conf));
     make_and_check(env, &build_dir);
-    let build_lib = build_dir
-        .join("src")
-        .join(".libs")
-        .join("libmpc.a");
+    let build_lib = build_dir.join("src").join(".libs").join("libmpc.a");
     copy_file_or_panic(&build_lib, &lib);
-    let src_header = env.build_dir
-        .join("mpc-src")
-        .join("src")
-        .join("mpc.h");
+    let src_header = env.build_dir.join("mpc-src").join("src").join("mpc.h");
     copy_file_or_panic(&src_header, &header);
 }
 
@@ -546,10 +515,7 @@ fn write_link_info(env: &Environment, feature_mpfr: bool, feature_mpc: bool) {
 
 fn cargo_env(name: &str) -> OsString {
     env::var_os(name).unwrap_or_else(|| {
-        panic!(
-            "environment variable not found: {}, please use cargo",
-            name
-        )
+        panic!("environment variable not found: {}, please use cargo", name)
     })
 }
 
@@ -577,8 +543,7 @@ fn check_for_bug_47048(env: &Environment) {
     let mut cmd;
 
     cmd = Command::new("gcc");
-    cmd.current_dir(&try_dir)
-        .args(&["-c", "say_hi.c"]);
+    cmd.current_dir(&try_dir).args(&["-c", "say_hi.c"]);
     execute(cmd);
 
     cmd = Command::new("ar");
@@ -652,9 +617,7 @@ fn rustc_later_eq(major: i32, minor: i32) -> bool {
         panic!("unrecognized rustc version: {}", version);
     }
     let remain = &version[6..];
-    let dot = remain
-        .find('.')
-        .expect("unrecognized rustc version");
+    let dot = remain.find('.').expect("unrecognized rustc version");
     let ver_major = remain[0..dot]
         .parse::<i32>()
         .expect("unrecognized rustc version");
@@ -664,9 +627,7 @@ fn rustc_later_eq(major: i32, minor: i32) -> bool {
         return true;
     }
     let remain = &remain[dot + 1..];
-    let dot = remain
-        .find('.')
-        .expect("unrecognized rustc version");
+    let dot = remain.find('.').expect("unrecognized rustc version");
     let ver_minor = remain[0..dot]
         .parse::<i32>()
         .expect("unrecognized rustc version");
@@ -698,11 +659,7 @@ fn create_dir_or_panic(dir: &Path) {
 }
 
 fn create_file_or_panic(filename: &Path, contents: &str) {
-    println!(
-        "$ printf '%s' {:?}... > {:?}",
-        &contents[0..10],
-        filename
-    );
+    println!("$ printf '%s' {:?}... > {:?}", &contents[0..10], filename);
     let mut file = File::create(filename)
         .unwrap_or_else(|_| panic!("Unable to create file: {:?}", filename));
     file.write_all(contents.as_bytes())
@@ -722,17 +679,13 @@ fn copy_file_or_panic(src: &Path, dst: &Path) {
 
 fn configure(build_dir: &Path, conf_line: &OsStr) {
     let mut conf = Command::new("sh");
-    conf.current_dir(&build_dir)
-        .arg("-c")
-        .arg(conf_line);
+    conf.current_dir(&build_dir).arg("-c").arg(conf_line);
     execute(conf);
 }
 
 fn make_and_check(env: &Environment, build_dir: &Path) {
     let mut make = Command::new("make");
-    make.current_dir(build_dir)
-        .arg("-j")
-        .arg(&env.jobs);
+    make.current_dir(build_dir).arg("-j").arg(&env.jobs);
     execute(make);
     if env.make_check {
         let mut make_check = Command::new("make");
@@ -783,10 +736,7 @@ fn execute(mut command: Command) {
         .unwrap_or_else(|_| panic!("Unable to execute: {:?}", command));
     if !status.success() {
         if let Some(code) = status.code() {
-            panic!(
-                "Program failed with code {}: {:?}",
-                code, command
-            );
+            panic!("Program failed with code {}: {:?}", code, command);
         } else {
             panic!("Program failed: {:?}", command);
         }
