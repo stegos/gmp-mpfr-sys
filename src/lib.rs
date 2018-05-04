@@ -158,10 +158,12 @@ sudo dnf install diffutils gcc make m4
 
 ## Building on macOS
 
-To build on macOS, you need the command-line developer tools. An easy
-way to install them is to start building the crate using
-`cargo build`. If the tools are not installed yet, a popup should
-appear which should help you install them.
+To build on macOS, you need the command-line developer tools. To
+install them, run the following command in a terminal:
+
+```sh
+xcode-select --install
+```
 
 ## Building on Windows
 
