@@ -341,7 +341,7 @@ extern "C" {
     pub fn mpz_cdiv_q(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
     /// See: [`mpz_cdiv_r`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fcdiv_005fr)
     #[link_name = "__gmpz_cdiv_r"]
-    pub fn mpz_cdiv_r(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
+    pub fn mpz_cdiv_r(r: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
     /// See: [`mpz_cdiv_qr`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fcdiv_005fqr)
     #[link_name = "__gmpz_cdiv_qr"]
     pub fn mpz_cdiv_qr(q: mpz_ptr, r: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
@@ -350,7 +350,7 @@ extern "C" {
     pub fn mpz_cdiv_q_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
     /// See: [`mpz_cdiv_r_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fcdiv_005fr_005fui)
     #[link_name = "__gmpz_cdiv_r_ui"]
-    pub fn mpz_cdiv_r_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
+    pub fn mpz_cdiv_r_ui(r: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
     /// See: [`mpz_cdiv_qr_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fcdiv_005fqr_005fui)
     #[link_name = "__gmpz_cdiv_qr_ui"]
     pub fn mpz_cdiv_qr_ui(
@@ -367,13 +367,13 @@ extern "C" {
     pub fn mpz_cdiv_q_2exp(q: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
     /// See: [`mpz_cdiv_r_2exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fcdiv_005fr_005f2exp)
     #[link_name = "__gmpz_cdiv_r_2exp"]
-    pub fn mpz_cdiv_r_2exp(q: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
+    pub fn mpz_cdiv_r_2exp(r: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
     /// See: [`mpz_fdiv_q`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fq)
     #[link_name = "__gmpz_fdiv_q"]
     pub fn mpz_fdiv_q(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
     /// See: [`mpz_fdiv_r`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fr)
     #[link_name = "__gmpz_fdiv_r"]
-    pub fn mpz_fdiv_r(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
+    pub fn mpz_fdiv_r(r: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
     /// See: [`mpz_fdiv_qr`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fqr)
     #[link_name = "__gmpz_fdiv_qr"]
     pub fn mpz_fdiv_qr(q: mpz_ptr, r: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
@@ -382,7 +382,7 @@ extern "C" {
     pub fn mpz_fdiv_q_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
     /// See: [`mpz_fdiv_r_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fr_005fui)
     #[link_name = "__gmpz_fdiv_r_ui"]
-    pub fn mpz_fdiv_r_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
+    pub fn mpz_fdiv_r_ui(r: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
     /// See: [`mpz_fdiv_qr_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fqr_005fui)
     #[link_name = "__gmpz_fdiv_qr_ui"]
     pub fn mpz_fdiv_qr_ui(
@@ -399,13 +399,13 @@ extern "C" {
     pub fn mpz_fdiv_q_2exp(q: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
     /// See: [`mpz_fdiv_r_2exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005ffdiv_005fr_005f2exp)
     #[link_name = "__gmpz_fdiv_r_2exp"]
-    pub fn mpz_fdiv_r_2exp(q: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
+    pub fn mpz_fdiv_r_2exp(r: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
     /// See: [`mpz_tdiv_q`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fq)
     #[link_name = "__gmpz_tdiv_q"]
     pub fn mpz_tdiv_q(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
     /// See: [`mpz_tdiv_r`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fr)
     #[link_name = "__gmpz_tdiv_r"]
-    pub fn mpz_tdiv_r(q: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
+    pub fn mpz_tdiv_r(r: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
     /// See: [`mpz_tdiv_qr`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fqr)
     #[link_name = "__gmpz_tdiv_qr"]
     pub fn mpz_tdiv_qr(q: mpz_ptr, r: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
@@ -414,7 +414,7 @@ extern "C" {
     pub fn mpz_tdiv_q_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
     /// See: [`mpz_tdiv_r_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fr_005fui)
     #[link_name = "__gmpz_tdiv_r_ui"]
-    pub fn mpz_tdiv_r_ui(q: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
+    pub fn mpz_tdiv_r_ui(r: mpz_ptr, n: mpz_srcptr, d: c_ulong) -> c_ulong;
     /// See: [`mpz_tdiv_qr_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fqr_005fui)
     #[link_name = "__gmpz_tdiv_qr_ui"]
     pub fn mpz_tdiv_qr_ui(
@@ -431,7 +431,7 @@ extern "C" {
     pub fn mpz_tdiv_q_2exp(q: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
     /// See: [`mpz_tdiv_r_2exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005ftdiv_005fr_005f2exp)
     #[link_name = "__gmpz_tdiv_r_2exp"]
-    pub fn mpz_tdiv_r_2exp(q: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
+    pub fn mpz_tdiv_r_2exp(r: mpz_ptr, n: mpz_srcptr, b: bitcnt_t);
     /// See: [`mpz_mod`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fmod)
     #[link_name = "__gmpz_mod"]
     pub fn mpz_mod(r: mpz_ptr, n: mpz_srcptr, d: mpz_srcptr);
