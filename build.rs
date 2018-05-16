@@ -576,7 +576,8 @@ fn check_for_bug_47048(env: &Environment) {
         "r_main.exe",
     ]);
     println!("$ {:?}", cmd);
-    let status = cmd.status()
+    let status = cmd
+        .status()
         .unwrap_or_else(|_| panic!("Unable to execute: {:?}", cmd));
     if !status.success() {
         let message = match mem::size_of::<usize>() {
