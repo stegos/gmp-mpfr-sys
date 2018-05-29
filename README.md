@@ -17,18 +17,18 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
-### Version 1.1.6 news
+### Version 1.1.6 news (2018-05-29)
 
-* A fix was included to automatically work around [Rust issue #47048]
-  (which only affects MinGW).
+* A fix was included to automatically work around
+  [Rust issue #47048][47048] (which only affects MinGW).
 
-[Rust issue #47048]: https://github.com/rust-lang/rust/issues/47048
+[47048]: https://github.com/rust-lang/rust/issues/47048
 
-### Version 1.1.5 news
+### Version 1.1.5 news (2018-05-02)
 
 * MPFR was updated from version 4.0.1 to version 4.0.1-p6.
 
-### Version 1.1.4 news
+### Version 1.1.4 news (2018-04-23)
 
 * Missing functions taking [`*mut FILE`][`libc::FILE`] arguments were
   added to the [`gmp`], [`mpfr`] and [`mpc`] modules.
