@@ -31,7 +31,6 @@ use std::env;
 use std::ffi::{OsStr, OsString};
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader, BufWriter, Result as IoResult, Write};
-use std::mem;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -108,6 +107,8 @@ fn main() {
     create_dir_or_panic(&env.lib_dir);
     create_dir_or_panic(&env.include_dir);
 
+    let workaround_47048 = check_for_bug_47048(&env);
+
     let gmp_ah = (env.lib_dir.join("libgmp.a"), env.include_dir.join("gmp.h"));
     let mpc_ah = if there_is_env("CARGO_FEATURE_MPC") {
         Some((env.lib_dir.join("libmpc.a"), env.include_dir.join("mpc.h")))
@@ -125,12 +126,10 @@ fn main() {
 
     let (compile_gmp, compile_mpfr, compile_mpc) =
         need_compile(&env, &gmp_ah, &mpfr_ah, &mpc_ah);
-    let mut workaround_47048 = Workaround47048::No;
     if compile_gmp {
         check_for_msvc(&env);
         remove_dir_or_panic(&env.build_dir);
         create_dir_or_panic(&env.build_dir);
-        workaround_47048 = check_for_bug_47048(&env);
         link_or_copy_dir(
             &src_dir.join(GMP_DIR),
             &env.build_dir,
