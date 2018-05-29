@@ -625,19 +625,8 @@ fn check_for_bug_47048(env: &Environment) -> Workaround47048 {
             "-o",
             "r_main.exe",
         ]);
-        println!("$ {:?}", cmd);
-        let status = cmd
-            .status()
-            .unwrap_or_else(|_| panic!("Unable to execute: {:?}", cmd));
-        if !status.success() {
-            // workaround failed, print message and bail
-            let message = match mem::size_of::<usize>() {
-                4 => BUG_47048_MESSAGE_32,
-                8 => BUG_47048_MESSAGE_64,
-                _ => unreachable!(),
-            };
-            panic!("{}", message);
-        }
+        execute(cmd);
+
         let src = try_dir.join("libworkaround_47048.a");
         let dst = env.lib_dir.join("libworkaround_47048.a");
         copy_file_or_panic(&src, &dst);
@@ -874,38 +863,4 @@ FILE *__cdecl __acrt_iob_func(unsigned index)
 
 typedef FILE *__cdecl (*_f__acrt_iob_func)(unsigned index);
 _f__acrt_iob_func __MINGW_IMP_SYMBOL(__acrt_iob_func) = __acrt_iob_func;
-"#;
-
-const BUG_47048_MESSAGE_32: &'static str = r#"
-Detected rustc bug 47048.
-
-As a workaround, you can downgrade the MinGW headers and crt packages
-using the following steps:
-
-* Download the following two packages:
-  1. http://repo.msys2.org/mingw/i686/mingw-w64-i686-crt-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
-  2. http://repo.msys2.org/mingw/i686/mingw-w64-i686-headers-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
-
-* Downgrade using the following bash command:
-  pacman -U mingw-w64-i686-{crt,headers}-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
-
-More details at: https://github.com/rust-lang/rust/issues/47048
-
-"#;
-
-const BUG_47048_MESSAGE_64: &'static str = r#"
-Detected rustc bug 47048.
-
-As a workaround, you can downgrade the MinGW headers and crt packages
-using the following steps:
-
-* Download the following two packages:
-  1. http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-crt-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
-  2. http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-headers-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
-
-* Downgrade using the following bash command:
-  pacman -U mingw-w64-x86_64-{crt,headers}-git-5.0.0.5002.34a7c1c0-1-any.pkg.tar.xz
-
-More details at: https://github.com/rust-lang/rust/issues/47048
-
 "#;
