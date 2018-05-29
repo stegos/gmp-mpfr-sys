@@ -57,6 +57,12 @@ struct Environment {
     make_check: bool,
 }
 
+#[derive(Clone, Copy, PartialEq)]
+enum Workaround47048 {
+    Yes,
+    No,
+}
+
 fn main() {
     let src_dir = PathBuf::from(cargo_env("CARGO_MANIFEST_DIR"));
     let out_dir = PathBuf::from(cargo_env("OUT_DIR"));
@@ -119,11 +125,12 @@ fn main() {
 
     let (compile_gmp, compile_mpfr, compile_mpc) =
         need_compile(&env, &gmp_ah, &mpfr_ah, &mpc_ah);
+    let mut workaround_47048 = Workaround47048::No;
     if compile_gmp {
         check_for_msvc(&env);
         remove_dir_or_panic(&env.build_dir);
         create_dir_or_panic(&env.build_dir);
-        check_for_bug_47048(&env);
+        workaround_47048 = check_for_bug_47048(&env);
         link_or_copy_dir(
             &src_dir.join(GMP_DIR),
             &env.build_dir,
@@ -158,7 +165,12 @@ fn main() {
         save_cache(&env, &gmp_ah, &mpfr_ah, &mpc_ah);
     }
     process_gmp_header(&gmp_ah.1, &out_dir.join("gmp_h.rs"));
-    write_link_info(&env, mpfr_ah.is_some(), mpc_ah.is_some());
+    write_link_info(
+        &env,
+        workaround_47048,
+        mpfr_ah.is_some(),
+        mpc_ah.is_some(),
+    );
 }
 
 fn need_compile(
@@ -478,7 +490,12 @@ fn build_mpc(env: &Environment, lib: &Path, header: &Path) {
     copy_file_or_panic(&src_header, &header);
 }
 
-fn write_link_info(env: &Environment, feature_mpfr: bool, feature_mpc: bool) {
+fn write_link_info(
+    env: &Environment,
+    workaround_47048: Workaround47048,
+    feature_mpfr: bool,
+    feature_mpc: bool,
+) {
     let out_str = env.out_dir.to_str().unwrap_or_else(|| {
         panic!(
             "Path contains unsupported characters, can only make {}",
@@ -509,6 +526,9 @@ fn write_link_info(env: &Environment, feature_mpfr: bool, feature_mpc: bool) {
     }
     println!("cargo:rustc-link-lib=static=gmp");
     if env.target == Target::Mingw {
+        if workaround_47048 == Workaround47048::Yes {
+            println!("cargo:rustc-link-lib=static=workaround_47048");
+        }
         add_mingw_libs(feature_mpfr, feature_mpc);
     }
 }
@@ -529,9 +549,9 @@ fn check_for_msvc(env: &Environment) {
     }
 }
 
-fn check_for_bug_47048(env: &Environment) {
+fn check_for_bug_47048(env: &Environment) -> Workaround47048 {
     if env.target != Target::Mingw {
-        return;
+        return Workaround47048::No;
     }
     let try_dir = env.build_dir.join("try_47048");
     let rustc = cargo_env("RUSTC");
@@ -540,6 +560,7 @@ fn check_for_bug_47048(env: &Environment) {
     create_file_or_panic(&try_dir.join("say_hi.c"), BUG_47048_SAY_HI_C);
     create_file_or_panic(&try_dir.join("c_main.c"), BUG_47048_C_MAIN_C);
     create_file_or_panic(&try_dir.join("r_main.rs"), BUG_47048_R_MAIN_RS);
+    create_file_or_panic(&try_dir.join("workaround.c"), BUG_47048_WORKAROUND_C);
     let mut cmd;
 
     cmd = Command::new("gcc");
@@ -579,16 +600,54 @@ fn check_for_bug_47048(env: &Environment) {
     let status = cmd
         .status()
         .unwrap_or_else(|_| panic!("Unable to execute: {:?}", cmd));
-    if !status.success() {
-        let message = match mem::size_of::<usize>() {
-            4 => BUG_47048_MESSAGE_32,
-            8 => BUG_47048_MESSAGE_64,
-            _ => unreachable!(),
-        };
-        panic!("{}", message);
+    let need_workaround = !status.success();
+
+    // build and test libworkaround_47048.a
+    if need_workaround {
+        cmd = Command::new("gcc");
+        cmd.current_dir(&try_dir).args(&["-c", "workaround.c"]);
+        execute(cmd);
+
+        cmd = Command::new("ar");
+        cmd.current_dir(&try_dir).args(&[
+            "cr",
+            "libworkaround_47048.a",
+            "workaround.o",
+        ]);
+        execute(cmd);
+
+        cmd = Command::new(&rustc);
+        cmd.current_dir(&try_dir).args(&[
+            "r_main.rs",
+            "-L.",
+            "-lsay_hi",
+            "-lworkaround_47048",
+            "-o",
+            "r_main.exe",
+        ]);
+        println!("$ {:?}", cmd);
+        let status = cmd
+            .status()
+            .unwrap_or_else(|_| panic!("Unable to execute: {:?}", cmd));
+        if !status.success() {
+            // workaround failed, print message and bail
+            let message = match mem::size_of::<usize>() {
+                4 => BUG_47048_MESSAGE_32,
+                8 => BUG_47048_MESSAGE_64,
+                _ => unreachable!(),
+            };
+            panic!("{}", message);
+        }
+        let src = try_dir.join("libworkaround_47048.a");
+        let dst = env.lib_dir.join("libworkaround_47048.a");
+        copy_file_or_panic(&src, &dst);
     }
 
     remove_dir_or_panic(&try_dir);
+    match need_workaround {
+        true => Workaround47048::Yes,
+        false => Workaround47048::No,
+    }
 }
 
 fn add_mingw_libs(feature_mpfr: bool, _feature_mpc: bool) {
@@ -802,6 +861,19 @@ fn main() {
         say_hi();
     }
 }
+"#;
+
+const BUG_47048_WORKAROUND_C: &'static str = r#"// workaround.c
+#define _CRTBLD
+#include <stdio.h>
+
+FILE *__cdecl __acrt_iob_func(unsigned index)
+{
+    return &(__iob_func()[index]);
+}
+
+typedef FILE *__cdecl (*_f__acrt_iob_func)(unsigned index);
+_f__acrt_iob_func __MINGW_IMP_SYMBOL(__acrt_iob_func) = __acrt_iob_func;
 "#;
 
 const BUG_47048_MESSAGE_32: &'static str = r#"
