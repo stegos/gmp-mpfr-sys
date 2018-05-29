@@ -100,11 +100,11 @@ then gmp-mpfr-sys will have a minor version bump rather than a major
 version bump. This allows more compatiblity across crates that use the
 Rust bindings but do not use the C libraries directly.
 
-If on the other hand a dependent crate includes a C library that
-directly uses the header (*.h*) and library (*.a*) files built using
-C, it can be a good idea to depend on version `"~1.1"` instead of
-version `"1.1"` in order to ensure backwards compatibility at the C
-level as well.
+If on the other hand a dependent crate makes use of internal
+implementation details, or includes a C library that directly uses the
+header (*.h*) and library (*.a*) files built using C, it can be a good
+idea to depend on version `"~1.1"` instead of version `"1.1"` in order
+to ensure backwards compatibility at the C level as well.
 
 ## Optional features
 

@@ -17,6 +17,13 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
+### Version 1.1.6 news
+
+* A fix was included to automatically work around [Rust issue #47048]
+  (which only affects MinGW).
+
+[Rust issue #47048]: https://github.com/rust-lang/rust/issues/47048
+
 ### Version 1.1.5 news
 
 * MPFR was updated from version 4.0.1 to version 4.0.1-p6.
@@ -99,11 +106,11 @@ then gmp-mpfr-sys will have a minor version bump rather than a major
 version bump. This allows more compatiblity across crates that use the
 Rust bindings but do not use the C libraries directly.
 
-If on the other hand a dependent crate includes a C library that
-directly uses the header (*.h*) and library (*.a*) files built using
-C, it can be a good idea to depend on version `"~1.1"` instead of
-version `"1.1"` in order to ensure backwards compatibility at the C
-level as well.
+If on the other hand a dependent crate makes use of internal
+implementation details, or includes a C library that directly uses the
+header (*.h*) and library (*.a*) files built using C, it can be a good
+idea to depend on version `"~1.1"` instead of version `"1.1"` in order
+to ensure backwards compatibility at the C level as well.
 
 ## Optional features
 
