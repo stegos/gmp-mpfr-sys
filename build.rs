@@ -563,7 +563,7 @@ fn check_for_bug_47048(env: &Environment) -> Workaround47048 {
     let mut cmd;
 
     cmd = Command::new("gcc");
-    cmd.current_dir(&try_dir).args(&["-c", "say_hi.c"]);
+    cmd.current_dir(&try_dir).args(&["-fPIC", "-c", "say_hi.c"]);
     execute(cmd);
 
     cmd = Command::new("ar");
@@ -604,7 +604,8 @@ fn check_for_bug_47048(env: &Environment) -> Workaround47048 {
     // build and test libworkaround_47048.a
     if need_workaround {
         cmd = Command::new("gcc");
-        cmd.current_dir(&try_dir).args(&["-c", "workaround.c"]);
+        cmd.current_dir(&try_dir)
+            .args(&["-fPIC", "-c", "workaround.c"]);
         execute(cmd);
 
         cmd = Command::new("ar");
@@ -851,7 +852,7 @@ fn main() {
 }
 "#;
 
-const BUG_47048_WORKAROUND_C: &'static str = r#"// workaround.c
+const BUG_47048_WORKAROUND_C: &'static str = r#"/* workaround.c */
 #define _CRTBLD
 #include <stdio.h>
 
