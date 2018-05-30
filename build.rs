@@ -605,7 +605,7 @@ fn check_for_bug_47048(env: &Environment) -> Workaround47048 {
     if need_workaround {
         cmd = Command::new("gcc");
         cmd.current_dir(&try_dir)
-            .args(&["-fPIC", "-c", "workaround.c"]);
+            .args(&["-fPIC", "-O2", "-c", "workaround.c"]);
         execute(cmd);
 
         cmd = Command::new("ar");
