@@ -97,8 +97,8 @@ unsafe fn mpfr_to_string(
 }
 ```
 
-[MPFR sample]: (http://www.mpfr.org/sample.html)
-[MPFR]: http://www.mpfr.org/
+[MPFR sample]: (https://www.mpfr.org/sample.html)
+[MPFR]: https://www.mpfr.org/
 */
 #![allow(non_camel_case_types, non_snake_case)]
 
