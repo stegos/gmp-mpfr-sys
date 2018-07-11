@@ -380,7 +380,7 @@ decimal (void)
   check_sprintf ("1.00                ", "%-#20.3RG", x);
   check_sprintf ("0.9999              ", "%-#20.4RG", x);
 
-  /* multiple of 10 */
+  /* powers of 10 */
   mpfr_set_str (x, "1e17", 10, MPFR_RNDN);
   check_sprintf ("1e+17", "%Re", x);
   check_sprintf ("1.000e+17", "%.3Re", x);
@@ -402,7 +402,7 @@ decimal (void)
   check_sprintf ("1", "%.0RUf", x);
   check_sprintf ("1", "%.0RYf", x);
 
-  /* multiple of 10 with 'g' style */
+  /* powers of 10 with 'g' style */
   mpfr_set_str (x, "10", 10, MPFR_RNDN);
   check_sprintf ("10", "%Rg", x);
   check_sprintf ("1e+01", "%.0Rg", x);
@@ -419,6 +419,12 @@ decimal (void)
   check_sprintf ("1e+03", "%.0Rg", x);
   check_sprintf ("1e+03", "%.3Rg", x);
   check_sprintf ("1000", "%.4Rg", x);
+  check_sprintf ("1e+03", "%.3Rg", x);
+  check_sprintf ("1000", "%.4Rg", x);
+  check_sprintf ("    1e+03", "%9.3Rg", x);
+  check_sprintf ("     1000", "%9.4Rg", x);
+  check_sprintf ("00001e+03", "%09.3Rg", x);
+  check_sprintf ("000001000", "%09.4Rg", x);
 
   mpfr_ui_div (x, 1, x, MPFR_RNDN);
   check_sprintf ("0.001", "%Rg", x);
@@ -430,6 +436,10 @@ decimal (void)
   check_sprintf ("1e+05", "%.0Rg", x);
   check_sprintf ("1e+05", "%.5Rg", x);
   check_sprintf ("100000", "%.6Rg", x);
+  check_sprintf ("            1e+05", "%17.5Rg", x);
+  check_sprintf ("           100000", "%17.6Rg", x);
+  check_sprintf ("0000000000001e+05", "%017.5Rg", x);
+  check_sprintf ("00000000000100000", "%017.6Rg", x);
 
   mpfr_ui_div (x, 1, x, MPFR_RNDN);
   check_sprintf ("1e-05", "%Rg", x);
@@ -857,6 +867,12 @@ mixed (void)
                   "%.*Zi, %R*e, %Lf", 20, mpz, rnd, x, d);
 #endif
 
+  /* check invalid spec.spec */
+  check_vsprintf ("%,", "%,");
+
+  /* check empty format */
+  check_vsprintf ("%", "%");
+
   mpf_clear (mpf);
   mpq_clear (mpq);
   mpz_clear (mpz);
@@ -864,12 +880,12 @@ mixed (void)
   return 0;
 }
 
-#if MPFR_LCONV_DPTS
+#if defined(HAVE_LOCALE_H) && defined(HAVE_SETLOCALE) && MPFR_LCONV_DPTS
 
 /* Check with locale "da_DK". On most platforms, decimal point is ','
    and thousands separator is '.'; the test is not performed if this
    is not the case or if the locale doesn't exist. */
-static int
+static void
 locale_da_DK (void)
 {
   mpfr_prec_t p = 128;
@@ -878,7 +894,16 @@ locale_da_DK (void)
   if (setlocale (LC_ALL, "da_DK") == 0 ||
       localeconv()->decimal_point[0] != ',' ||
       localeconv()->thousands_sep[0] != '.')
-    return 0;
+    {
+      setlocale (LC_ALL, "C");
+
+      if (getenv ("MPFR_CHECK_LOCALES") == NULL)
+        return;
+
+      fprintf (stderr,
+               "Cannot test the da_DK locale (not found or inconsistent).\n");
+      exit (1);
+    }
 
   mpfr_init2 (x, p);
 
@@ -917,10 +942,11 @@ locale_da_DK (void)
   check_sprintf ("100" S2 "0000", "%'.4Rf", x);
 
   mpfr_clear (x);
-  return 0;
+
+  setlocale (LC_ALL, "C");
 }
 
-#endif  /* MPFR_LCONV_DPTS */
+#endif  /* ... && MPFR_LCONV_DPTS */
 
 /* check concordance between mpfr_asprintf result with a regular mpfr float
    and with a regular double float */
@@ -1425,6 +1451,117 @@ percent_n (void)
     exit (1);
 }
 
+#if defined(HAVE_LOCALE_H) && defined(HAVE_SETLOCALE)
+
+/* The following tests should be equivalent to those from test_locale()
+   in tprintf.c (remove the \n at the end of the test strings). */
+
+static void
+test_locale (void)
+{
+  const char * const tab_locale[] = {
+    "en_US",
+    "en_US.iso88591",
+    "en_US.iso885915",
+    "en_US.utf8"
+  };
+  int i;
+  mpfr_t x;
+  char v[] = "99999999999999999999999.5";
+
+  for (i = 0; i < numberof(tab_locale); i++)
+    {
+      char *s;
+
+      s = setlocale (LC_ALL, tab_locale[i]);
+
+      if (s != NULL && MPFR_THOUSANDS_SEPARATOR == ',')
+        break;
+    }
+
+  if (i == numberof(tab_locale))
+    {
+      if (getenv ("MPFR_CHECK_LOCALES") == NULL)
+        return;
+
+      fprintf (stderr, "Cannot find a locale with ',' thousands separator.\n"
+               "Please install one of the en_US based locales.\n");
+      exit (1);
+    }
+
+  mpfr_init2 (x, 113);
+  mpfr_set_ui (x, 10000, MPFR_RNDN);
+
+  check_sprintf ("(1) 10000=10,000 ", "(1) 10000=%'Rg ", x);
+  check_sprintf ("(2) 10000=10,000.000000 ", "(2) 10000=%'Rf ", x);
+
+  mpfr_set_ui (x, 1000, MPFR_RNDN);
+  check_sprintf ("(3) 1000=1,000.000000 ", "(3) 1000=%'Rf ", x);
+
+  for (i = 1; i <= sizeof (v) - 3; i++)
+    {
+      char buf[64];
+      int j;
+
+      strcpy (buf, "(4) 10^i=1");
+      for (j = i; j > 0; j--)
+        strcat (buf, ",0" + (j % 3 != 0));
+      strcat (buf, " ");
+      mpfr_set_str (x, v + sizeof (v) - 3 - i, 10, MPFR_RNDN);
+      check_sprintf (buf, "(4) 10^i=%'.0Rf ", x);
+    }
+
+#define N0 20
+
+  for (i = 1; i <= N0; i++)
+    {
+      char s[N0+4], buf[64];
+      int j;
+
+      s[0] = '1';
+      for (j = 1; j <= i; j++)
+        s[j] = '0';
+      s[i+1] = '\0';
+
+      strcpy (buf, "(5) 10^i=1");
+      for (j = i; j > 0; j--)
+        strcat (buf, ",0" + (j % 3 != 0));
+      strcat (buf, " ");
+
+      mpfr_set_str (x, s, 10, MPFR_RNDN);
+
+      check_sprintf (buf, "(5) 10^i=%'.0RNf ", x);
+      check_sprintf (buf, "(5) 10^i=%'.0RZf ", x);
+      check_sprintf (buf, "(5) 10^i=%'.0RUf ", x);
+      check_sprintf (buf, "(5) 10^i=%'.0RDf ", x);
+      check_sprintf (buf, "(5) 10^i=%'.0RYf ", x);
+
+      strcat (s + (i + 1), ".5");
+      check_sprintf (buf, "(5) 10^i=%'.0Rf ", x);
+    }
+
+  mpfr_set_str (x, "1000", 10, MPFR_RNDN);
+  check_sprintf ("00000001e+03", "%'012.3Rg", x);
+  check_sprintf ("00000001,000", "%'012.4Rg", x);
+  check_sprintf ("000000001,000", "%'013.4Rg", x);
+
+  mpfr_clear (x);
+}
+
+#else
+
+static void
+test_locale (void)
+{
+  if (getenv ("MPFR_CHECK_LOCALES") != NULL)
+    {
+      fprintf (stderr, "Cannot test locales.\n");
+      exit (1);
+    }
+}
+
+#endif
+
 int
 main (int argc, char **argv)
 {
@@ -1446,12 +1583,14 @@ main (int argc, char **argv)
       binary ();
       decimal ();
 
-#if defined(HAVE_LOCALE_H) && defined(HAVE_SETLOCALE)
-#if MPFR_LCONV_DPTS
+#if defined(HAVE_LOCALE_H) && defined(HAVE_SETLOCALE) && MPFR_LCONV_DPTS
       locale_da_DK ();
-  /* Avoid a warning by doing the setlocale outside of this #if */
-#endif
-      setlocale (LC_ALL, "C");
+#else
+      if (getenv ("MPFR_CHECK_LOCALES") != NULL)
+        {
+          fprintf (stderr, "Cannot test locales.\n");
+          exit (1);
+        }
 #endif
     }
 
@@ -1462,6 +1601,7 @@ main (int argc, char **argv)
   snprintf_size ();
   percent_n ();
   mixed ();
+  test_locale ();
 
   if (getenv ("MPFR_CHECK_LIBC_PRINTF"))
     {

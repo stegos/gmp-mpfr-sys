@@ -25,5 +25,5 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 const char *
 mpfr_get_patches (void)
 {
-  return "io-null-stream cmp_q-special get_str sqr_1n-underflow fma sub1sp1n-reuse";
+  return "buffer_sandwich set_d64-ternary tstckintc-casts io-null-stream cmp_q-special get_str sqr_1n-underflow fma sub1sp1n-reuse";
 }

@@ -31,6 +31,10 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #include <stddef.h>
 #include <errno.h>
 
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
+
 #include "mpfr-intmax.h"
 #include "mpfr-test.h"
 #define STDOUT_FILENO 1
@@ -474,30 +478,41 @@ check_random (int nb_tests)
   mpfr_clear (x);
 }
 
-#ifdef HAVE_LOCALE_H
-
-#include <locale.h>
-
-const char * const tab_locale[] = {
-  "en_US",
-  "en_US.iso88591",
-  "en_US.iso885915",
-  "en_US.utf8"
-};
+#if defined(HAVE_LOCALE_H) && defined(HAVE_SETLOCALE)
 
 static void
 test_locale (void)
 {
+  const char * const tab_locale[] = {
+    "en_US",
+    "en_US.iso88591",
+    "en_US.iso885915",
+    "en_US.utf8"
+  };
   int i;
-  char *s = NULL;
   mpfr_t x;
   int count;
+  char v[] = "99999999999999999999999.5";
 
-  for(i = 0; i < numberof(tab_locale) && s == NULL; i++)
-    s = setlocale (LC_ALL, tab_locale[i]);
+  for (i = 0; i < numberof(tab_locale); i++)
+    {
+      char *s;
 
-  if (s == NULL || MPFR_THOUSANDS_SEPARATOR != ',')
-    return;
+      s = setlocale (LC_ALL, tab_locale[i]);
+
+      if (s != NULL && MPFR_THOUSANDS_SEPARATOR == ',')
+        break;
+    }
+
+  if (i == numberof(tab_locale))
+    {
+      if (getenv ("MPFR_CHECK_LOCALES") == NULL)
+        return;
+
+      fprintf (stderr, "Cannot find a locale with ',' thousands separator.\n"
+               "Please install one of the en_US based locales.\n");
+      exit (1);
+    }
 
   mpfr_init2 (x, 113);
   mpfr_set_ui (x, 10000, MPFR_RNDN);
@@ -507,6 +522,50 @@ test_locale (void)
   count = mpfr_printf ("(2) 10000=%'Rf \n", x);
   check_length (10001, count, 25, d);
 
+  mpfr_set_ui (x, 1000, MPFR_RNDN);
+  count = mpfr_printf ("(3) 1000=%'Rf \n", x);
+  check_length (10002, count, 23, d);
+
+  for (i = 1; i <= sizeof (v) - 3; i++)
+    {
+      mpfr_set_str (x, v + sizeof (v) - 3 - i, 10, MPFR_RNDN);
+      count = mpfr_printf ("(4) 10^i=%'.0Rf \n", x);
+      check_length (10002 + i, count, 12 + i + i/3, d);
+    }
+
+#define N0 20
+
+  for (i = 1; i <= N0; i++)
+    {
+      char s[N0+4];
+      int j, rnd;
+
+      s[0] = '1';
+      for (j = 1; j <= i; j++)
+        s[j] = '0';
+      s[i+1] = '\0';
+
+      mpfr_set_str (x, s, 10, MPFR_RNDN);
+
+      RND_LOOP (rnd)
+        {
+          count = mpfr_printf ("(5) 10^i=%'.0R*f \n", (mpfr_rnd_t) rnd, x);
+          check_length (11000 + 10 * i + rnd, count, 12 + i + i/3, d);
+        }
+
+      strcat (s + (i + 1), ".5");
+      count = mpfr_printf ("(5) 10^i=%'.0Rf \n", x);
+      check_length (11000 + 10 * i + 9, count, 12 + i + i/3, d);
+    }
+
+  mpfr_set_str (x, "1000", 10, MPFR_RNDN);
+  count = mpfr_printf ("%'012.3Rg\n", x);
+  check_length (12000, count, 13, d);
+  count = mpfr_printf ("%'012.4Rg\n", x);
+  check_length (12001, count, 13, d);
+  count = mpfr_printf ("%'013.4Rg\n", x);
+  check_length (12002, count, 14, d);
+
   mpfr_clear (x);
 }
 
@@ -515,7 +574,11 @@ test_locale (void)
 static void
 test_locale (void)
 {
-  /* Nothing */
+  if (getenv ("MPFR_CHECK_LOCALES") != NULL)
+    {
+      fprintf (stderr, "Cannot test locales.\n");
+      exit (1);
+    }
 }
 
 #endif

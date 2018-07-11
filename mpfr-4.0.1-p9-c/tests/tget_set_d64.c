@@ -381,6 +381,66 @@ check_tiny (void)
   mpfr_clear (x);
 }
 
+static void
+powers_of_10 (void)
+{
+  mpfr_t x1, x2;
+  _Decimal64 d[2];
+  int i, rnd;
+  unsigned int neg;
+
+  mpfr_inits2 (200, x1, x2, (mpfr_ptr) 0);
+  for (i = 0, d[0] = 1, d[1] = 1; i < 150; i++, d[0] *= 10, d[1] /= 10)
+    for (neg = 0; neg <= 3; neg++)
+      RND_LOOP_NO_RNDF (rnd)
+        {
+          int inex1, inex2;
+          mpfr_flags_t flags1, flags2;
+          mpfr_rnd_t rx1;
+          _Decimal64 dd;
+
+          inex1 = mpfr_set_si (x1, (neg >> 1) ? -i : i, MPFR_RNDN);
+          MPFR_ASSERTN (inex1 == 0);
+
+          rx1 = (neg & 1) ?
+            MPFR_INVERT_RND ((mpfr_rnd_t) rnd) : (mpfr_rnd_t) rnd;
+          mpfr_clear_flags ();
+          inex1 = mpfr_exp10 (x1, x1, rx1);
+          flags1 = __gmpfr_flags;
+
+          dd = d[neg >> 1];
+
+          if (neg & 1)
+            {
+              MPFR_SET_NEG (x1);
+              inex1 = -inex1;
+              dd = -dd;
+            }
+
+          mpfr_clear_flags ();
+          inex2 = mpfr_set_decimal64 (x2, dd, (mpfr_rnd_t) rnd);
+          flags2 = __gmpfr_flags;
+
+          if (!(mpfr_equal_p (x1, x2) &&
+                SAME_SIGN (inex1, inex2) &&
+                flags1 == flags2))
+            {
+              printf ("Error in powers_of_10 for i=%d, neg=%d, %s\n",
+                      i, neg, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
+              printf ("Expected ");
+              mpfr_dump (x1);
+              printf ("with inex = %d and flags =", inex1);
+              flags_out (flags1);
+              printf ("Got      ");
+              mpfr_dump (x2);
+              printf ("with inex = %d and flags =", inex2);
+              flags_out (flags2);
+              exit (1);
+            }
+        }
+  mpfr_clears (x1, x2, (mpfr_ptr) 0);
+}
+
 int
 main (void)
 {
@@ -401,6 +461,7 @@ main (void)
   check_overflow ();
 #endif
   check_tiny ();
+  powers_of_10 ();
 
   tests_end_mpfr ();
   return 0;
