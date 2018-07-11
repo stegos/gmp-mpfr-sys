@@ -26,7 +26,7 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ### Version 1.1.7 news (2018-07-11)
 
-* MPFR was updated from version 4.0.1-p6 to version 4.0.1-p9.
+* [MPFR] was updated from version 4.0.1-p6 to version 4.0.1-p9.
 
 ### Version 1.1.6 news (2018-05-29)
 
