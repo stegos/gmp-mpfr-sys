@@ -24,7 +24,7 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
-### Version 1.1.8 news (unreleased)
+### Version 1.1.8 news (2018-07-23)
 
 * [MPFR] was updated from version 4.0.1-p9 to version 4.0.1-p11.
 
