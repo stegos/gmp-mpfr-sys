@@ -104,11 +104,9 @@ unsafe fn mpfr_to_string(
 
 use gmp;
 
-use libc::FILE;
+use libc::{intmax_t, uintmax_t, FILE};
 use std::mem;
-use std::os::raw::{
-    c_char, c_int, c_long, c_longlong, c_uint, c_ulong, c_ulonglong, c_void,
-};
+use std::os::raw::{c_char, c_int, c_long, c_uint, c_ulong, c_void};
 
 /// See: [`mpfr_prec_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005fprec_005ft)
 pub type prec_t = c_long;
@@ -259,10 +257,10 @@ extern "C" {
     pub fn set_si(rop: mpfr_ptr, op: c_long, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_set_uj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fuj)
     #[link_name = "__gmpfr_set_uj"]
-    pub fn set_uj(rop: mpfr_ptr, op: c_ulonglong, rnd: rnd_t) -> c_int;
+    pub fn set_uj(rop: mpfr_ptr, op: uintmax_t, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_set_sj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fsj)
     #[link_name = "__gmpfr_set_sj"]
-    pub fn set_sj(rop: mpfr_ptr, op: c_longlong, rnd: rnd_t) -> c_int;
+    pub fn set_sj(rop: mpfr_ptr, op: intmax_t, rnd: rnd_t) -> c_int;
     /// See: [`mpfr_set_flt`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fflt)
     #[link_name = "mpfr_set_flt"]
     pub fn set_flt(rop: mpfr_ptr, op: f32, rnd: rnd_t) -> c_int;
@@ -298,16 +296,16 @@ extern "C" {
     #[link_name = "__gmpfr_set_uj_2exp"]
     pub fn set_uj_2exp(
         rop: mpfr_ptr,
-        op: c_ulonglong,
-        e: exp_t,
+        op: uintmax_t,
+        e: intmax_t,
         rnd: rnd_t,
     ) -> c_int;
     /// See: [`mpfr_set_sj_2exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fsj_005f2exp)
     #[link_name = "__gmpfr_set_sj_2exp"]
     pub fn set_sj_2exp(
         rop: mpfr_ptr,
-        op: c_longlong,
-        e: exp_t,
+        op: intmax_t,
+        e: intmax_t,
         rnd: rnd_t,
     ) -> c_int;
     /// See: [`mpfr_set_z_2exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fset_005fz_005f2exp)
@@ -447,10 +445,10 @@ extern "C" {
     pub fn get_ui(op: mpfr_srcptr, rnd: rnd_t) -> c_ulong;
     /// See: [`mpfr_get_sj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fsj)
     #[link_name = "__gmpfr_mpfr_get_sj"]
-    pub fn get_sj(op: mpfr_srcptr, rnd: rnd_t) -> c_longlong;
+    pub fn get_sj(op: mpfr_srcptr, rnd: rnd_t) -> intmax_t;
     /// See: [`mpfr_get_uj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fuj)
     #[link_name = "__gmpfr_mpfr_get_uj"]
-    pub fn get_uj(op: mpfr_srcptr, rnd: rnd_t) -> c_ulonglong;
+    pub fn get_uj(op: mpfr_srcptr, rnd: rnd_t) -> uintmax_t;
     /// See: [`mpfr_get_d_2exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fget_005fd_005f2exp)
     #[link_name = "mpfr_get_d_2exp"]
     pub fn get_d_2exp(exp: *mut c_long, op: mpfr_srcptr, rnd: rnd_t) -> f64;
@@ -1829,7 +1827,6 @@ mod tests {
     use mpfr;
     use std::ffi::CStr;
     use std::mem;
-    use std::os::raw::{c_longlong, c_ulonglong};
 
     #[test]
     fn check_version() {
@@ -1880,28 +1877,6 @@ mod tests {
             assert_eq!(tie_away2, 40);
 
             mpfr::clear(&mut f);
-        }
-    }
-
-    #[test]
-    fn check_intmax_longlong_64() {
-        unsafe {
-            assert_eq!(mem::size_of::<u64>(), mem::size_of::<c_ulonglong>());
-            assert_eq!(mem::size_of::<i64>(), mem::size_of::<c_longlong>());
-
-            let mut f = mem::uninitialized();
-            mpfr::init2(&mut f, 100);
-            mpfr::set_ui_2exp(&mut f, 1, 62, mpfr::rnd_t::RNDN);
-            // 1<<62 fits in intmax
-            assert_ne!(mpfr::fits_intmax_p(&f, mpfr::rnd_t::RNDN), 0);
-            mpfr::mul_2ui(&mut f, &f, 1, mpfr::rnd_t::RNDN);
-            // 1<<63 does not fit in intmax
-            assert_eq!(mpfr::fits_intmax_p(&f, mpfr::rnd_t::RNDN), 0);
-            // 1<<63 fit in uintmax
-            assert_ne!(mpfr::fits_uintmax_p(&f, mpfr::rnd_t::RNDN), 0);
-            mpfr::mul_2ui(&mut f, &f, 1, mpfr::rnd_t::RNDN);
-            // 1<<64 does not fit in uintmax
-            assert_eq!(mpfr::fits_uintmax_p(&f, mpfr::rnd_t::RNDN), 0);
         }
     }
 }

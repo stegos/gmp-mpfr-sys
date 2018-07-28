@@ -24,6 +24,14 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
+### Version 1.1.9 (unreleased)
+
+* Function parameters that should be [`intmax_t`] or [`uintmax_t`]
+  were fixed.
+
+[`intmax_t`]: https://docs.rs/libc/^0.2/libc/type.intmax_t.html
+[`uintmax_t`]: https://docs.rs/libc/^0.2/libc/type.uintmax_t.html
+
 ### Version 1.1.8 news (2018-07-23)
 
 * [MPFR] was updated from version 4.0.1-p9 to version 4.0.1-p11.

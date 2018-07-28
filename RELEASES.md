@@ -5,6 +5,11 @@ modification, are permitted in any medium without royalty provided the
 copyright notice and this notice are preserved. This file is offered
 as-is, without any warranty. -->
 
+Version 1.1.9 (unreleased)
+==========================
+
+* Fix function parameters that should be `intmax_t` or `uintmax_t`.
+
 Version 1.1.8 (2018-07-23)
 ==========================
 
