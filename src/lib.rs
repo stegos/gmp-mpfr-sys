@@ -20,9 +20,9 @@
 The gmp-mpfr-sys crate provides Rust FFI bindings to the following
 [GNU] arbitrary-precision libraries:
 
-* [GMP] for integers and rational numbers,
-* [MPFR] for floating-point numbers, and
-* [MPC] for complex numbers.
+  * [GMP] for integers and rational numbers,
+  * [MPFR] for floating-point numbers, and
+  * [MPC] for complex numbers.
 
 The source of the three libraries is included in the package.
 
@@ -36,20 +36,20 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 This crate contains three modules:
 
-* [`gmp`] provides external FFI bindings to [GMP].
-* [`mpfr`] provides external FFI bindings to [MPFR].
-* [`mpc`] provides external FFI bindings to [MPC].
+  * [`gmp`] provides external FFI bindings to [GMP].
+  * [`mpfr`] provides external FFI bindings to [MPFR].
+  * [`mpc`] provides external FFI bindings to [MPC].
 
 If you want a high-level API, consider using [Rug][rug crate], a crate
 which provides integers and floating-point with arbitrary precision
 and correct rounding:
 
-* [`Integer`] is a bignum integer with arbitrary precision,
-* [`Rational`] is a bignum rational number with arbitrary precision,
-* [`Float`] is a multi-precision floating-point number with correct
-  rounding, and
-* [`Complex`] is a multi-precision complex number with correct
-  rounding.
+  * [`Integer`] is a bignum integer with arbitrary precision,
+  * [`Rational`] is a bignum rational number with arbitrary precision,
+  * [`Float`] is a multi-precision floating-point number with correct
+    rounding, and
+  * [`Complex`] is a multi-precision complex number with correct
+    rounding.
 
 ### Name prefixes
 
@@ -111,9 +111,10 @@ to ensure backwards compatibility at the C level as well.
 
 The gmp-mpfr-sys crate has two optional features:
 
-1. `mpfr`, enabled by default. Required to include the [MPFR] library.
-2. `mpc`, enabled by default. Required to include the [MPC] library.
-   This feature requires the `mpfr` feature.
+ 1. `mpfr`, enabled by default. Required to include the [MPFR]
+    library.
+ 2. `mpc`, enabled by default. Required to include the [MPC] library.
+    This feature requires the `mpfr` feature.
 
 The [GMP] library is always included.
 
@@ -133,17 +134,17 @@ Here only the `mpfr` feature is selected.
 
 The gmp-mpfr-sys crate passes some metadata to its dependents:
 
-1. `DEP_GMP_LIMB_BITS` contains the number of bits per limb, which is
-   32 or 64.
-2. `DEP_GMP_OUT_DIR` contains the path of a directory that contains
-   two subdirectories: the first subdirectory is named *lib* and
-   contains the generated library (*.a*) files, and the second
-   subdirectory is named *include* and contains the corresponding
-   header (*.h*) files.
-3. `DEP_GMP_LIB_DIR` contains the path of the *lib* subdirectory of
-   the `DEP_GMP_OUT_DIR` directory.
-4. `DEP_GMP_INCLUDE_DIR` contains the path of the *include*
-   subdirectory of the `DEP_GMP_OUT_DIR` directory.
+ 1. `DEP_GMP_LIMB_BITS` contains the number of bits per limb, which is
+    32 or 64.
+ 2. `DEP_GMP_OUT_DIR` contains the path of a directory that contains
+    two subdirectories: the first subdirectory is named *lib* and
+    contains the generated library (*.a*) files, and the second
+    subdirectory is named *include* and contains the corresponding
+    header (*.h*) files.
+ 3. `DEP_GMP_LIB_DIR` contains the path of the *lib* subdirectory of
+    the `DEP_GMP_OUT_DIR` directory.
+ 4. `DEP_GMP_INCLUDE_DIR` contains the path of the *include*
+    subdirectory of the `DEP_GMP_OUT_DIR` directory.
 
 A dependent crate can use these environment variables in its build
 script.
@@ -175,12 +176,12 @@ brackets like this comment.)
 
 To install MSYS2:
 
-1.  Install MSYS2 using the [installer][msys].
+ 1. Install MSYS2 using the [installer][msys].
 
-2.  Launch the MSYS2 MinGW 64-bit terminal from the start
+ 2. Launch the MSYS2 MinGW 64-bit terminal from the start
     menu. (32-bit: Launch the MSYS2 MinGW 32-bit terminal instead.)
 
-3.  Install the required tools.
+ 3. Install the required tools.
 
     ```sh
     pacman -S pacman-mirrors
@@ -192,12 +193,12 @@ To install MSYS2:
 
 Then, to build a crate with a dependency on this crate:
 
-1. Launch the MSYS MinGW 64-bit terminal from the start menu. (32-bit:
-   Launch the MSYS2 MinGW 32-bit terminal instead.)
+ 1. Launch the MSYS MinGW 64-bit terminal from the start menu.
+    (32-bit: Launch the MSYS2 MinGW 32-bit terminal instead.)
 
-2. Change to the crate directory.
+ 2. Change to the crate directory.
 
-3. Build the crate using `cargo`.
+ 3. Build the crate using `cargo`.
 
 [*Cargo.toml*]: https://doc.rust-lang.org/cargo/guide/dependencies.html
 [GMP]: https://gmplib.org/

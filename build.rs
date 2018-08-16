@@ -7,16 +7,16 @@
 
 // Notes:
 //
-// 1. Configure GMP with --enable-fat so that built file is portable.
+//  1. Configure GMP with --enable-fat so that built file is portable.
 //
-// 2. Configure GMP, MPFR and MPC with: --disable-shared --with-pic
+//  2. Configure GMP, MPFR and MPC with: --disable-shared --with-pic
 //
-// 3. Add symlinks to work around relative path issues in MPFR and MPC.
-//    In MPFR: ln -s ../gmp-build
-//    In MPC: ln -s ../mpfr-src ../mpfr-build ../gmp-build .
+//  3. Add symlinks to work around relative path issues in MPFR and MPC.
+//     In MPFR: ln -s ../gmp-build
+//     In MPC: ln -s ../mpfr-src ../mpfr-build ../gmp-build .
 //
-// 4. Use relative paths for configure otherwise msys/mingw might be
-//    confused with drives and such.
+//  4. Use relative paths for configure otherwise msys/mingw might be
+//     confused with drives and such.
 
 use std::env;
 use std::ffi::{OsStr, OsString};

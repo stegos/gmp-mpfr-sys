@@ -786,7 +786,8 @@ extern "C" {
     /// See: [`mpfr_root`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005froot)
     #[link_name = "mpfr_root"]
     #[deprecated(
-        since = "1.1.0", note = "replaced by the slightly different `rootn_ui`"
+        since = "1.1.0",
+        note = "replaced by the slightly different `rootn_ui`"
     )]
     pub fn root(
         rop: mpfr_ptr,

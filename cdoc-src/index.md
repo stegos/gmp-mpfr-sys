@@ -3,9 +3,9 @@
 The following [GNU] C libraries provide numbers with arbitrarily large
 precision:
 
-* [GMP] for integers and rational numbers,
-* [MPFR] for floating-point numbers, and
-* [MPC] for complex numbers.
+  * [GMP] for integers and rational numbers,
+  * [MPFR] for floating-point numbers, and
+  * [MPC] for complex numbers.
 
 Low-level Rust bindings are provided in the [gmp-mpfr-sys][sys crate]
 crate. This crate can be used to write higher-level bindings, or to
@@ -13,24 +13,24 @@ use the C functions directly.
 
 The [Rug][rug crate] crate is a high-level Rust library that provides:
 
-* bignum [integers][`Integer`] with arbitrary precision,
-* bignum [rational numbers][`Rational`] with arbitrary precision,
-* multi-precision [floating-point numbers][`Float`] with correct
-  rounding, and
-* multi-precision [complex numbers][`Complex`] with correct rounding.
+  * bignum [integers][`Integer`] with arbitrary precision,
+  * bignum [rational numbers][`Rational`] with arbitrary precision,
+  * multi-precision [floating-point numbers][`Float`] with correct
+    rounding, and
+  * multi-precision [complex numbers][`Complex`] with correct rounding.
 
 ## Documentation
 
 C libraries:
 
-* [GMP][gmp doc]
-* [MPFR][mpfr doc]
-* [MPC][mpc doc]
+  * [GMP][gmp doc]
+  * [MPFR][mpfr doc]
+  * [MPC][mpc doc]
 
 Rust crates:
 
-* [gmp-mpfr-sys][sys]
-* [Rug][rug]
+  * [gmp-mpfr-sys][sys]
+  * [Rug][rug]
 
 ## License
 
