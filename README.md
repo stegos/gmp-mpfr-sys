@@ -24,7 +24,7 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
-### Version 1.1.9 (unreleased)
+### Version 1.1.9 (2018-10-05)
 
   * [MPFR] was updated from version 4.0.1-p11 to version 4.0.1-p13.
   * Function parameters that should be [`intmax_t`] or [`uintmax_t`]
@@ -32,21 +32,6 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 [`intmax_t`]: https://docs.rs/libc/^0.2/libc/type.intmax_t.html
 [`uintmax_t`]: https://docs.rs/libc/^0.2/libc/type.uintmax_t.html
-
-### Version 1.1.8 news (2018-07-23)
-
-  * [MPFR] was updated from version 4.0.1-p9 to version 4.0.1-p11.
-
-### Version 1.1.7 news (2018-07-11)
-
-  * [MPFR] was updated from version 4.0.1-p6 to version 4.0.1-p9.
-
-### Version 1.1.6 news (2018-05-29)
-
-  * A fix was included to automatically work around
-    [Rust issue #47048][47048] (which only affects MinGW).
-
-[47048]: https://github.com/rust-lang/rust/issues/47048
 
 ### Other releases
 
