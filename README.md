@@ -46,8 +46,8 @@ This crate contains three modules:
   * [`mpc`] provides external FFI bindings to [MPC].
 
 If you want a high-level API, consider using [Rug][rug crate], a crate
-which provides integers and floating-point with arbitrary precision
-and correct rounding:
+which provides integers and floating-point numbers with arbitrary
+precision and correct rounding:
 
   * [`Integer`] is a bignum integer with arbitrary precision,
   * [`Rational`] is a bignum rational number with arbitrary precision,
