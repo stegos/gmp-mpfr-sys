@@ -1,3 +1,5 @@
+vasprintf-p-length-modifier
+vasprintf-error-ub
 erf
 tconst_pi
 buffer_sandwich

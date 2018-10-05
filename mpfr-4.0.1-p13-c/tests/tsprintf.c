@@ -232,6 +232,22 @@ decimal (void)
   /* specifier 'P' for precision */
   check_vsprintf ("128", "%Pu", p);
   check_vsprintf ("00128", "%.5Pu", p);
+  check_vsprintf ("  128", "%5Pu", p);
+  check_vsprintf ("000128", "%06Pu", p);
+  check_vsprintf ("128    :", "%-7Pu:", p);
+  check_vsprintf ("000128:", "%-2.6Pd:", p);
+  check_vsprintf ("  000128:", "%8.6Pd:", p);
+  check_vsprintf ("000128  :", "%-8.6Pd:", p);
+  check_vsprintf ("+128:", "%+d:", p);
+  check_vsprintf (" 128:", "% d:", p);
+  check_vsprintf ("80:", "% x:", p);
+  check_vsprintf ("0x80:", "% #x:", p);
+  check_vsprintf ("0x80:", "%0#+ -x:", p);
+  check_vsprintf ("0200:", "%0#+ -o:", p);
+  check_vsprintf ("+0000128 :", "%0+ *.*Pd:", -9, 7, p);
+  check_vsprintf ("+12345   :", "%0+ -*.*Pd:", -9, -3, (mpfr_prec_t) 12345);
+  /* Do not add a test like "%05.1Pd" as MS Windows is buggy: when
+     a precision is given, the '0' flag must be ignored. */
 
   /* special numbers */
   mpfr_set_inf (x, 1);

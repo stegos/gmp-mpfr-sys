@@ -26,6 +26,7 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ### Version 1.1.9 (unreleased)
 
+  * [MPFR] was updated from version 4.0.1-p11 to version 4.0.1-p13.
   * Function parameters that should be [`intmax_t`] or [`uintmax_t`]
     were fixed.
 

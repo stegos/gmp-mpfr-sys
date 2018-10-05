@@ -8,6 +8,7 @@ as-is, without any warranty. -->
 Version 1.1.9 (unreleased)
 ==========================
 
+  * Update MPFR 4.0.1-p11 -> 4.0.1-p13.
   * Fix function parameters that should be `intmax_t` or `uintmax_t`.
 
 Version 1.1.8 (2018-07-23)
