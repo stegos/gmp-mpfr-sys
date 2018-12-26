@@ -1057,8 +1057,8 @@ uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES
 # (with "make get_patches.c") just after patching the MPFR source. This
 # should not be a problem in practice, in particular because "make dist"
 # automatically rebuilds get_patches.c before generating the archives.
-$(srcdir)/get_patches.c: $(top_srcdir)/PATCHES $(top_srcdir)/tools/get_patches.sh
-	(cd $(top_srcdir) && ./tools/get_patches.sh) > $@ || rm -f $@
+# $(srcdir)/get_patches.c: $(top_srcdir)/PATCHES $(top_srcdir)/tools/get_patches.sh
+# 	(cd $(top_srcdir) && ./tools/get_patches.sh) > $@ || rm -f $@
 
 # Check that MPFR does not use GMP internal symbols. Of course, do not run
 # this rule if you use --with-gmp-build or --enable-gmp-internals. This

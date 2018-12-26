@@ -55,6 +55,8 @@ cd ..
 # 2. Remove doc/Makefile, mpfr.pc from ac_config_files in configure
 # 3. Remove doc from SUBDIRS in Makefile.in
 # 4. Remove $(pkgconfig_DATA) from DATA in Makefile.in
+# 5. Comment get_patches.c rule in src/Makefile.in
+# 6. Generate src/get_patches.c
 tar xf "$MPFRTAR"
 mv mpfr-$MPFRVER mpfr-$MPFRVERP-c
 cd mpfr-$MPFRVERP-c
@@ -65,6 +67,8 @@ rm ChangeLog doc/*.info* doc/*.tex
 sed -i.rm~ -e '/^ac_config_files=/s,\( doc/Makefile\| mpfr.pc\),,g' configure
 sed -i.rm~ '/^SUBDIRS = /s/ doc//g' Makefile.in
 sed -i.rm~ '/^DATA = /s/ \$(pkgconfig_DATA)//g' Makefile.in
+sed -i.rm~ '/get_patches.c:/,/^$/s/^\(.\)/# \1/' src/Makefile.in
+tools/get_patches.sh > src/get_patches.c
 cd ..
 
 # MPC
