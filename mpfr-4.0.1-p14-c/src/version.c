@@ -1,6 +1,6 @@
-/* mpfr_get_patches -- Patches that have been applied
+/* mpfr_get_version -- MPFR version
 
-Copyright 2007-2018 Free Software Foundation, Inc.
+Copyright 2004-2018 Free Software Foundation, Inc.
 Contributed by the AriC and Caramba projects, INRIA.
 
 This file is part of the GNU MPFR Library.
@@ -23,7 +23,7 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #include "mpfr-impl.h"
 
 const char *
-mpfr_get_patches (void)
+mpfr_get_version (void)
 {
-  return "vasprintf-p-length-modifier vasprintf-error-ub erf tconst_pi buffer_sandwich set_d64-ternary tstckintc-casts io-null-stream cmp_q-special get_str sqr_1n-underflow fma sub1sp1n-reuse";
+  return "4.0.1-p14";
 }
