@@ -22,6 +22,10 @@ use std::env;
 use std::ffi::{OsStr, OsString};
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader, BufWriter, Result as IoResult, Write};
+#[cfg(unix)]
+use std::os::unix::fs as unix_fs;
+#[cfg(windows)]
+use std::os::windows::fs as windows_fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -121,37 +125,24 @@ fn main() {
         check_for_msvc(&env);
         remove_dir_or_panic(&env.build_dir);
         create_dir_or_panic(&env.build_dir);
-        link_or_copy_dir(
-            &src_dir.join(GMP_DIR),
-            &env.build_dir,
-            "gmp-src",
-            target,
-        );
+        link_dir(&src_dir.join(GMP_DIR), &env.build_dir.join("gmp-src"));
         let (ref a, ref h) = gmp_ah;
         build_gmp(&env, a, h);
     }
     if compile_mpfr {
-        link_or_copy_dir(
-            &src_dir.join(MPFR_DIR),
-            &env.build_dir,
-            "mpfr-src",
-            target,
-        );
+        link_dir(&src_dir.join(MPFR_DIR), &env.build_dir.join("mpfr-src"));
         let (ref a, ref h) = *mpfr_ah.as_ref().unwrap();
         build_mpfr(&env, a, h);
     }
     if compile_mpc {
-        link_or_copy_dir(
-            &src_dir.join(MPC_DIR),
-            &env.build_dir,
-            "mpc-src",
-            target,
-        );
+        link_dir(&src_dir.join(MPC_DIR), &env.build_dir.join("mpc-src"));
         let (ref a, ref h) = *mpc_ah.as_ref().unwrap();
         build_mpc(&env, a, h);
     }
     if compile_gmp {
-        remove_dir_or_panic(&env.build_dir);
+        if !there_is_env("CARGO_FEATURE_CNODELETE") {
+            remove_dir_or_panic(&env.build_dir);
+        }
         save_cache(&env, &gmp_ah, &mpfr_ah, &mpc_ah);
     }
     process_gmp_header(&gmp_ah.1, &out_dir.join("gmp_h.rs"));
@@ -431,11 +422,7 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
             "const GMP_CFLAGS: *const c_char =\n",
             "    b\"{}\\0\" as *const _ as _;\n"
         ),
-        limb_bits,
-        nail_bits,
-        long_long_limb,
-        cc,
-        cflags
+        limb_bits, nail_bits, long_long_limb, cc, cflags
     );
 
     let mut rs = create(out_file);
@@ -446,8 +433,11 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
 fn build_mpfr(env: &Environment, lib: &Path, header: &Path) {
     let build_dir = env.build_dir.join("mpfr-build");
     create_dir_or_panic(&build_dir);
+    link_dir(
+        &env.build_dir.join("gmp-build"),
+        &build_dir.join("gmp-build"),
+    );
     println!("$ cd {:?}", build_dir);
-    symlink("../gmp-build", &build_dir);
     let conf = "../mpfr-src/configure --enable-thread-safe --disable-shared \
                 --with-gmp-build=../gmp-build --with-pic";
     configure(&build_dir, &OsString::from(conf));
@@ -461,12 +451,16 @@ fn build_mpfr(env: &Environment, lib: &Path, header: &Path) {
 fn build_mpc(env: &Environment, lib: &Path, header: &Path) {
     let build_dir = env.build_dir.join("mpc-build");
     create_dir_or_panic(&build_dir);
+    link_dir(
+        &env.build_dir.join("gmp-build"),
+        &build_dir.join("gmp-build"),
+    );
+    link_dir(&env.build_dir.join("mpfr-src"), &build_dir.join("mpfr-src"));
+    link_dir(
+        &env.build_dir.join("mpfr-build"),
+        &build_dir.join("mpfr-build"),
+    );
     println!("$ cd {:?}", build_dir);
-    symlink("../mpfr-src", &build_dir);
-    symlink("../mpfr-build", &build_dir);
-    // steal link from mpfr-build to save some copying under MinGW,
-    // where a symlink is a just a copy.
-    mv("../mpfr-build/gmp-build", &build_dir);
     let conf = "../mpc-src/configure --disable-shared \
                 --with-mpfr-include=../mpfr-src/src \
                 --with-mpfr-lib=../mpfr-build/src/.libs \
@@ -738,34 +732,23 @@ fn make_and_check(env: &Environment, build_dir: &Path) {
     }
 }
 
-fn link_or_copy_dir(
-    src: &Path,
-    dst_dir: &Path,
-    dst_name: &str,
-    target: Target,
-) {
-    println!("$ cd {:?}", dst_dir);
-    let mut c;
-    if target == Target::Mingw {
-        c = Command::new("cp");
-        c.arg("-R");
-    } else {
-        c = Command::new("ln");
-        c.arg("-s");
+#[cfg(unix)]
+fn link_dir(src: &Path, dst: &Path) {
+    println!("$ ln -s {:?} {:?}", src, dst);
+    unix_fs::symlink(src, dst).unwrap_or_else(|_| {
+        panic!("Unable to symlink {:?} -> {:?}", src, dst);
+    });
+}
+
+#[cfg(windows)]
+fn link_dir(src: &Path, dst: &Path) {
+    println!("$ ln -s {:?} {:?}", src, dst);
+    if windows_fs::symlink_dir(src, dst).is_ok() {
+        return;
     }
-    c.arg(src).arg(dst_name).current_dir(dst_dir);
-    execute(c);
-}
-
-fn symlink(src: &str, dst_dir: &Path) {
-    let mut c = Command::new("ln");
-    c.arg("-s").arg(src).current_dir(dst_dir);
-    execute(c);
-}
-
-fn mv(src: &str, dst_dir: &Path) {
-    let mut c = Command::new("mv");
-    c.arg(src).arg(".").current_dir(dst_dir);
+    println!("symlink_dir: failed to create symbolic link, copying instead");
+    let mut c = Command::new("cp");
+    c.arg("-R").arg(src).arg(dst);
     execute(c);
 }
 

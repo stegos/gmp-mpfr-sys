@@ -36,5 +36,9 @@ mpc = ["mpfr"]
 ctest = []
 cnotest = []
 
+# With the cnodelete feature, C build artefacts are not deleted.
+
+cnodelete = []
+
 [dependencies]
 libc = "0.2"
