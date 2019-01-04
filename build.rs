@@ -433,11 +433,11 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
 fn build_mpfr(env: &Environment, lib: &Path, header: &Path) {
     let build_dir = env.build_dir.join("mpfr-build");
     create_dir_or_panic(&build_dir);
+    println!("$ cd {:?}", build_dir);
     link_dir(
         &env.build_dir.join("gmp-build"),
         &build_dir.join("gmp-build"),
     );
-    println!("$ cd {:?}", build_dir);
     let conf = "../mpfr-src/configure --enable-thread-safe --disable-shared \
                 --with-gmp-build=../gmp-build --with-pic";
     configure(&build_dir, &OsString::from(conf));
@@ -451,16 +451,15 @@ fn build_mpfr(env: &Environment, lib: &Path, header: &Path) {
 fn build_mpc(env: &Environment, lib: &Path, header: &Path) {
     let build_dir = env.build_dir.join("mpc-build");
     create_dir_or_panic(&build_dir);
-    link_dir(
-        &env.build_dir.join("gmp-build"),
-        &build_dir.join("gmp-build"),
-    );
+    println!("$ cd {:?}", build_dir);
+    // steal link from mpfr-build to save some copying under MinGW,
+    // where a symlink is a just a copy (unless in developer mode).
+    mv("../mpfr-build/gmp-build", &build_dir);
     link_dir(&env.build_dir.join("mpfr-src"), &build_dir.join("mpfr-src"));
     link_dir(
         &env.build_dir.join("mpfr-build"),
         &build_dir.join("mpfr-build"),
     );
-    println!("$ cd {:?}", build_dir);
     let conf = "../mpc-src/configure --disable-shared \
                 --with-mpfr-include=../mpfr-src/src \
                 --with-mpfr-lib=../mpfr-build/src/.libs \
@@ -749,6 +748,12 @@ fn link_dir(src: &Path, dst: &Path) {
     println!("symlink_dir: failed to create symbolic link, copying instead");
     let mut c = Command::new("cp");
     c.arg("-R").arg(src).arg(dst);
+    execute(c);
+}
+
+fn mv(src: &str, dst_dir: &Path) {
+    let mut c = Command::new("mv");
+    c.arg(src).arg(".").current_dir(dst_dir);
     execute(c);
 }
 
