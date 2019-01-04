@@ -1,4 +1,4 @@
-// Copyright © 2017–2018 University of Malta
+// Copyright © 2017–2019 University of Malta
 
 // This program is free software: you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -1857,8 +1857,11 @@ pub type allocate_function =
     Option<extern "C" fn(alloc_size: usize) -> *mut c_void>;
 /// See: [`reallocate_function`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Custom-Allocation.html#index-reallocate_005ffunction)
 pub type reallocate_function = Option<
-    unsafe extern "C" fn(ptr: *mut c_void, old_size: usize, new_size: usize)
-        -> *mut c_void,
+    unsafe extern "C" fn(
+        ptr: *mut c_void,
+        old_size: usize,
+        new_size: usize,
+    ) -> *mut c_void,
 >;
 /// See: [`free_function`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Custom-Allocation.html#index-free_005ffunction)
 pub type free_function =

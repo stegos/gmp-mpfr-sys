@@ -1,4 +1,4 @@
-<!-- Copyright © 2017–2018 University of Malta -->
+<!-- Copyright © 2017–2019 University of Malta -->
 
 <!-- Copying and distribution of this file, with or without
 modification, are permitted in any medium without royalty provided the
@@ -24,18 +24,9 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
-### Version 1.1.10 (unreleased)
+### Version 1.1.10 (2019-01-04)
 
   * [MPFR] was updated from version 4.0.1-p13 to version 4.0.1-p14.
-
-### Version 1.1.9 (2018-10-05)
-
-  * [MPFR] was updated from version 4.0.1-p11 to version 4.0.1-p13.
-  * Function parameters that should be [`intmax_t`] or [`uintmax_t`]
-    were fixed.
-
-[`intmax_t`]: https://docs.rs/libc/^0.2/libc/type.intmax_t.html
-[`uintmax_t`]: https://docs.rs/libc/^0.2/libc/type.uintmax_t.html
 
 ### Other releases
 
