@@ -9,8 +9,8 @@ Version 1.1.10 (2019-01-04)
 ===========================
 
   * Update MPFR 4.0.1-p13 -> 4.0.1-p14.
-  * Windows: Try to use std::os::windows::fs::symlink_dir during build
-    to save on some copying if allowed (Windows 1703+ developer mode).
+  * During Windows build use `std::os::windows::fs::symlink_dir` to
+    save on some copying if allowed (Windows 1703+ developer mode).
 
 Version 1.1.9 (2018-10-05)
 ==========================
