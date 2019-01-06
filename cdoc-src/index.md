@@ -45,7 +45,7 @@ the [GNU LGPL] and [GNU GPL] for details.
 [GNU LGPL]: https://www.gnu.org/licenses/lgpl-3.0.en.html
 [GNU]: https://www.gnu.org/
 [MPC]: http://www.multiprecision.org/mpc/
-[MPFR]: http://www.mpfr.org/
+[MPFR]: https://www.mpfr.org/
 [`Complex`]: https://docs.rs/rug/*/rug/struct.Complex.html
 [`Float`]: https://docs.rs/rug/*/rug/struct.Float.html
 [`Integer`]: https://docs.rs/rug/*/rug/struct.Integer.html
