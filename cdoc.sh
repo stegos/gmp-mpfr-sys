@@ -9,6 +9,15 @@
 
 set -e
 
+REMOVE_STRAY_BACKSLASHES='
+s/mp\\_bits\\_per\\_limb/mp_bits_per_limb/g
+s/GMP\\_NUMB\\_BITS/GMP_NUMB_BITS/g
+s/\\log/log/g
+s/\\exp/exp/g
+s/\\pi/Pi/g
+s/\\infty/Inf/g
+'
+
 if [ -e public ]; then
 	rm -r public
 fi
@@ -36,6 +45,7 @@ for l in gmp mpfr mpc; do
 		if [ $(basename $f) != index.html ]; then
 			sed -i.rm~ 's,\(class="location">\)\(</p\),\1<a href="index.html">'$L'</a>\2,' "$f"
 		fi
+		sed -i.rm~ -e "$REMOVE_STRAY_BACKSLASHES" "$f"
 	done
 done
 find public -name \*.rm~ -delete
