@@ -14,14 +14,14 @@ if [ -e public ]; then
 fi
 mkdir public{,/gmp,/mpfr,/mpc}
 cp cdoc-src/files/* public
-CSS="--css-ref ../normalize.css --css-ref ../rustdoc.css --css-ref ../main.css"
+CSS="--css-ref ../normalize.css --css-ref ../rustdoc.css --css-ref ../light.css"
 makeinfo gmp*/doc/gmp.texi --html --split=chapter --output=public/gmp $CSS
 makeinfo mpfr*/doc/mpfr.texi --html --split=chapter --output=public/mpfr $CSS
 makeinfo mpc*/doc/mpc.texi --html --split=chapter --output=public/mpc $CSS
 rustdoc cdoc-src/index.md --markdown-no-toc --output public \
 	--markdown-css normalize.css \
 	--markdown-css rustdoc.css \
-	--markdown-css main.css \
+	--markdown-css light.css \
 	--html-before-content cdoc-src/before-content.html \
 	--html-after-content cdoc-src/after-content.html
 for l in gmp mpfr mpc; do
