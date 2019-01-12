@@ -1,15 +1,15 @@
-/* See FiraSans-LICENSE.txt for the Fira Sans license. */
+/* See SourceSansPro-LICENSE.txt for the Source Sans Pro license. */
 @font-face {
-	font-family: 'Fira Sans';
+	font-family: 'Source Sans Pro';
 	font-style: normal;
 	font-weight: 400;
-	src: local('Fira Sans'), url("FiraSans-Regular.woff") format('woff');
+	src: local('Source Sans Pro'), url("SourceSansPro-Regular.ttf.woff") format('woff');
 }
 @font-face {
-	font-family: 'Fira Sans';
+	font-family: 'Source Sans Pro';
 	font-style: normal;
-	font-weight: 500;
-	src: local('Fira Sans Medium'), url("FiraSans-Medium.woff") format('woff');
+	font-weight: 600;
+	src: local('Source Sans Pro Semibold'), url("SourceSansPro-Semibold.ttf.woff") format('woff');
 }
 
 /* See SourceSerifPro-LICENSE.txt for the Source Serif Pro license. */
@@ -39,13 +39,13 @@
 	font-weight: 400;
 	/* Avoid using locally installed font because bad versions are in circulation:
 	 * see https://github.com/rust-lang/rust/issues/24355 */
-	src: url("SourceCodePro-Regular.woff") format('woff');
+	src: url("SourceCodePro-Regular.ttf.woff") format('woff');
 }
 @font-face {
 	font-family: 'Source Code Pro';
 	font-style: normal;
 	font-weight: 600;
-	src: url("SourceCodePro-Semibold.woff") format('woff');
+	src: url("SourceCodePro-Semibold.ttf.woff") format('woff');
 }
 
 * {
@@ -77,7 +77,7 @@ h3 {
 	font-size: 1.3em;
 }
 h1, h2, h3:not(.impl):not(.method):not(.type):not(.tymethod):not(.important), h4:not(.method):not(.type):not(.tymethod):not(.associatedconstant) {
-	font-weight: 500;
+	font-weight: 600;
 	margin: 20px 0 15px 0;
 	padding-bottom: 6px;
 }
@@ -102,7 +102,7 @@ h1, h2, h3, h4,
 .sidebar, a.source, .search-input, .content table :not(code)>a,
 .collapse-toggle, div.item-list .out-of-band,
 #source-sidebar, #sidebar-toggle {
-	font-family: "Fira Sans", sans-serif;
+	font-family: "Source Sans Pro", sans-serif;
 }
 
 ol, ul {
@@ -209,7 +209,7 @@ nav.sub {
 }
 
 .location a:first-child {
-	font-weight: 500;
+	font-weight: 600;
 }
 
 .block {
@@ -412,7 +412,7 @@ h4 > code, h3 > code, .invisible > code {
 }
 #main > .since {
 	top: inherit;
-	font-family: "Fira Sans", sans-serif;
+	font-family: "Source Sans Pro", sans-serif;
 }
 
 .content table:not(.table-display) {
@@ -606,7 +606,7 @@ a {
 	font-weight: normal;
 }
 
-.block a.current.crate { font-weight: 500; }
+.block a.current.crate { font-weight: 600; }
 
 .search-container {
 	position: relative;
@@ -967,7 +967,7 @@ span.since {
 	margin-left: 20px;
 }
 .impl-items .attributes {
-	font-weight: 500;
+	font-weight: 600;
 }
 
 :target > code {
