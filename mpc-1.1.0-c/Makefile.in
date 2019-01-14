@@ -367,7 +367,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src tests tools
+SUBDIRS = src tests tools #gmp-mpfr-sys doc
 EXTRA_HEADERS = src/mpc-log.h
 include_HEADERS = src/mpc.h @MPC_LOG_H@
 EXTRA_DIST = doc/fdl-1.3.texi src/mpc-log.h Makefile.vc
@@ -390,15 +390,15 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu Makefile'; \
 	$(am__cd) $(top_srcdir) && \
 	  $(AUTOMAKE) --gnu Makefile
-# Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
-# 	@case '$?' in \
-# 	  *config.status*) \
-# 	    echo ' $(SHELL) ./config.status'; \
-# 	    $(SHELL) ./config.status;; \
-# 	  *) \
-# 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe)'; \
-# 	    cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe);; \
-# 	esac;
+#gmp-mpfr-sys Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+#gmp-mpfr-sys 	@case '$?' in \
+#gmp-mpfr-sys 	  *config.status*) \
+#gmp-mpfr-sys 	    echo ' $(SHELL) ./config.status'; \
+#gmp-mpfr-sys 	    $(SHELL) ./config.status;; \
+#gmp-mpfr-sys 	  *) \
+#gmp-mpfr-sys 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe)'; \
+#gmp-mpfr-sys 	    cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe);; \
+#gmp-mpfr-sys 	esac;
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck

@@ -566,7 +566,7 @@ LIBGMP_LT_AGE = 3
 LIBGMPXX_LT_CURRENT = 9
 LIBGMPXX_LT_REVISION = 2
 LIBGMPXX_LT_AGE = 5
-SUBDIRS = tests mpn mpz mpq mpf printf scanf rand cxx tune
+SUBDIRS = tests mpn mpz mpq mpf printf scanf rand cxx tune #gmp-mpfr-sys demos doc
 
 # The "test -f" support for srcdir!=builddir is similar to the automake .c.o
 # etc rules, but with each foo.c explicitly, since $< is not portable
@@ -791,15 +791,15 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu --ignore-deps Makefile'; \
 	$(am__cd) $(top_srcdir) && \
 	  $(AUTOMAKE) --gnu --ignore-deps Makefile
-# Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
-# 	@case '$?' in \
-# 	  *config.status*) \
-# 	    echo ' $(SHELL) ./config.status'; \
-# 	    $(SHELL) ./config.status;; \
-# 	  *) \
-# 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe)'; \
-# 	    cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe);; \
-# 	esac;
+#gmp-mpfr-sys Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+#gmp-mpfr-sys 	@case '$?' in \
+#gmp-mpfr-sys 	  *config.status*) \
+#gmp-mpfr-sys 	    echo ' $(SHELL) ./config.status'; \
+#gmp-mpfr-sys 	    $(SHELL) ./config.status;; \
+#gmp-mpfr-sys 	  *) \
+#gmp-mpfr-sys 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe)'; \
+#gmp-mpfr-sys 	    cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe);; \
+#gmp-mpfr-sys 	esac;
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck

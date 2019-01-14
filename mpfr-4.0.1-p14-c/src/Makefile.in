@@ -489,14 +489,14 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
 	  $(AUTOMAKE) --gnu src/Makefile
-# Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
-# 	@case '$?' in \
-# 	  *config.status*) \
-# 	    cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh;; \
-# 	  *) \
-# 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
-# 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
-# 	esac;
+#gmp-mpfr-sys Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+#gmp-mpfr-sys 	@case '$?' in \
+#gmp-mpfr-sys 	  *config.status*) \
+#gmp-mpfr-sys 	    cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh;; \
+#gmp-mpfr-sys 	  *) \
+#gmp-mpfr-sys 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
+#gmp-mpfr-sys 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
+#gmp-mpfr-sys 	esac;
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -1057,8 +1057,8 @@ uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES
 # (with "make get_patches.c") just after patching the MPFR source. This
 # should not be a problem in practice, in particular because "make dist"
 # automatically rebuilds get_patches.c before generating the archives.
-# $(srcdir)/get_patches.c: $(top_srcdir)/PATCHES $(top_srcdir)/tools/get_patches.sh
-# 	(cd $(top_srcdir) && ./tools/get_patches.sh) > $@ || rm -f $@
+#gmp-mpfr-sys $(srcdir)/get_patches.c: $(top_srcdir)/PATCHES $(top_srcdir)/tools/get_patches.sh
+#gmp-mpfr-sys 	(cd $(top_srcdir) && ./tools/get_patches.sh) > $@ || rm -f $@
 
 # Check that MPFR does not use GMP internal symbols. Of course, do not run
 # this rule if you use --with-gmp-build or --enable-gmp-internals. This

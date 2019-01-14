@@ -1,0 +1,2541 @@
+------------------------------------------------------------------------
+r12200 | vlefevre | 2018-02-07 12:50:31 +0000 (Wed, 07 Feb 2018) | 1 line
+Changed paths:
+   M /branches/4.0/VERSION
+   M /branches/4.0/configure.ac
+   M /branches/4.0/doc/mpfr.texi
+   M /branches/4.0/src/mpfr.h
+   M /branches/4.0/src/version.c
+
+Updated version to 4.0.1.
+------------------------------------------------------------------------
+r12199 | vlefevre | 2018-02-07 12:02:41 +0000 (Wed, 07 Feb 2018) | 3 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/doc/README.dev
+   M /branches/4.0/tools/announce-text
+
+[doc/README.dev] "To make a release": moved a sentence.
+[tools/announce-text] For releases, check the VERSION file of the tag.
+(merged changesets r12197-12198 from the trunk)
+------------------------------------------------------------------------
+r12195 | vlefevre | 2018-02-02 13:17:33 +0000 (Fri, 02 Feb 2018) | 4 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/tests/tdiv_ui.c
+
+[tests/tdiv_ui.c] Forcibly disable value coverage checking if
+mp_limb_t > unsigned long (e.g. on mips64 with the n32 ABI).
+Corrected comments.
+(merged changesets r12193-12194 from the trunk)
+------------------------------------------------------------------------
+r12192 | vlefevre | 2018-02-02 12:34:56 +0000 (Fri, 02 Feb 2018) | 1 line
+Changed paths:
+   M /branches/4.0/ChangeLog
+
+ChangeLog update with "TZ=UTC svn log -rHEAD:0 -v" (in UTF-8 locales).
+------------------------------------------------------------------------
+r12191 | vlefevre | 2018-02-02 12:32:02 +0000 (Fri, 02 Feb 2018) | 6 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/tests/terandom.c
+   M /branches/4.0/tests/terandom_chisq.c
+   M /branches/4.0/tests/tgrandom.c
+   M /branches/4.0/tests/tnrandom.c
+   M /branches/4.0/tests/tnrandom_chisq.c
+   M /branches/4.0/tests/trandom.c
+   M /branches/4.0/tests/trandom_deviate.c
+   M /branches/4.0/tests/tset_ld.c
+   M /branches/4.0/tests/tsub_d.c
+   M /branches/4.0/tests/turandom.c
+
+[tests]
+  * Replaced calloc + free by tests_allocate + tests_free as usual.
+  * Replaced some fprintf with stderr by printf.
+  * Do bitwise operations in unsigned arithmetic.
+  * Formatting.
+(merged changesets r12188-12190 from the trunk)
+------------------------------------------------------------------------
+r12187 | vlefevre | 2018-02-02 10:57:17 +0000 (Fri, 02 Feb 2018) | 16 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/tests/tests.c
+   M /branches/4.0/tests/tremquo.c
+   M /branches/4.0/tests/tset_float128.c
+   M /branches/4.0/tests/tset_ld.c
+
+[tests] Fixed the cases where tests_start_mpfr was called too late,
+i.e. after potential output (to stdout).
+  * tremquo.c: moved the call to tests_start_mpfr to the beginning.
+  * tset_float128.c, tset_ld.c: removed the optional, obsolete code
+    setting the FPU control word; MPFR_FPU_PREC can be used instead
+    (see tests.c).
+
+[tests/tests.c] Make stderr unbuffered again.
+Note for the history: both stdout and stderr were made unbuffered in
+r2361, then all stderr were changed to stdout (and the corresponding
+setbuf on stderr removed) in r2449 for consistency, but stderr was
+used later for specific cases (e.g. memory allocation errors or when
+stdout is already used for something else), and it is also used for
+assertion failures. Thus the setbuf on stderr is still needed.
+
+(merged changesets r12185-12186 from the trunk)
+------------------------------------------------------------------------
+r12184 | vlefevre | 2018-02-02 10:14:04 +0000 (Fri, 02 Feb 2018) | 3 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/tests/tabort_defalloc1.c
+   M /branches/4.0/tests/tabort_defalloc2.c
+   M /branches/4.0/tests/tabort_prec_max.c
+
+Reverse-merged r12182 since tests_start_mpfr disables stdout buffering,
+so that the fflush() are unnecessary.
+(merged changeset r12183 from the trunk)
+------------------------------------------------------------------------
+r12182 | vlefevre | 2018-02-02 09:55:12 +0000 (Fri, 02 Feb 2018) | 4 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/tests/tabort_defalloc1.c
+   M /branches/4.0/tests/tabort_defalloc2.c
+   M /branches/4.0/tests/tabort_prec_max.c
+
+[tests/tabort_*.c] Flush stdout after a printf(), as an abort() is
+expected. This is needed on platforms where abort() does not flush
+the stdio streams, such as with the GNU C Library (glibc) 2.27.
+(merged changeset r12181 from the trunk)
+------------------------------------------------------------------------
+r12180 | vlefevre | 2018-02-01 14:31:06 +0000 (Thu, 01 Feb 2018) | 1 line
+Changed paths:
+   M /branches/4.0/ChangeLog
+
+ChangeLog update with "TZ=UTC svn log -rHEAD:0 -v" (in UTF-8 locales).
+------------------------------------------------------------------------
+r12179 | vlefevre | 2018-02-01 14:28:02 +0000 (Thu, 01 Feb 2018) | 1 line
+Changed paths:
+   M /branches/4.0/NEWS
+
+[NEWS] Mention "make check-exported-symbols" (experimental).
+------------------------------------------------------------------------
+r12177 | vlefevre | 2018-02-01 14:22:32 +0000 (Thu, 01 Feb 2018) | 1 line
+Changed paths:
+   M /branches/4.0/VERSION
+   M /branches/4.0/configure.ac
+   M /branches/4.0/doc/mpfr.texi
+   M /branches/4.0/src/mpfr.h
+   M /branches/4.0/src/version.c
+
+Updated version to 4.0.1-rc2.
+------------------------------------------------------------------------
+r12176 | vlefevre | 2018-02-01 14:21:13 +0000 (Thu, 01 Feb 2018) | 1 line
+Changed paths:
+   M /branches/4.0/doc/mpfr.texi
+
+[doc/mpfr.texi] Updated the month.
+------------------------------------------------------------------------
+r12175 | vlefevre | 2018-02-01 13:47:27 +0000 (Thu, 01 Feb 2018) | 1 line
+Changed paths:
+   M /branches/4.0/NEWS
+
+[NEWS] Mention the mpfr_div_ui bug.
+------------------------------------------------------------------------
+r12170 | vlefevre | 2018-01-31 16:21:15 +0000 (Wed, 31 Jan 2018) | 3 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/src/div_ui.c
+   M /branches/4.0/src/mpfr-impl.h
+   M /branches/4.0/tests/tdiv_ui.c
+
+Added value coverage for tdiv_ui (combinations of rb and sb in the
+different cases of the mpfr_div_ui code) and other tests.
+(merged changesets r12164-12169 from the trunk)
+------------------------------------------------------------------------
+r12164 | vlefevre | 2018-01-31 09:57:51 +0000 (Wed, 31 Jan 2018) | 5 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/src/div_ui.c
+   M /branches/4.0/tests/tdiv.c
+   M /branches/4.0/tests/tdiv_ui.c
+   M /branches/4.0/tools/mpfrlint
+
+[src/div_ui.c] Major rewrite to fix a mpfr_div_ui bug.
+[tests/tdiv.c] Updated comment for bug20180126.
+[tests/tdiv_ui.c] Added tests triggering the bug just fixed.
+[tools/mpfrlint] Improved a regexp (avoiding false positives).
+(merged the remaining changesets starting at r12123 from the trunk)
+------------------------------------------------------------------------
+r12138 | vlefevre | 2018-01-27 03:52:35 +0000 (Sat, 27 Jan 2018) | 2 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/tests/tdiv.c
+
+[tests/tdiv.c] mpfr_div bug bug20180126: also test negative values.
+(merged changeset r12137 from the trunk)
+------------------------------------------------------------------------
+r12135 | vlefevre | 2018-01-27 03:21:15 +0000 (Sat, 27 Jan 2018) | 2 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/tests/tdiv.c
+
+[tests/tdiv.c] mpfr_div bug bug20180126 was introduced by r9086.
+(merged changeset r12134 from the trunk)
+------------------------------------------------------------------------
+r12133 | vlefevre | 2018-01-26 17:04:38 +0000 (Fri, 26 Jan 2018) | 2 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/tests/tdiv.c
+
+[tests/tdiv.c] Completed r12128 test with new comments and an assert.
+(merged changeset r12132 from the trunk)
+------------------------------------------------------------------------
+r12130 | vlefevre | 2018-01-26 15:29:25 +0000 (Fri, 26 Jan 2018) | 1 line
+Changed paths:
+   M /branches/4.0/VERSION
+   M /branches/4.0/configure.ac
+   M /branches/4.0/doc/mpfr.texi
+   M /branches/4.0/src/mpfr.h
+   M /branches/4.0/src/version.c
+
+Updated version to 4.0.1-dev.
+------------------------------------------------------------------------
+r12129 | vlefevre | 2018-01-26 15:28:39 +0000 (Fri, 26 Jan 2018) | 2 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/tests/tdiv.c
+
+[tests/tdiv.c] Added test case for a mpfr_div bug of MPFR 4.
+(merged changeset r12128 from the trunk)
+------------------------------------------------------------------------
+r12127 | vlefevre | 2018-01-25 15:19:15 +0000 (Thu, 25 Jan 2018) | 2 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/doc/README.dev
+
+[doc/README.dev] Added information about symbol checking.
+(merged changeset r12126 from the trunk)
+------------------------------------------------------------------------
+r12125 | vlefevre | 2018-01-25 14:46:21 +0000 (Thu, 25 Jan 2018) | 8 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/Makefile.am
+   M /branches/4.0/doc/README.dev
+   M /branches/4.0/src/Makefile.am
+
+* Added check-exported-symbols make rule to check that MPFR does not
+  define symbols with a GMP reserved prefix.
+* For the check-gmp-symbols and check-exported-symbols make rules, if
+  the library is not $(top_builddir)/src/.libs/libmpfr.so, these rules
+  do nothing instead of potentially failing.
+* doc/README.dev, "To make a release": mention "make check-gmp-symbols"
+  and "make check-exported-symbols".
+(merged changesets r12111-12114 from the trunk)
+------------------------------------------------------------------------
+r12123 | vlefevre | 2018-01-23 09:41:27 +0000 (Tue, 23 Jan 2018) | 4 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/tests/tests.c
+
+[tests/tests.c] Mention a libtool 2.4.6 bug concerning Solaris, yielding
+potential failures if a compatible MPFR version is already installed:
+this MPFR library is tested instead of the one that has just been built.
+(merged changeset r12122 from the trunk)
+------------------------------------------------------------------------
+r12121 | vlefevre | 2018-01-22 13:58:27 +0000 (Mon, 22 Jan 2018) | 1 line
+Changed paths:
+   M /branches/4.0/ChangeLog
+
+ChangeLog update with "TZ=UTC svn log -rHEAD:0 -v" (in UTF-8 locales).
+------------------------------------------------------------------------
+r12120 | vlefevre | 2018-01-22 13:56:18 +0000 (Mon, 22 Jan 2018) | 1 line
+Changed paths:
+   M /branches/4.0/src/Makefile.am
+
+[src/Makefile.am] Updated libmpfr_la_LDFLAGS for MPFR 4.0.1.
+------------------------------------------------------------------------
+r12119 | vlefevre | 2018-01-22 13:53:01 +0000 (Mon, 22 Jan 2018) | 1 line
+Changed paths:
+   M /branches/4.0/VERSION
+   M /branches/4.0/configure.ac
+   M /branches/4.0/doc/mpfr.texi
+   M /branches/4.0/src/mpfr.h
+   M /branches/4.0/src/version.c
+
+Updated version to 4.0.1-rc1.
+------------------------------------------------------------------------
+r12118 | vlefevre | 2018-01-22 12:21:10 +0000 (Mon, 22 Jan 2018) | 1 line
+Changed paths:
+   M /branches/4.0/NEWS
+
+[NEWS] + Improved __GMP_CC and __GMP_CFLAGS retrieval.
+------------------------------------------------------------------------
+r12116 | vlefevre | 2018-01-22 01:51:10 +0000 (Mon, 22 Jan 2018) | 4 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/configure.ac
+
+[configure.ac] In the CC and CFLAGS setup from gmp.h, added to the
+cpp list: "clang -E"; "cl -E" and "icl -E" for Windows ICC and MSVC
+(suggested by Alexander).
+(merged changeset r12115 from the trunk)
+------------------------------------------------------------------------
+r12110 | vlefevre | 2018-01-19 11:36:10 +0000 (Fri, 19 Jan 2018) | 1 line
+Changed paths:
+   M /branches/4.0/NEWS
+
+[NEWS] Mention the bug fix r12109.
+------------------------------------------------------------------------
+r12109 | vlefevre | 2018-01-19 00:27:24 +0000 (Fri, 19 Jan 2018) | 6 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/src/mp_clz_tab.c
+   M /branches/4.0/src/mpfr-gmp.h
+
+Correct fix for the use of __clz_tab when the GMP build is used.
+  * src/mpfr-gmp.h: reverse-merged r11969, which is incorrect and
+    yields a build failure under some conditions.
+  * src/mp_clz_tab.c: fixed the condition that tests whether the
+    GMP build is used.
+(merged changesets r12107-12108 from the trunk)
+------------------------------------------------------------------------
+r12106 | vlefevre | 2018-01-18 10:52:25 +0000 (Thu, 18 Jan 2018) | 1 line
+Changed paths:
+   M /branches/4.0/NEWS
+
+[NEWS] Update for GNU MPFR 4.0.1.
+------------------------------------------------------------------------
+r12096 | vlefevre | 2018-01-10 17:03:36 +0000 (Wed, 10 Jan 2018) | 1 line
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/src/check.c
+
+Typo in a comment (cherry-picked everything from r12073 of the trunk).
+------------------------------------------------------------------------
+r12095 | vlefevre | 2018-01-10 16:58:10 +0000 (Wed, 10 Jan 2018) | 4 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/src/lngamma.c
+   M /branches/4.0/tests/tlgamma.c
+
+[src/lngamma.c] Fixed handling of reduced exponent range in mpfr_lgamma
+  (also removed a useless cast).
+[tests/tlgamma.c] Added a corresponding test case.
+(merged changesets r12089-12092 from the trunk)
+------------------------------------------------------------------------
+r12094 | vlefevre | 2018-01-10 16:48:57 +0000 (Wed, 10 Jan 2018) | 4 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/src/ai.c
+   M /branches/4.0/tests/tai.c
+
+[src/ai.c] Fixed handling of reduced exponent range.
+[tests/tai.c] Added corresponding test cases (in addition to what
+  has been done in tgeneric.c).
+(merged changesets r12070-12072,12074-12075 from the trunk)
+------------------------------------------------------------------------
+r12093 | vlefevre | 2018-01-10 16:38:44 +0000 (Wed, 10 Jan 2018) | 8 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/tests/tgeneric.c
+
+[tests/tgeneric.c] Tests in a reduced exponent range:
+  * Do several overflow/underflow tests instead of 1, and this for each
+    precision. This allows one to detect 2 bugs (fixed in the trunk)
+    that did not handle reduced exponent ranges correctly:
+    - in mpfr_ai, making tai fail;
+    - in mpfr_lgamma, making tlgamma hang with a 32-bit ABI.
+  * Added some comments.
+(merged changesets r12087-12088 from the trunk)
+------------------------------------------------------------------------
+r12086 | vlefevre | 2018-01-10 10:15:30 +0000 (Wed, 10 Jan 2018) | 4 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/tests/tsprintf.c
+
+[tests/tsprintf.c] Fixed/simplified code with incorrect strncpy
+usage (bug detected by gcc-snapshot 20180107-1 under Debian with
+-Werror=stringop-truncation).
+(merged changesets r12084-12085 from the trunk)
+------------------------------------------------------------------------
+r12083 | vlefevre | 2018-01-09 15:17:48 +0000 (Tue, 09 Jan 2018) | 6 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/doc/mpfr.texi
+
+[doc/mpfr.texi] Misc improvements and corrections affecting the
+description of the following functions:
+  * mpfr_ai: fixed font encoding issue for PDF/DVI/PS (—x— → |x|).
+  * mpfr_custom_init_set: fixed typography; improved text.
+  * mpfr_custom_get_exp: improved text.
+(merged changesets r12077-12082 from the trunk)
+------------------------------------------------------------------------
+r12078 | vlefevre | 2018-01-09 12:34:03 +0000 (Tue, 09 Jan 2018) | 5 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/doc/mpfr.texi
+   M /branches/4.0/doc/texinfo.tex
+
+[doc]
+  * texinfo.tex: update to the latest version 2018-01-09.11, which
+    supports @var with script font size without any drawback.
+  * mpfr.texi: replaced the now useless @svar by @var.
+(merged changeset r12076 from the trunk)
+------------------------------------------------------------------------
+r12077 | vlefevre | 2018-01-09 12:30:58 +0000 (Tue, 09 Jan 2018) | 6 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/BUGS
+   M /branches/4.0/INSTALL
+   M /branches/4.0/Makefile.am
+   M /branches/4.0/NEWS
+   M /branches/4.0/README
+   M /branches/4.0/TODO
+   M /branches/4.0/acinclude.m4
+   M /branches/4.0/configure.ac
+   M /branches/4.0/doc/FAQ.html
+   M /branches/4.0/doc/Makefile.am
+   M /branches/4.0/doc/README.dev
+   M /branches/4.0/doc/check-typography
+   M /branches/4.0/doc/faq.xsl
+   M /branches/4.0/doc/mpfr.texi
+   M /branches/4.0/examples/can_round.c
+   M /branches/4.0/examples/divworst.c
+   M /branches/4.0/examples/rndo-add.c
+   M /branches/4.0/examples/sample.c
+   M /branches/4.0/examples/version.c
+   M /branches/4.0/src/Makefile.am
+   M /branches/4.0/src/abort_prec_max.c
+   M /branches/4.0/src/acos.c
+   M /branches/4.0/src/acosh.c
+   M /branches/4.0/src/add.c
+   M /branches/4.0/src/add1.c
+   M /branches/4.0/src/add1sp.c
+   M /branches/4.0/src/add_d.c
+   M /branches/4.0/src/add_ui.c
+   M /branches/4.0/src/agm.c
+   M /branches/4.0/src/ai.c
+   M /branches/4.0/src/amd/amdfam10/mparam.h
+   M /branches/4.0/src/amd/athlon/mparam.h
+   M /branches/4.0/src/amd/k8/mparam.h
+   M /branches/4.0/src/arm/mparam.h
+   M /branches/4.0/src/asin.c
+   M /branches/4.0/src/asinh.c
+   M /branches/4.0/src/atan.c
+   M /branches/4.0/src/atan2.c
+   M /branches/4.0/src/atanh.c
+   M /branches/4.0/src/bernoulli.c
+   M /branches/4.0/src/beta.c
+   M /branches/4.0/src/buildopt.c
+   M /branches/4.0/src/cache.c
+   M /branches/4.0/src/cbrt.c
+   M /branches/4.0/src/check.c
+   M /branches/4.0/src/clear.c
+   M /branches/4.0/src/clears.c
+   M /branches/4.0/src/cmp.c
+   M /branches/4.0/src/cmp2.c
+   M /branches/4.0/src/cmp_abs.c
+   M /branches/4.0/src/cmp_d.c
+   M /branches/4.0/src/cmp_ld.c
+   M /branches/4.0/src/cmp_si.c
+   M /branches/4.0/src/cmp_ui.c
+   M /branches/4.0/src/comparisons.c
+   M /branches/4.0/src/const_catalan.c
+   M /branches/4.0/src/const_euler.c
+   M /branches/4.0/src/const_log2.c
+   M /branches/4.0/src/const_pi.c
+   M /branches/4.0/src/constant.c
+   M /branches/4.0/src/copysign.c
+   M /branches/4.0/src/cos.c
+   M /branches/4.0/src/cosh.c
+   M /branches/4.0/src/cot.c
+   M /branches/4.0/src/coth.c
+   M /branches/4.0/src/csc.c
+   M /branches/4.0/src/csch.c
+   M /branches/4.0/src/d_div.c
+   M /branches/4.0/src/d_sub.c
+   M /branches/4.0/src/digamma.c
+   M /branches/4.0/src/dim.c
+   M /branches/4.0/src/div.c
+   M /branches/4.0/src/div_2exp.c
+   M /branches/4.0/src/div_2si.c
+   M /branches/4.0/src/div_2ui.c
+   M /branches/4.0/src/div_d.c
+   M /branches/4.0/src/div_ui.c
+   M /branches/4.0/src/dump.c
+   M /branches/4.0/src/eint.c
+   M /branches/4.0/src/eq.c
+   M /branches/4.0/src/erandom.c
+   M /branches/4.0/src/erf.c
+   M /branches/4.0/src/erfc.c
+   M /branches/4.0/src/exceptions.c
+   M /branches/4.0/src/exp.c
+   M /branches/4.0/src/exp10.c
+   M /branches/4.0/src/exp2.c
+   M /branches/4.0/src/exp3.c
+   M /branches/4.0/src/exp_2.c
+   M /branches/4.0/src/expm1.c
+   M /branches/4.0/src/extract.c
+   M /branches/4.0/src/factorial.c
+   M /branches/4.0/src/fits_intmax.c
+   M /branches/4.0/src/fits_s.h
+   M /branches/4.0/src/fits_sint.c
+   M /branches/4.0/src/fits_slong.c
+   M /branches/4.0/src/fits_sshort.c
+   M /branches/4.0/src/fits_u.h
+   M /branches/4.0/src/fits_uint.c
+   M /branches/4.0/src/fits_uintmax.c
+   M /branches/4.0/src/fits_ulong.c
+   M /branches/4.0/src/fits_ushort.c
+   M /branches/4.0/src/fma.c
+   M /branches/4.0/src/fmma.c
+   M /branches/4.0/src/fms.c
+   M /branches/4.0/src/fpif.c
+   M /branches/4.0/src/frac.c
+   M /branches/4.0/src/free_cache.c
+   M /branches/4.0/src/frexp.c
+   M /branches/4.0/src/gamma.c
+   M /branches/4.0/src/gamma_inc.c
+   M /branches/4.0/src/gammaonethird.c
+   M /branches/4.0/src/gen_inverse.h
+   M /branches/4.0/src/generic/coverage/mparam.h
+   M /branches/4.0/src/generic/mparam.h
+   M /branches/4.0/src/get_d.c
+   M /branches/4.0/src/get_d64.c
+   M /branches/4.0/src/get_exp.c
+   M /branches/4.0/src/get_f.c
+   M /branches/4.0/src/get_float128.c
+   M /branches/4.0/src/get_flt.c
+   M /branches/4.0/src/get_ld.c
+   M /branches/4.0/src/get_q.c
+   M /branches/4.0/src/get_si.c
+   M /branches/4.0/src/get_sj.c
+   M /branches/4.0/src/get_str.c
+   M /branches/4.0/src/get_ui.c
+   M /branches/4.0/src/get_uj.c
+   M /branches/4.0/src/get_z.c
+   M /branches/4.0/src/get_z_exp.c
+   M /branches/4.0/src/gmp_op.c
+   M /branches/4.0/src/grandom.c
+   M /branches/4.0/src/hppa/mparam.h
+   M /branches/4.0/src/hypot.c
+   M /branches/4.0/src/ia64/mparam.h
+   M /branches/4.0/src/ieee_floats.h
+   M /branches/4.0/src/init.c
+   M /branches/4.0/src/init2.c
+   M /branches/4.0/src/inits.c
+   M /branches/4.0/src/inits2.c
+   M /branches/4.0/src/inp_str.c
+   M /branches/4.0/src/int_ceil_log2.c
+   M /branches/4.0/src/invert_limb.h
+   M /branches/4.0/src/invsqrt_limb.h
+   M /branches/4.0/src/isinf.c
+   M /branches/4.0/src/isinteger.c
+   M /branches/4.0/src/isnan.c
+   M /branches/4.0/src/isnum.c
+   M /branches/4.0/src/isqrt.c
+   M /branches/4.0/src/isregular.c
+   M /branches/4.0/src/iszero.c
+   M /branches/4.0/src/jn.c
+   M /branches/4.0/src/jyn_asympt.c
+   M /branches/4.0/src/li2.c
+   M /branches/4.0/src/lngamma.c
+   M /branches/4.0/src/log.c
+   M /branches/4.0/src/log10.c
+   M /branches/4.0/src/log1p.c
+   M /branches/4.0/src/log2.c
+   M /branches/4.0/src/log_ui.c
+   M /branches/4.0/src/logging.c
+   M /branches/4.0/src/min_prec.c
+   M /branches/4.0/src/minmax.c
+   M /branches/4.0/src/mips/mparam.h
+   M /branches/4.0/src/modf.c
+   M /branches/4.0/src/mp_clz_tab.c
+   M /branches/4.0/src/mparam_h.in
+   M /branches/4.0/src/mpf2mpfr.h
+   M /branches/4.0/src/mpfr-cvers.h
+   M /branches/4.0/src/mpfr-gmp.c
+   M /branches/4.0/src/mpfr-gmp.h
+   M /branches/4.0/src/mpfr-impl.h
+   M /branches/4.0/src/mpfr-intmax.h
+   M /branches/4.0/src/mpfr-longlong.h
+   M /branches/4.0/src/mpfr-mini-gmp.c
+   M /branches/4.0/src/mpfr-mini-gmp.h
+   M /branches/4.0/src/mpfr-sassert.h
+   M /branches/4.0/src/mpfr-thread.h
+   M /branches/4.0/src/mpfr.h
+   M /branches/4.0/src/mpn_exp.c
+   M /branches/4.0/src/mul.c
+   M /branches/4.0/src/mul_2exp.c
+   M /branches/4.0/src/mul_2si.c
+   M /branches/4.0/src/mul_2ui.c
+   M /branches/4.0/src/mul_d.c
+   M /branches/4.0/src/mul_ui.c
+   M /branches/4.0/src/mulders.c
+   M /branches/4.0/src/neg.c
+   M /branches/4.0/src/next.c
+   M /branches/4.0/src/nrandom.c
+   M /branches/4.0/src/odd_p.c
+   M /branches/4.0/src/out_str.c
+   M /branches/4.0/src/pool.c
+   M /branches/4.0/src/pow.c
+   M /branches/4.0/src/pow_si.c
+   M /branches/4.0/src/pow_ui.c
+   M /branches/4.0/src/pow_z.c
+   M /branches/4.0/src/powerof2.c
+   M /branches/4.0/src/powerpc32/mparam.h
+   M /branches/4.0/src/powerpc64/mparam.h
+   M /branches/4.0/src/print_raw.c
+   M /branches/4.0/src/print_rnd_mode.c
+   M /branches/4.0/src/printf.c
+   M /branches/4.0/src/random_deviate.c
+   M /branches/4.0/src/random_deviate.h
+   M /branches/4.0/src/rec_sqrt.c
+   M /branches/4.0/src/reldiff.c
+   M /branches/4.0/src/rem1.c
+   M /branches/4.0/src/rint.c
+   M /branches/4.0/src/rndna.c
+   M /branches/4.0/src/root.c
+   M /branches/4.0/src/round_near_x.c
+   M /branches/4.0/src/round_p.c
+   M /branches/4.0/src/round_prec.c
+   M /branches/4.0/src/round_raw_generic.c
+   M /branches/4.0/src/scale2.c
+   M /branches/4.0/src/sec.c
+   M /branches/4.0/src/sech.c
+   M /branches/4.0/src/set.c
+   M /branches/4.0/src/set_d.c
+   M /branches/4.0/src/set_d64.c
+   M /branches/4.0/src/set_dfl_prec.c
+   M /branches/4.0/src/set_exp.c
+   M /branches/4.0/src/set_f.c
+   M /branches/4.0/src/set_float128.c
+   M /branches/4.0/src/set_flt.c
+   M /branches/4.0/src/set_inf.c
+   M /branches/4.0/src/set_ld.c
+   M /branches/4.0/src/set_nan.c
+   M /branches/4.0/src/set_prc_raw.c
+   M /branches/4.0/src/set_prec.c
+   M /branches/4.0/src/set_q.c
+   M /branches/4.0/src/set_rnd.c
+   M /branches/4.0/src/set_si.c
+   M /branches/4.0/src/set_si_2exp.c
+   M /branches/4.0/src/set_sj.c
+   M /branches/4.0/src/set_str.c
+   M /branches/4.0/src/set_str_raw.c
+   M /branches/4.0/src/set_ui.c
+   M /branches/4.0/src/set_ui_2exp.c
+   M /branches/4.0/src/set_uj.c
+   M /branches/4.0/src/set_z.c
+   M /branches/4.0/src/set_z_exp.c
+   M /branches/4.0/src/set_zero.c
+   M /branches/4.0/src/setmax.c
+   M /branches/4.0/src/setmin.c
+   M /branches/4.0/src/setsign.c
+   M /branches/4.0/src/sgn.c
+   M /branches/4.0/src/si_op.c
+   M /branches/4.0/src/signbit.c
+   M /branches/4.0/src/sin.c
+   M /branches/4.0/src/sin_cos.c
+   M /branches/4.0/src/sinh.c
+   M /branches/4.0/src/sinh_cosh.c
+   M /branches/4.0/src/sparc64/mparam.h
+   M /branches/4.0/src/sqr.c
+   M /branches/4.0/src/sqrt.c
+   M /branches/4.0/src/sqrt_ui.c
+   M /branches/4.0/src/stack_interface.c
+   M /branches/4.0/src/strtofr.c
+   M /branches/4.0/src/sub.c
+   M /branches/4.0/src/sub1.c
+   M /branches/4.0/src/sub1sp.c
+   M /branches/4.0/src/sub_d.c
+   M /branches/4.0/src/sub_ui.c
+   M /branches/4.0/src/subnormal.c
+   M /branches/4.0/src/sum.c
+   M /branches/4.0/src/swap.c
+   M /branches/4.0/src/tan.c
+   M /branches/4.0/src/tanh.c
+   M /branches/4.0/src/ubf.c
+   M /branches/4.0/src/uceil_exp2.c
+   M /branches/4.0/src/uceil_log2.c
+   M /branches/4.0/src/ufloor_log2.c
+   M /branches/4.0/src/ui_div.c
+   M /branches/4.0/src/ui_pow.c
+   M /branches/4.0/src/ui_pow_ui.c
+   M /branches/4.0/src/ui_sub.c
+   M /branches/4.0/src/urandom.c
+   M /branches/4.0/src/urandomb.c
+   M /branches/4.0/src/vasprintf.c
+   M /branches/4.0/src/version.c
+   M /branches/4.0/src/volatile.c
+   M /branches/4.0/src/x86/core2/mparam.h
+   M /branches/4.0/src/x86/mparam.h
+   M /branches/4.0/src/x86_64/core2/mparam.h
+   M /branches/4.0/src/x86_64/corei5/mparam.h
+   M /branches/4.0/src/x86_64/pentium4/mparam.h
+   M /branches/4.0/src/yn.c
+   M /branches/4.0/src/zeta.c
+   M /branches/4.0/src/zeta_ui.c
+   M /branches/4.0/tests/Makefile.am
+   M /branches/4.0/tests/cmp_str.c
+   M /branches/4.0/tests/data/digamma
+   M /branches/4.0/tests/data/li2
+   M /branches/4.0/tests/memory.c
+   M /branches/4.0/tests/mpf_compat.c
+   M /branches/4.0/tests/mpf_compat.h
+   M /branches/4.0/tests/mpfr-test.h
+   M /branches/4.0/tests/mpfr_compat.c
+   M /branches/4.0/tests/random2.c
+   M /branches/4.0/tests/reuse.c
+   M /branches/4.0/tests/rnd_mode.c
+   M /branches/4.0/tests/tabort_defalloc1.c
+   M /branches/4.0/tests/tabort_defalloc2.c
+   M /branches/4.0/tests/tabort_prec_max.c
+   M /branches/4.0/tests/tabs.c
+   M /branches/4.0/tests/tacos.c
+   M /branches/4.0/tests/tacosh.c
+   M /branches/4.0/tests/tadd.c
+   M /branches/4.0/tests/tadd1sp.c
+   M /branches/4.0/tests/tadd_d.c
+   M /branches/4.0/tests/tadd_ui.c
+   M /branches/4.0/tests/tagm.c
+   M /branches/4.0/tests/tai.c
+   M /branches/4.0/tests/talloc-cache.c
+   M /branches/4.0/tests/talloc.c
+   M /branches/4.0/tests/tasin.c
+   M /branches/4.0/tests/tasinh.c
+   M /branches/4.0/tests/tassert.c
+   M /branches/4.0/tests/tatan.c
+   M /branches/4.0/tests/tatanh.c
+   M /branches/4.0/tests/taway.c
+   M /branches/4.0/tests/tbeta.c
+   M /branches/4.0/tests/tbuildopt.c
+   M /branches/4.0/tests/tcan_round.c
+   M /branches/4.0/tests/tcbrt.c
+   M /branches/4.0/tests/tcheck.c
+   M /branches/4.0/tests/tcmp.c
+   M /branches/4.0/tests/tcmp2.c
+   M /branches/4.0/tests/tcmp_d.c
+   M /branches/4.0/tests/tcmp_ld.c
+   M /branches/4.0/tests/tcmp_ui.c
+   M /branches/4.0/tests/tcmpabs.c
+   M /branches/4.0/tests/tcomparisons.c
+   M /branches/4.0/tests/tconst_catalan.c
+   M /branches/4.0/tests/tconst_euler.c
+   M /branches/4.0/tests/tconst_log2.c
+   M /branches/4.0/tests/tconst_pi.c
+   M /branches/4.0/tests/tcopysign.c
+   M /branches/4.0/tests/tcos.c
+   M /branches/4.0/tests/tcosh.c
+   M /branches/4.0/tests/tcot.c
+   M /branches/4.0/tests/tcoth.c
+   M /branches/4.0/tests/tcsc.c
+   M /branches/4.0/tests/tcsch.c
+   M /branches/4.0/tests/td_div.c
+   M /branches/4.0/tests/td_sub.c
+   M /branches/4.0/tests/tdigamma.c
+   M /branches/4.0/tests/tdim.c
+   M /branches/4.0/tests/tdiv.c
+   M /branches/4.0/tests/tdiv_d.c
+   M /branches/4.0/tests/tdiv_ui.c
+   M /branches/4.0/tests/teint.c
+   M /branches/4.0/tests/teq.c
+   M /branches/4.0/tests/terandom.c
+   M /branches/4.0/tests/terandom_chisq.c
+   M /branches/4.0/tests/terf.c
+   M /branches/4.0/tests/tests.c
+   M /branches/4.0/tests/texceptions.c
+   M /branches/4.0/tests/texp.c
+   M /branches/4.0/tests/texp10.c
+   M /branches/4.0/tests/texp2.c
+   M /branches/4.0/tests/texpm1.c
+   M /branches/4.0/tests/tfactorial.c
+   M /branches/4.0/tests/tfits.c
+   M /branches/4.0/tests/tfma.c
+   M /branches/4.0/tests/tfmma.c
+   M /branches/4.0/tests/tfmod.c
+   M /branches/4.0/tests/tfms.c
+   M /branches/4.0/tests/tfpif.c
+   M /branches/4.0/tests/tfprintf.c
+   M /branches/4.0/tests/tfrac.c
+   M /branches/4.0/tests/tfrexp.c
+   M /branches/4.0/tests/tgamma.c
+   M /branches/4.0/tests/tgamma_inc.c
+   M /branches/4.0/tests/tgeneric.c
+   M /branches/4.0/tests/tgeneric_ui.c
+   M /branches/4.0/tests/tget_d.c
+   M /branches/4.0/tests/tget_d_2exp.c
+   M /branches/4.0/tests/tget_f.c
+   M /branches/4.0/tests/tget_flt.c
+   M /branches/4.0/tests/tget_ld_2exp.c
+   M /branches/4.0/tests/tget_q.c
+   M /branches/4.0/tests/tget_set_d64.c
+   M /branches/4.0/tests/tget_sj.c
+   M /branches/4.0/tests/tget_str.c
+   M /branches/4.0/tests/tget_z.c
+   M /branches/4.0/tests/tgmpop.c
+   M /branches/4.0/tests/tgrandom.c
+   M /branches/4.0/tests/thyperbolic.c
+   M /branches/4.0/tests/thypot.c
+   M /branches/4.0/tests/tinits.c
+   M /branches/4.0/tests/tinp_str.c
+   M /branches/4.0/tests/tinternals.c
+   M /branches/4.0/tests/tisnan.c
+   M /branches/4.0/tests/tisqrt.c
+   M /branches/4.0/tests/tj0.c
+   M /branches/4.0/tests/tj1.c
+   M /branches/4.0/tests/tjn.c
+   M /branches/4.0/tests/tl2b.c
+   M /branches/4.0/tests/tlgamma.c
+   M /branches/4.0/tests/tli2.c
+   M /branches/4.0/tests/tlngamma.c
+   M /branches/4.0/tests/tlog.c
+   M /branches/4.0/tests/tlog10.c
+   M /branches/4.0/tests/tlog1p.c
+   M /branches/4.0/tests/tlog2.c
+   M /branches/4.0/tests/tlog_ui.c
+   M /branches/4.0/tests/tmin_prec.c
+   M /branches/4.0/tests/tminmax.c
+   M /branches/4.0/tests/tmodf.c
+   M /branches/4.0/tests/tmul.c
+   M /branches/4.0/tests/tmul_2exp.c
+   M /branches/4.0/tests/tmul_d.c
+   M /branches/4.0/tests/tmul_ui.c
+   M /branches/4.0/tests/tnext.c
+   M /branches/4.0/tests/tnrandom.c
+   M /branches/4.0/tests/tnrandom_chisq.c
+   M /branches/4.0/tests/tout_str.c
+   M /branches/4.0/tests/toutimpl.c
+   M /branches/4.0/tests/tpow.c
+   M /branches/4.0/tests/tpow3.c
+   M /branches/4.0/tests/tpow_all.c
+   M /branches/4.0/tests/tpow_z.c
+   M /branches/4.0/tests/tprintf.c
+   M /branches/4.0/tests/trandom.c
+   M /branches/4.0/tests/trandom_deviate.c
+   M /branches/4.0/tests/trec_sqrt.c
+   M /branches/4.0/tests/tremquo.c
+   M /branches/4.0/tests/trint.c
+   M /branches/4.0/tests/trndna.c
+   M /branches/4.0/tests/troot.c
+   M /branches/4.0/tests/trootn_ui.c
+   M /branches/4.0/tests/tround_prec.c
+   M /branches/4.0/tests/tsec.c
+   M /branches/4.0/tests/tsech.c
+   M /branches/4.0/tests/tset.c
+   M /branches/4.0/tests/tset_d.c
+   M /branches/4.0/tests/tset_exp.c
+   M /branches/4.0/tests/tset_f.c
+   M /branches/4.0/tests/tset_float128.c
+   M /branches/4.0/tests/tset_ld.c
+   M /branches/4.0/tests/tset_q.c
+   M /branches/4.0/tests/tset_si.c
+   M /branches/4.0/tests/tset_sj.c
+   M /branches/4.0/tests/tset_str.c
+   M /branches/4.0/tests/tset_z.c
+   M /branches/4.0/tests/tset_z_exp.c
+   M /branches/4.0/tests/tsgn.c
+   M /branches/4.0/tests/tsi_op.c
+   M /branches/4.0/tests/tsin.c
+   M /branches/4.0/tests/tsin_cos.c
+   M /branches/4.0/tests/tsinh.c
+   M /branches/4.0/tests/tsinh_cosh.c
+   M /branches/4.0/tests/tsprintf.c
+   M /branches/4.0/tests/tsqr.c
+   M /branches/4.0/tests/tsqrt.c
+   M /branches/4.0/tests/tsqrt_ui.c
+   M /branches/4.0/tests/tstckintc.c
+   M /branches/4.0/tests/tstdint.c
+   M /branches/4.0/tests/tstrtofr.c
+   M /branches/4.0/tests/tsub.c
+   M /branches/4.0/tests/tsub1sp.c
+   M /branches/4.0/tests/tsub_d.c
+   M /branches/4.0/tests/tsub_ui.c
+   M /branches/4.0/tests/tsubnormal.c
+   M /branches/4.0/tests/tsum.c
+   M /branches/4.0/tests/tswap.c
+   M /branches/4.0/tests/ttan.c
+   M /branches/4.0/tests/ttanh.c
+   M /branches/4.0/tests/ttrunc.c
+   M /branches/4.0/tests/tui_div.c
+   M /branches/4.0/tests/tui_pow.c
+   M /branches/4.0/tests/tui_sub.c
+   M /branches/4.0/tests/turandom.c
+   M /branches/4.0/tests/tvalist.c
+   M /branches/4.0/tests/tversion.c
+   M /branches/4.0/tests/ty0.c
+   M /branches/4.0/tests/ty1.c
+   M /branches/4.0/tests/tyn.c
+   M /branches/4.0/tests/tzeta.c
+   M /branches/4.0/tests/tzeta_ui.c
+   M /branches/4.0/tools/bench/Makefile.am
+   M /branches/4.0/tools/bench/benchtime.h
+   M /branches/4.0/tools/bench/mpfrbench.c
+   M /branches/4.0/tools/ck-clz_tab
+   M /branches/4.0/tools/ck-copyright-notice
+   M /branches/4.0/tools/ck-mparam
+   M /branches/4.0/tools/ck-news
+   M /branches/4.0/tools/ck-version-info
+   M /branches/4.0/tools/get_patches.sh
+   M /branches/4.0/tune/Makefile.am
+   M /branches/4.0/tune/bidimensional_sample.c
+   M /branches/4.0/tune/speed.c
+   M /branches/4.0/tune/tuneup.c
+
+Minor date-related changes as in the trunk:
+* Copyright notice update in most files: added 2018.
+* tools/ck-mparam: in the copyright notice, just keep the year 2011
+  since this file is not part of the tarball (just used by mpfrlint).
+* doc/mpfr.texi: updated the month.
+(merged changesets r12067-12069 from the trunk)
+------------------------------------------------------------------------
+r12060 | vlefevre | 2017-12-25 15:04:55 +0000 (Mon, 25 Dec 2017) | 1 line
+Changed paths:
+   M /branches/4.0/INSTALL
+   M /branches/4.0/VERSION
+   M /branches/4.0/configure.ac
+   M /branches/4.0/doc/mpfr.texi
+   M /branches/4.0/src/mpfr.h
+   M /branches/4.0/src/version.c
+
+Updated version to 4.0.1-dev.
+------------------------------------------------------------------------
+r12057 | vlefevre | 2017-12-25 11:17:31 +0000 (Mon, 25 Dec 2017) | 2 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/NEWS
+
+[NEWS] Minor corrections for GNU MPFR 4.0.0.
+(merged changeset r12056 from the trunk)
+------------------------------------------------------------------------
+r12051 | vlefevre | 2017-12-23 10:19:32 +0000 (Sat, 23 Dec 2017) | 1 line
+Changed paths:
+   M /branches/4.0/ChangeLog
+
+ChangeLog update with "LC_ALL=en_US.UTF8 TZ=UTC svn log -rHEAD:0 -v".
+------------------------------------------------------------------------
+r12050 | vlefevre | 2017-12-23 10:17:50 +0000 (Sat, 23 Dec 2017) | 1 line
+Changed paths:
+   M /branches/4.0/VERSION
+   M /branches/4.0/configure.ac
+   M /branches/4.0/doc/mpfr.texi
+   M /branches/4.0/src/mpfr.h
+   M /branches/4.0/src/version.c
+
+Updated version to 4.0.0.
+------------------------------------------------------------------------
+r12049 | vlefevre | 2017-12-23 10:15:10 +0000 (Sat, 23 Dec 2017) | 1 line
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/src/exp_2.c
+   M /branches/4.0/src/subnormal.c
+   M /branches/4.0/tests/texp.c
+
+Merged changesets r12046-12048 from the trunk (bug fix and test).
+------------------------------------------------------------------------
+r12046 | vlefevre | 2017-12-23 01:39:00 +0000 (Sat, 23 Dec 2017) | 1 line
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/src/hypot.c
+   M /branches/4.0/src/lngamma.c
+   M /branches/4.0/src/sin.c
+   M /branches/4.0/src/subnormal.c
+   M /branches/4.0/tests/thypot.c
+   M /branches/4.0/tests/tj1.c
+   M /branches/4.0/tests/tlngamma.c
+
+Merged changesets r12026-12045 from the trunk (bug fixes and tests).
+------------------------------------------------------------------------
+r12027 | vlefevre | 2017-12-20 01:59:31 +0000 (Wed, 20 Dec 2017) | 1 line
+Changed paths:
+   M /branches/4.0/ChangeLog
+
+ChangeLog update with "LC_ALL=en_US.UTF8 TZ=UTC svn log -rHEAD:0 -v".
+------------------------------------------------------------------------
+r12026 | vlefevre | 2017-12-20 01:57:34 +0000 (Wed, 20 Dec 2017) | 4 lines
+Changed paths:
+   M /branches/4.0
+   M /branches/4.0/NEWS
+   M /branches/4.0/doc/FAQ.html
+
+Re-added changes specific to the old 4.0 branch:
+  * doc/FAQ.html: assume MPFR 4.0.0 has been released (since this is
+    a file for the MPFR 4.0.0 release).
+  * NEWS: added test coverage for MPFR 4.0.0.
+------------------------------------------------------------------------
+r12024 | vlefevre | 2017-12-20 01:53:52 +0000 (Wed, 20 Dec 2017) | 4 lines
+Changed paths:
+   R /branches/4.0 (from /trunk:12023)
+
+Replaced the 4.0 branch by a copy of the trunk (in order to keep the
+history of the latest changes of the trunk); this replacement is due
+to a limitation of Subversion where a merge is regarded as a single
+commit, and is OK here since the 4.0 branch is new.
+------------------------------------------------------------------------
+r12023 | vlefevre | 2017-12-20 01:52:21 +0000 (Wed, 20 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/INSTALL
+   M /trunk/VERSION
+   M /trunk/configure.ac
+   M /trunk/doc/mpfr.texi
+   M /trunk/src/mpfr.h
+   M /trunk/src/version.c
+
+Updated version to 4.0.0-rc2 for an attempt to replace the 4.0 branch.
+------------------------------------------------------------------------
+r12022 | vlefevre | 2017-12-20 01:34:49 +0000 (Wed, 20 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/fma.c
+
+[src/fma.c] Minor improvements. Added an assert.
+------------------------------------------------------------------------
+r12021 | vlefevre | 2017-12-20 01:17:36 +0000 (Wed, 20 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/tanh.c
+
+[src/tanh.c] GNU coding style.
+------------------------------------------------------------------------
+r12020 | vlefevre | 2017-12-20 01:13:09 +0000 (Wed, 20 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/mul.c
+
+[src/mul.c] Reindentation.
+------------------------------------------------------------------------
+r12019 | vlefevre | 2017-12-20 01:10:54 +0000 (Wed, 20 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/exp2.c
+
+[src/exp2.c] Replaced two MPFR_ASSERTN by MPFR_STAT_STATIC_ASSERT.
+------------------------------------------------------------------------
+r12018 | vlefevre | 2017-12-19 16:30:09 +0000 (Tue, 19 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/exp2.c
+
+[src/exp2.c] Fixed the double rounding problem in an underflow case,
+triggered by the test added in r12017.
+------------------------------------------------------------------------
+r12017 | vlefevre | 2017-12-19 16:13:48 +0000 (Tue, 19 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/tests/texp2.c
+
+[tests/texp2.c] Added test of underflow in MPFR_RNDN with exact value
+close to 2^(emin-2). Currently fails due to double rounding.
+------------------------------------------------------------------------
+r12016 | vlefevre | 2017-12-19 14:45:00 +0000 (Tue, 19 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/tests/tdiv.c
+
+[tests/tdiv.c] Added new non-regression test: the was the real cause of
+the ttanh failure in r11993 without the tanh.c fix in this same commit.
+But this mpfr_div was fixed in r12002.
+------------------------------------------------------------------------
+r12015 | vlefevre | 2017-12-19 08:56:43 +0000 (Tue, 19 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Added a comment about a bug/limitation in makeinfo 5.2.
+------------------------------------------------------------------------
+r12014 | vlefevre | 2017-12-19 08:21:55 +0000 (Tue, 19 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Improved svar macro for nottex, in case it is used
+in the future.
+------------------------------------------------------------------------
+r12013 | vlefevre | 2017-12-19 08:20:18 +0000 (Tue, 19 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Define svar even for nottex, though it is not used
+(attempt to avoid a failure with makeinfo 5.2).
+------------------------------------------------------------------------
+r12012 | zimmerma | 2017-12-19 06:51:47 +0000 (Tue, 19 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/src/fma.c
+   M /trunk/tests/tfma.c
+
+[src/fma.c] fixed bug in mpfr_fma
+[tests/tfma.c] added non-regression test
+
+------------------------------------------------------------------------
+r12011 | vlefevre | 2017-12-19 03:38:58 +0000 (Tue, 19 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/exp2.c
+
+[src/exp2.c] Update concerning the underflow/overflow cases.
+Still incomplete.
+------------------------------------------------------------------------
+r12010 | vlefevre | 2017-12-19 02:32:33 +0000 (Tue, 19 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Updated a comment.
+------------------------------------------------------------------------
+r12009 | vlefevre | 2017-12-19 02:29:51 +0000 (Tue, 19 Dec 2017) | 8 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+   M /trunk/doc/texinfo.tex
+
+[doc]
+  * texinfo.tex: update to the latest version 2017-12-18.20, which
+    reverts the change done in 2017-12-01.13 attempting to support
+    @var with script font size (e.g. in exponent); but this change
+    didn't work correctly.
+  * mpfr.texi: introduced a @svar macro to handle this case. It
+    currently disables the use of @var, the other workaround being
+    worse.
+------------------------------------------------------------------------
+r12008 | vlefevre | 2017-12-18 17:59:35 +0000 (Mon, 18 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/mul.c
+
+Removed trailing whitespace.
+------------------------------------------------------------------------
+r12007 | vlefevre | 2017-12-18 17:05:28 +0000 (Mon, 18 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/algorithms.tex
+   M /trunk/src/tanh.c
+
+[doc/algorithms.tex,src/tanh.c] Fixed the bound, in particular from
+the recent improvements in the error analysis.
+------------------------------------------------------------------------
+r12006 | zimmerma | 2017-12-18 16:21:36 +0000 (Mon, 18 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/src/mul.c
+
+[src/mul.c] we should compare the smaller size and not the larger one to
+	    MPFR_MUL_THRESHOLD or MPFR_SQR_THRESHOLD for Mulders' short product
+
+------------------------------------------------------------------------
+r12005 | zimmerma | 2017-12-18 16:17:19 +0000 (Mon, 18 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/src/mul.c
+   M /trunk/tests/tmul_d.c
+
+[src/mul.c] with Mulders', convert RNDF to RNDZ
+[tests/tmul_d.c] added a non-regression test
+
+------------------------------------------------------------------------
+r12004 | vlefevre | 2017-12-18 16:04:59 +0000 (Mon, 18 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/algorithms.tex
+
+[doc/algorithms.tex] mpfr_tanh: corrected bounds (thanks to Paul).
+------------------------------------------------------------------------
+r12003 | vlefevre | 2017-12-18 15:54:05 +0000 (Mon, 18 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/algorithms.tex
+
+[doc/algorithms.tex] mpfr_tanh: detailed some inequalities.
+------------------------------------------------------------------------
+r12002 | zimmerma | 2017-12-18 15:06:45 +0000 (Mon, 18 Dec 2017) | 4 lines
+Changed paths:
+   M /trunk/src/div.c
+   M /trunk/tests/tdiv.c
+   M /trunk/tests/ttan.c
+
+[src/div.c] fixed bug in mpfr_div2_approx()
+[tests/tdiv.c] added non-regression test
+[tests/ttan.c] added test triggering bug in mpfr_div2_approx()
+
+------------------------------------------------------------------------
+r12001 | vlefevre | 2017-12-18 14:44:33 +0000 (Mon, 18 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/algorithms.tex
+
+[doc/algorithms.tex] mpfr_tanh: resolved both FIXME's.
+------------------------------------------------------------------------
+r12000 | vlefevre | 2017-12-18 13:37:07 +0000 (Mon, 18 Dec 2017) | 4 lines
+Changed paths:
+   M /trunk/doc/algorithms.tex
+
+[doc/algorithms.tex] mpfr_tanh: corrected a part of the error analysis
+(2^k+4 ≤ |theta_4|^(−1/2) was not necessarily true, since theta_4 can
+be very small). As a consequence, the lemma can be simplified/improved
+(first FIXME). Added a second FIXME on a condition that is not checked.
+------------------------------------------------------------------------
+r11999 | vlefevre | 2017-12-18 12:22:26 +0000 (Mon, 18 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/algorithms.tex
+
+[doc/algorithms.tex] mpfr_tanh: missing absolute value; added a \cdot.
+------------------------------------------------------------------------
+r11998 | vlefevre | 2017-12-18 12:15:31 +0000 (Mon, 18 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/exp2.c
+   M /trunk/tests/texp2.c
+
+Removed trailing whitespace.
+------------------------------------------------------------------------
+r11997 | vlefevre | 2017-12-18 12:08:36 +0000 (Mon, 18 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/algorithms.tex
+
+[doc/algorithms.tex] Added another \cdot for readability.
+------------------------------------------------------------------------
+r11996 | zimmerma | 2017-12-18 12:01:41 +0000 (Mon, 18 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/exp2.c
+
+[src/exp2.c] added FIXME
+
+------------------------------------------------------------------------
+r11995 | vlefevre | 2017-12-18 11:55:11 +0000 (Mon, 18 Dec 2017) | 7 lines
+Changed paths:
+   M /trunk/doc/algorithms.tex
+
+[doc/algorithms.tex] Minor corrections for hyperbolic tangent function:
+  * "e" had two different meanings (BTW, the constant e should actually
+    be written \mathrm{e} everywhere in the document).
+  * Use \left...\right instead of |...| when it contains an expression
+    starting with \log (the latter was confusing pdflatex, which added
+    a spurious space before \log).
+  * Added some \cdot for better readability.
+------------------------------------------------------------------------
+r11994 | zimmerma | 2017-12-18 11:36:15 +0000 (Mon, 18 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/src/exp2.c
+   M /trunk/tests/texp2.c
+
+[src/exp2.c] fixed bug near underflow
+[tests/texp2.c] added non-regression test
+
+------------------------------------------------------------------------
+r11993 | zimmerma | 2017-12-18 08:51:06 +0000 (Mon, 18 Dec 2017) | 9 lines
+Changed paths:
+   M /trunk/doc/algorithms.tex
+   M /trunk/src/tanh.c
+   M /trunk/tests/ttanh.c
+
+[tests/ttanh.c] added test for bug in mpfr_tanh
+[doc/algorithms.tex] fixed error analysis for mpfr_tanh
+[src/tanh.c] fixed error analysis
+Note after r12016: Even though mpfr_tanh was incorrect, the failure
+of the test added in ttanh.c was actually *only* due to a bug in the
+mpfr_div code specific to the trunk (fixed in r12002), i.e. this was
+not a non-regression test for the mpfr_tanh bug itself (in particular,
+this test does not introduce a failure in the 3.1 branch, which still
+has the same incorrect mpfr_tanh code but a correct mpfr_div).
+------------------------------------------------------------------------
+r11991 | vlefevre | 2017-12-18 00:04:58 +0000 (Mon, 18 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/INSTALL
+   M /trunk/VERSION
+   M /trunk/configure.ac
+   M /trunk/doc/mpfr.texi
+   M /trunk/src/mpfr.h
+   M /trunk/src/version.c
+
+Updated version to 4.1.0-dev again.
+------------------------------------------------------------------------
+r11989 | vlefevre | 2017-12-17 23:57:39 +0000 (Sun, 17 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/INSTALL
+   M /trunk/VERSION
+   M /trunk/configure.ac
+   M /trunk/doc/mpfr.texi
+   M /trunk/src/mpfr.h
+   M /trunk/src/version.c
+
+Updated version to 4.0.0-rc2 for an attempt to replace the 4.0 branch.
+------------------------------------------------------------------------
+r11988 | vlefevre | 2017-12-17 23:52:26 +0000 (Sun, 17 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/ChangeLog
+
+ChangeLog update with "LC_ALL=en_US.UTF8 TZ=UTC svn log -rHEAD:0 -v".
+------------------------------------------------------------------------
+r11987 | zimmerma | 2017-12-17 16:23:21 +0000 (Sun, 17 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/add1sp.c
+
+[src/add1sp.c] fix bug in mpfr_add1sp3() in case d=GMP_NUMB_BITS
+
+------------------------------------------------------------------------
+r11986 | zimmerma | 2017-12-17 15:16:48 +0000 (Sun, 17 Dec 2017) | 14 lines
+Changed paths:
+   M /trunk/tests/tadd1sp.c
+
+[tests/tadd1sp.c] added test for new bug (still to be fixed):
+
+Seed GMP_CHECK_RANDOMIZE=1514385177 (include this in bug reports)
+add1 & add1sp return different values for MPFR_RNDN
+Prec_a = 137, Prec_b = 137, Prec_c = 137
+B = 0.11111111111111111111111111111111111111111111111111111111111111111111000000000000000000000000000000000000000000000000000000000000000000000E-66
+C = 0.11111111111111111111111111111111111111111111111111111111111111111000000000000000000000000000000000000000000000000000000000000000000110000E-2
+
+add1  : 0.10000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000001000E-1
+add1sp: 0.11111111111111111111111111111111111111111111111111111111111111111000000000000000000000000000000000000000000000000000000000000000000010000E-2
+Inexact sp = 0 | Inexact = 0
+Flags sp = 8 | Flags = 8
+add1sp.c:89: MPFR assertion failed: 0
+
+------------------------------------------------------------------------
+r11981 | vlefevre | 2017-12-15 02:44:49 +0000 (Fri, 15 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/root.c
+
+[src/root.c] Minor comment correction.
+------------------------------------------------------------------------
+r11980 | vlefevre | 2017-12-15 02:36:50 +0000 (Fri, 15 Dec 2017) | 4 lines
+Changed paths:
+   M /trunk/src/root.c
+   M /trunk/tests/troot.c
+
+[src/root.c] Completed fix from r11978, as x=-1 was affected too. Also
+  added comments explaining that mpfr_root_aux assumes |x| ≠ 1 and why.
+  Hence the need of a filter on |x| = 1.
+[tests/troot.c] Added test for x = -1.
+------------------------------------------------------------------------
+r11979 | vlefevre | 2017-12-15 01:44:11 +0000 (Fri, 15 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/tests/troot.c
+
+[tests/troot.c] Replaced mpfr_root by TF (like in the other tests).
+------------------------------------------------------------------------
+r11978 | zimmerma | 2017-12-14 10:22:32 +0000 (Thu, 14 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/src/root.c
+   M /trunk/tests/troot.c
+
+[src/root.c] fixed bug when x=1
+[tests/troot.c] added non-regression test
+
+------------------------------------------------------------------------
+r11977 | vlefevre | 2017-12-14 07:57:05 +0000 (Thu, 14 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/tests/tsub1sp.c
+
+[tests/tsub1sp.c] Corrected a type. And mpfr_equal_p being a predicate
+function, it's better to use Boolean operators on it.
+------------------------------------------------------------------------
+r11976 | zimmerma | 2017-12-14 07:35:35 +0000 (Thu, 14 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/tests/tsub1sp.c
+
+[tests/tsub1sp.c] added a generic test for bug20171213()
+
+------------------------------------------------------------------------
+r11975 | vlefevre | 2017-12-14 02:17:05 +0000 (Thu, 14 Dec 2017) | 7 lines
+Changed paths:
+   M /trunk/src/mul.c
+   M /trunk/src/sqr.c
+
+[src/{mul.c,sqr.c}] Minor changes, making code similar to sub1sp.c.
+Checked with
+  grep -A 1 'sb *>>' src/*.c
+that the bug fixed in r11974 does not occur in other parts of the code.
+BTW, there is much duplicate code, as shown by the grep output, and
+using macros could have avoided that, making bugs easier to reproduce
+(since a same bug would be duplicate several times).
+------------------------------------------------------------------------
+r11974 | zimmerma | 2017-12-13 21:18:23 +0000 (Wed, 13 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/src/sub1sp.c
+   M /trunk/tests/tsub1sp.c
+
+[src/sub1sp.c] fixed bug in mpfr_sub1sp2()
+[tests/tsub1sp.c] added non-regression test
+
+------------------------------------------------------------------------
+r11973 | vlefevre | 2017-12-13 18:00:00 +0000 (Wed, 13 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/mpf2mpfr.h
+
+[src/mpf2mpfr.h] Added a comment.
+------------------------------------------------------------------------
+r11972 | zimmerma | 2017-12-13 17:25:07 +0000 (Wed, 13 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/mpf2mpfr.h
+
+[src/mpf2mpfr.h] missing mpf_inits/mpf_clears
+
+------------------------------------------------------------------------
+r11969 | zimmerma | 2017-12-13 07:05:01 +0000 (Wed, 13 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/mpfr-gmp.h
+
+[src/mpfr-gmp.h] redefine __clz_tab also with gmp-build
+
+------------------------------------------------------------------------
+r11968 | vlefevre | 2017-12-12 22:20:41 +0000 (Tue, 12 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/configure.ac
+
+[configure.ac] Improved error message.
+------------------------------------------------------------------------
+r11967 | vlefevre | 2017-12-12 15:38:37 +0000 (Tue, 12 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/tests/talloc.c
+
+[tests/talloc.c] Added a comment about why talloc requires ISO C99.
+------------------------------------------------------------------------
+r11966 | vlefevre | 2017-12-12 15:35:34 +0000 (Tue, 12 Dec 2017) | 4 lines
+Changed paths:
+   M /trunk/src/mpfr-cvers.h
+
+[src/mpfr-cvers.h] Removed a useless test for __MPFR_STDC, as one just
+needs to check whether we have a C99, C11, etc. implementation (if not
+done via a configure test). Particular incompatibilities with the C90
+standard should always be checked via a configure test.
+------------------------------------------------------------------------
+r11965 | vlefevre | 2017-12-12 12:04:01 +0000 (Tue, 12 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/tests
+
+[tests] Added *.exe to svn:ignore property (files from MinGW builds).
+------------------------------------------------------------------------
+r11964 | zimmerma | 2017-12-12 11:07:36 +0000 (Tue, 12 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/tools/timings-mpfr.c
+
+[tools/timings-mpfr.c] always use clock() [now very accurate under Linux]
+
+------------------------------------------------------------------------
+r11963 | vlefevre | 2017-12-12 10:15:50 +0000 (Tue, 12 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/tools/timings-mpfr.c
+
+[tools/timings-mpfr.c] Updated years in copyright notice.
+------------------------------------------------------------------------
+r11962 | vlefevre | 2017-12-12 10:14:08 +0000 (Tue, 12 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/tools/timings-mpfr.c
+
+[tools/timings-mpfr.c] Fixed prototypes.
+------------------------------------------------------------------------
+r11961 | vlefevre | 2017-12-12 10:12:48 +0000 (Tue, 12 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/tools/timings-mpfr.c
+
+[tools/timings-mpfr.c] Added a defined(_MSC_VER). But clock() is
+standard, so why not always using it?
+------------------------------------------------------------------------
+r11960 | vlefevre | 2017-12-12 01:17:00 +0000 (Tue, 12 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/README.dev
+
+[doc/README.dev] Correction.
+------------------------------------------------------------------------
+r11959 | vlefevre | 2017-12-12 01:11:31 +0000 (Tue, 12 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/README.dev
+
+[doc/README.dev] Made formatting consistent (same as configure --help).
+------------------------------------------------------------------------
+r11958 | vlefevre | 2017-12-12 00:58:43 +0000 (Tue, 12 Dec 2017) | 5 lines
+Changed paths:
+   M /trunk/tests/reuse.c
+   M /trunk/tests/tget_set_d64.c
+   M /trunk/tests/tsum.c
+
+Completed r11955: There were also DEBUG macros under the "tests"
+directory. Since such macros can still be useful in case a test failure,
+replaced them by MPFR_DEBUG to avoid issues with CI builds that define
+the DEBUG macro. But an environment variable would be a better solution
+(see MPFR_DEBUG_BADCASES as an example).
+------------------------------------------------------------------------
+r11957 | vlefevre | 2017-12-12 00:44:45 +0000 (Tue, 12 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/TODO
+
+[TODO] Removed item on the DEBUG macro (done in r11955).
+------------------------------------------------------------------------
+r11956 | zimmerma | 2017-12-11 17:36:36 +0000 (Mon, 11 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/doc/README.dev
+   M /trunk/src/mpfr-impl.h
+   M /trunk/tests/tgeneric.c
+
+DEBUG_TGENERIC -> MPFR_DEBUG_TGENERIC
+XDEBUG -> MPFR_DISABLE_IEEE_FLOATS
+
+------------------------------------------------------------------------
+r11955 | zimmerma | 2017-12-11 17:02:05 +0000 (Mon, 11 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/src/add1sp.c
+   M /trunk/src/div.c
+   M /trunk/src/exp.c
+   M /trunk/src/exp_2.c
+   M /trunk/src/mpfr-impl.h
+   M /trunk/src/sub1.c
+   M /trunk/src/sub1sp.c
+   M /trunk/src/zeta.c
+
+get rid of DEBUG macro (but keep corresponding commands in comment to help
+understanding of the code and debugging)
+
+------------------------------------------------------------------------
+r11954 | vlefevre | 2017-12-11 15:33:31 +0000 (Mon, 11 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/tests/tget_q.c
+
+[tests/tget_q.c] Removed trailing whitespace.
+------------------------------------------------------------------------
+r11953 | zimmerma | 2017-12-10 07:42:03 +0000 (Sun, 10 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/tests/tget_q.c
+
+[tests/tget_q.c] replaced MPFR_ASSERTN(0) by exit(1)
+
+------------------------------------------------------------------------
+r11952 | vlefevre | 2017-12-10 02:02:43 +0000 (Sun, 10 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/get_q.c
+
+[src/get_q.c] Optimization of r11951 suggested by Trevor Spiteri:
+https://sympa.inria.fr/sympa/arc/mpfr/2017-12/msg00040.html
+------------------------------------------------------------------------
+r11951 | zimmerma | 2017-12-09 21:59:21 +0000 (Sat, 09 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/src/get_q.c
+   M /trunk/tests/tget_q.c
+
+[src/get_q.c] make result of mpfr_get_q in canonical form
+[tests/tget_q.c] added non-regression test
+
+------------------------------------------------------------------------
+r11950 | zimmerma | 2017-12-09 21:46:01 +0000 (Sat, 09 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/lngamma.c
+
+[src/lngamma.c] replace call to __gmpfr_ceil_log2 by __gmpfr_int_ceil_log2
+
+------------------------------------------------------------------------
+r11949 | vlefevre | 2017-12-09 11:18:20 +0000 (Sat, 09 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/TODO
+
+[TODO] Rename the DEBUG macro to MPFR_DEBUG?
+------------------------------------------------------------------------
+r11945 | vlefevre | 2017-12-08 16:15:36 +0000 (Fri, 08 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/Makefile.am
+
+[src/Makefile.am] Also distribute generic/coverage/mparam.h
+(at least useful for testing the distributed tarballs).
+------------------------------------------------------------------------
+r11942 | vlefevre | 2017-12-08 14:53:52 +0000 (Fri, 08 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/FAQ.html
+
+[doc] Updated FAQ.html with update-faq.
+------------------------------------------------------------------------
+r11939 | vlefevre | 2017-12-08 14:30:37 +0000 (Fri, 08 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/FAQ.html
+
+[doc] Updated FAQ.html with update-faq.
+------------------------------------------------------------------------
+r11934 | vlefevre | 2017-12-08 13:56:42 +0000 (Fri, 08 Dec 2017) | 5 lines
+Changed paths:
+   M /trunk/doc/README.dev
+
+[doc/README.dev] "To make a release":
+  * Note that this needs to be done in a branch.
+  * Swapped (1) and (2), in particular because the coverage might be
+    different in -dev versions and it is better to give results closer
+    to the release.
+------------------------------------------------------------------------
+r11933 | vlefevre | 2017-12-08 13:40:19 +0000 (Fri, 08 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/INSTALL
+   M /trunk/VERSION
+   M /trunk/configure.ac
+   M /trunk/doc/mpfr.texi
+   M /trunk/src/mpfr.h
+   M /trunk/src/version.c
+
+Updated version to 4.1.0-dev.
+------------------------------------------------------------------------
+r11931 | vlefevre | 2017-12-08 13:17:51 +0000 (Fri, 08 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/ChangeLog
+
+ChangeLog update with "LC_ALL=en_US.UTF8 TZ=UTC svn log -rHEAD:0 -v".
+------------------------------------------------------------------------
+r11930 | vlefevre | 2017-12-08 13:09:08 +0000 (Fri, 08 Dec 2017) | 2 lines
+Changed paths:
+   D /trunk/tests/timings-mpfr.c
+   A /trunk/tools/timings-mpfr.c (from /trunk/tests/timings-mpfr.c:11929)
+
+Moved tests/timings-mpfr.c into directory "tools" as it is not part
+of the test suite.
+------------------------------------------------------------------------
+r11929 | vlefevre | 2017-12-07 15:10:29 +0000 (Thu, 07 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/fpif.c
+
+[src/fpif.c] Removed FIXME about the sign bit of NaN: done in
+r11910 and r11920 (documentation + tests).
+------------------------------------------------------------------------
+r11928 | vlefevre | 2017-12-07 14:58:38 +0000 (Thu, 07 Dec 2017) | 4 lines
+Changed paths:
+   M /trunk/src/div.c
+   M /trunk/src/mul.c
+   M /trunk/src/sqr.c
+   M /trunk/src/sqrt.c
+   M /trunk/src/sub1sp.c
+
+[src] Replaced some "return 0" by "MPFR_RET (0)" (the generated code
+is the same as shown by gcc, thanks to an obvious optimization; this
+is semantically better, which could help provers, and would allow
+code instrumentation in the future, if need be).
+------------------------------------------------------------------------
+r11927 | zimmerma | 2017-12-06 19:54:25 +0000 (Wed, 06 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/mpfr-mini-gmp.c
+   M /trunk/src/mpfr-mini-gmp.h
+   M /trunk/tests/tget_z.c
+   M /trunk/tests/tgmpop.c
+
+got rid of mpz_dump (undocumented in GMP)
+
+------------------------------------------------------------------------
+r11926 | zimmerma | 2017-12-06 17:14:27 +0000 (Wed, 06 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/mpfr-mini-gmp.c
+
+[src/mpfr-mini-gmp.c] updated with GMP 6.1.2
+
+------------------------------------------------------------------------
+r11925 | vlefevre | 2017-12-06 17:01:14 +0000 (Wed, 06 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Corrected a Texinfo typography issue.
+------------------------------------------------------------------------
+r11924 | vlefevre | 2017-12-06 16:45:15 +0000 (Wed, 06 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/pool.c
+
+[src/pool.c] Updated description. Corrected copyright years as the
+pool code itself was introduced in 2014.
+------------------------------------------------------------------------
+r11923 | vlefevre | 2017-12-06 16:41:54 +0000 (Wed, 06 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/tests/timings-mpfr.c
+
+[tests/timings-mpfr.c] Removed trailing whitespace, untabified,
+changed GMP_RNDN to MPFR_RNDN.
+------------------------------------------------------------------------
+r11922 | vlefevre | 2017-12-06 16:34:16 +0000 (Wed, 06 Dec 2017) | 15 lines
+Changed paths:
+   M /trunk/NEWS
+   M /trunk/doc/README.dev
+   M /trunk/doc/mpfr.texi
+   M /trunk/src/Makefile.am
+   M /trunk/src/free_cache.c
+   M /trunk/src/mpfr-impl.h
+   M /trunk/src/mpfr.h
+   A /trunk/src/pool.c (from /trunk/src/free_cache.c:11921)
+
+Cleanup and fixes for the mpz_t pool.
+  * Split src/free_cache.c to itself and a new source file src/pool.c
+    containing pool related code.
+  * src/mpfr-impl.h, src/pool.c: cleanup and fixes. In particular:
+      - renamed MPFR_MY_MPZ_INIT to MPFR_POOL_NENTRIES;
+      - no longer use GMP's symbols __gmpz_init, etc. directly;
+      - improved the condition for mpfr_mpz_init2;
+      - fixed the condition in mpfr_mpz_clear (we want to consider
+        the allocated size, not the size of the current number).
+  * src/Makefile.am: added pool.c.
+  * src/mpfr.h: added mpfr_free_pool prototype.
+  * doc/mpfr.texi: updated pool description in "Memory Handling";
+    new function mpfr_free_pool.
+  * doc/README.dev: update due to the rename of MPFR_MY_MPZ_INIT.
+  * NEWS: better announcement of the mpz_t pool.
+------------------------------------------------------------------------
+r11921 | vlefevre | 2017-12-06 14:45:08 +0000 (Wed, 06 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Small correction concerning the caches.
+------------------------------------------------------------------------
+r11920 | vlefevre | 2017-12-06 14:06:06 +0000 (Wed, 06 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] More details for mpfr_fpif_export and mpfr_fpif_import.
+------------------------------------------------------------------------
+r11919 | zimmerma | 2017-12-06 12:58:31 +0000 (Wed, 06 Dec 2017) | 2 lines
+Changed paths:
+   A /trunk/tests/timings-mpfr.c
+
+[timings-mpfr.c] test file for measuring timings (added -p option)
+
+------------------------------------------------------------------------
+r11918 | vlefevre | 2017-12-06 12:45:40 +0000 (Wed, 06 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/INSTALL
+   M /trunk/src/rec_sqrt.c
+
+Updated the remaining www.loria.fr URL's.
+------------------------------------------------------------------------
+r11917 | vlefevre | 2017-12-06 12:44:04 +0000 (Wed, 06 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/algorithms.bib
+
+[doc/algorithms.bib] Updated URL's.
+------------------------------------------------------------------------
+r11916 | vlefevre | 2017-12-06 12:37:48 +0000 (Wed, 06 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] References: typography; updated a URL.
+------------------------------------------------------------------------
+r11914 | zimmerma | 2017-12-06 10:15:40 +0000 (Wed, 06 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[mpfr.texi] updated reference to "Modern Computer Arithmetic"
+
+------------------------------------------------------------------------
+r11913 | zimmerma | 2017-12-06 09:59:31 +0000 (Wed, 06 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/free_cache.c
+
+[free_cache.c] limit the size of objects in the mpz_t pool
+
+------------------------------------------------------------------------
+r11912 | vlefevre | 2017-12-06 09:43:02 +0000 (Wed, 06 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/src/free_cache.c
+
+[src/free_cache.c] Added a comment for the mpz_t pool, and a suggestion
+for mpfr_mpz_clear so that the pool will not take too much memory while
+keeping a possible benefit for very small precision.
+------------------------------------------------------------------------
+r11911 | vlefevre | 2017-12-05 23:33:58 +0000 (Tue, 05 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/mpfr.h
+
+[src/mpfr.h] Made box around code examples for clarity and grep.
+------------------------------------------------------------------------
+r11910 | vlefevre | 2017-12-05 16:17:36 +0000 (Tue, 05 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+   M /trunk/tests/tfpif.c
+
+[doc/mpfr.texi] For mpfr_fpif_export: the sign of a NaN is stored.
+[tests/tfpif.c] Test the sign of NaN (in particular).
+------------------------------------------------------------------------
+r11909 | vlefevre | 2017-12-05 15:57:33 +0000 (Tue, 05 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Updated references.
+------------------------------------------------------------------------
+r11908 | vlefevre | 2017-12-05 15:00:52 +0000 (Tue, 05 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Update about 0 of type without signed zeros, as in
+mpfr_div_ui.
+------------------------------------------------------------------------
+r11907 | vlefevre | 2017-12-05 13:43:39 +0000 (Tue, 05 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Document the behavior of mpfr_ui_pow and mpfr_ui_pow_ui
+on the integer 0 (0 does not have a sign here).
+------------------------------------------------------------------------
+r11906 | zimmerma | 2017-12-05 10:24:20 +0000 (Tue, 05 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mini-gmp
+
+[doc/mini-gmp] added information about result of "make check"
+
+------------------------------------------------------------------------
+r11905 | vlefevre | 2017-12-05 10:21:46 +0000 (Tue, 05 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/mpfr-gmp.h
+
+[src/mpfr-gmp.h] Removed old code for pre-GMP-5 versions.
+------------------------------------------------------------------------
+r11904 | vlefevre | 2017-12-05 10:20:06 +0000 (Tue, 05 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/urandomb.c
+
+[src/urandomb.c] Removed an obsolete "#if __MPFR_GMP(5,0,0)" as we now
+require GMP 5.0+ and mp_bitcnt_t is also defined by mini-gmp.
+------------------------------------------------------------------------
+r11902 | vlefevre | 2017-12-05 10:01:32 +0000 (Tue, 05 Dec 2017) | 4 lines
+Changed paths:
+   M /trunk/src/mpfr-gmp.h
+
+[src/mpfr-gmp.h] Removed the code that defined mpn_copyi and mpn_copyd
+macros for GMP < 5, since MPFR now requires GMP 5.0+ and these functions
+are also defined by mini-gmp (these macros were used by mini-gmp only
+because mini-gmp does not define GMP_VERSION).
+------------------------------------------------------------------------
+r11901 | vlefevre | 2017-12-05 09:52:56 +0000 (Tue, 05 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/mpfr-gmp.h
+
+[src/mpfr-gmp.h] Missing parentheses around parameters in mpn_copyi
+and mpn_copyd macro definitions.
+------------------------------------------------------------------------
+r11900 | zimmerma | 2017-12-05 09:44:49 +0000 (Tue, 05 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/mpfr-gmp.h
+
+fixed bug in replacement function for copyi and copyd (found with mini-gmp)
+
+------------------------------------------------------------------------
+r11899 | zimmerma | 2017-12-05 09:43:54 +0000 (Tue, 05 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mini-gmp
+
+add --disable-shared for mini-gmp (not tested yet with dynamic linking)
+
+------------------------------------------------------------------------
+r11898 | vlefevre | 2017-12-05 09:09:16 +0000 (Tue, 05 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/mpfr.h
+
+[src/mpfr.h] Explain how to avoid the "... is deprecated" warning when
+testing a deprecated function.
+------------------------------------------------------------------------
+r11897 | vlefevre | 2017-12-05 08:52:43 +0000 (Tue, 05 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/README.dev
+
+[doc/README.dev] Removed a -Wno-error=deprecated-declarations as
+the specific warnings are now avoided (r11896).
+------------------------------------------------------------------------
+r11896 | vlefevre | 2017-12-05 08:47:25 +0000 (Tue, 05 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/mpfr.h
+   M /trunk/tests/tgrandom.c
+   M /trunk/tests/tpow.c
+   M /trunk/tests/troot.c
+
+Disable the "deprecated" attribute of deprecated functions *only* for
+the tests of these functions, to avoid the corresponding warnings.
+------------------------------------------------------------------------
+r11895 | vlefevre | 2017-12-05 08:34:13 +0000 (Tue, 05 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/dump.c
+   M /trunk/tests/trint.c
+
+Removed trailing whietespace.
+------------------------------------------------------------------------
+r11894 | zimmerma | 2017-12-05 08:16:00 +0000 (Tue, 05 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/mpfr-mini-gmp.c
+   M /trunk/src/mpfr-mini-gmp.h
+   M /trunk/tests/terandom.c
+   M /trunk/tests/tgrandom.c
+   M /trunk/tests/tnrandom.c
+   M /trunk/tests/trandom.c
+   M /trunk/tests/turandom.c
+
+fixed compiler warnings with mini-gmp
+
+------------------------------------------------------------------------
+r11893 | vlefevre | 2017-12-04 22:47:09 +0000 (Mon, 04 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/src/dump.c
+   M /trunk/src/fpif.c
+   M /trunk/src/inp_str.c
+   M /trunk/src/mpfr-impl.h
+   M /trunk/src/out_str.c
+   M /trunk/tests/mpfr-test.h
+   M /trunk/tests/tvalist.c
+
+Simplified the use of MPFR_USE_FILE since <stdio.h> (<cstdio> for C++)
+is unconditionally included.
+------------------------------------------------------------------------
+r11892 | vlefevre | 2017-12-04 22:20:08 +0000 (Mon, 04 Dec 2017) | 1 line
+Changed paths:
+   R /trunk/doc/texinfo.tex (from /trunk/doc/texinfo.tex:11890)
+
+Restored the history (and mergedinfo) of doc/texinfo.tex
+------------------------------------------------------------------------
+r11891 | zimmerma | 2017-12-04 19:01:20 +0000 (Mon, 04 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mini-gmp
+   R /trunk/doc/texinfo.tex
+   M /trunk/src/dump.c
+   M /trunk/src/fpif.c
+   M /trunk/src/get_q.c
+   M /trunk/src/gmp_op.c
+   M /trunk/src/inp_str.c
+   M /trunk/src/mpfr-mini-gmp.c
+   M /trunk/src/mpfr-mini-gmp.h
+   M /trunk/src/mpfr.h
+   M /trunk/src/out_str.c
+   M /trunk/src/set_q.c
+   M /trunk/tests/mpfr-test.h
+   M /trunk/tests/tget_q.c
+   M /trunk/tests/tget_z.c
+   M /trunk/tests/trint.c
+
+make compilation work again (make + make check) with mini-gmp
+
+------------------------------------------------------------------------
+r11890 | vlefevre | 2017-12-04 15:05:05 +0000 (Mon, 04 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/Makefile.am
+
+Improved portability of the check-gmp-symbols make rule.
+------------------------------------------------------------------------
+r11889 | vlefevre | 2017-12-04 13:43:59 +0000 (Mon, 04 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/fpif.c
+
+[src/fpif.c] Clarification.
+------------------------------------------------------------------------
+r11888 | vlefevre | 2017-12-04 13:37:19 +0000 (Mon, 04 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/tests/tfpif.c
+   M /trunk/tests/tfpif_r1.dat
+
+[tests]
+  * tfpif.c: in doit(), also test the negative versions of the numbers.
+  * tfpif_r1.dat: update.
+------------------------------------------------------------------------
+r11887 | vlefevre | 2017-12-04 11:36:07 +0000 (Mon, 04 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/src/get_str.c
+   M /trunk/src/vasprintf.c
+
+[src] Update about the internal use of mpfr_get_str.
+  * get_str.c: updated a comment.
+  * vasprintf.c: added assertions.
+------------------------------------------------------------------------
+r11886 | vlefevre | 2017-12-04 11:11:37 +0000 (Mon, 04 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Updated the month.
+------------------------------------------------------------------------
+r11885 | vlefevre | 2017-12-04 10:28:55 +0000 (Mon, 04 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/get_str.c
+
+[src/get_str.c] Corrected a comment.
+------------------------------------------------------------------------
+r11884 | vlefevre | 2017-12-04 10:20:34 +0000 (Mon, 04 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Update about the memory allocation (added references
+to Section "Memory Handling").
+(merged changeset r11632 from the 3.1 branch)
+------------------------------------------------------------------------
+r11883 | vlefevre | 2017-12-04 10:09:02 +0000 (Mon, 04 Dec 2017) | 4 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Update for mpfr_get_str:
+  * Added a texi comment explaining why m+1 (so that if the mpfr_get_str
+    implementation is improved, we know whether this is still the case).
+  * Improved the documentation for the case str = null pointer.
+------------------------------------------------------------------------
+r11882 | vlefevre | 2017-12-03 14:16:40 +0000 (Sun, 03 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Updated comments about the latest change (r11881).
+------------------------------------------------------------------------
+r11881 | vlefevre | 2017-12-03 14:14:18 +0000 (Sun, 03 Dec 2017) | 5 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Typography fixes for TeX (DVI/PS/PDF) in math mode.
+  * Corrected the use of \lceil and \rceil.
+  * Added missing @var, including 2 in exponent, as allowed by
+    texinfo.tex 2017-12-01.13.
+  * Removed old comments about Texinfo.
+------------------------------------------------------------------------
+r11880 | vlefevre | 2017-12-03 13:55:51 +0000 (Sun, 03 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/texinfo.tex
+
+[doc/texinfo.tex] Update to the latest version 2017-12-01.13 from
+<https://ftp.gnu.org/gnu/texinfo/>.
+------------------------------------------------------------------------
+r11878 | vlefevre | 2017-12-01 16:27:09 +0000 (Fri, 01 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/acinclude.m4
+
+[acinclude.m4] In r11876, forgot to define MPFR_WANT_DECIMAL_FLOATS in
+the cross-compiling case.
+------------------------------------------------------------------------
+r11877 | vlefevre | 2017-12-01 15:04:21 +0000 (Fri, 01 Dec 2017) | 6 lines
+Changed paths:
+   M /trunk/doc/README.dev
+   M /trunk/tests/tests.c
+   M /trunk/tests/tversion.c
+
+Solved an output issue on AIX due to the use of setbuf() after output
+in tversion. Indeed, this is disallowed by ISO C.
+  * doc/README.dev: added a note about tests_start_mpfr and this issue.
+  * tests/tests.c: moved test_version() after setbuf().
+  * tests/tversion.c: moved tests_start_mpfr() earlier, before any
+    printf().
+------------------------------------------------------------------------
+r11876 | vlefevre | 2017-12-01 14:06:07 +0000 (Fri, 01 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/acinclude.m4
+
+[acinclude.m4] Attempt to fix detection of decimal floats: if _Decimal64
+is known but does not work, no longer fail when --enable-decimal-float
+has not been used; just disable decimal floats.
+------------------------------------------------------------------------
+r11875 | vlefevre | 2017-12-01 13:37:40 +0000 (Fri, 01 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/acinclude.m4
+
+[acinclude.m4] Attempt to fix detection of decimal floats (BID was
+incorrectly assumed in case of link failure, if ld returned 1, which
+was observed on powerpc-ibm-aix7.2.0.0 [gcc119.fsffrance.org]).
+------------------------------------------------------------------------
+r11874 | vlefevre | 2017-12-01 12:28:45 +0000 (Fri, 01 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/src/fpif.c
+
+[src/fpif.c] Updated comments about the format.
+------------------------------------------------------------------------
+r11871 | vlefevre | 2017-11-30 17:27:20 +0000 (Thu, 30 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/doc/README.dev
+
+[doc/README.dev] Typo.
+------------------------------------------------------------------------
+r11870 | vlefevre | 2017-11-30 17:13:25 +0000 (Thu, 30 Nov 2017) | 5 lines
+Changed paths:
+   M /trunk/Makefile.am
+   M /trunk/src/Makefile.am
+
+Two fixes for the check-gmp-symbols make rule:
+  * Use $(COMPILE) instead of $(CC) to get the usual compilation flags
+    (in particular, the -I flags may be important to find gmp.h and to
+    get the correct one).
+  * Run the test only if libmpfr.so exists.
+------------------------------------------------------------------------
+r11869 | vlefevre | 2017-11-30 15:32:33 +0000 (Thu, 30 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/doc/README.dev
+
+[doc/README.dev] Internal GMP symbols: mention "make check-gmp-symbols".
+------------------------------------------------------------------------
+r11868 | vlefevre | 2017-11-30 15:30:30 +0000 (Thu, 30 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/NEWS
+
+[NEWS] Mention "make check-gmp-symbols" (experimental).
+------------------------------------------------------------------------
+r11867 | vlefevre | 2017-11-30 15:27:00 +0000 (Thu, 30 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/INSTALL
+
+[INSTALL] Added an optional step "make check-gmp-symbols" to check
+that MPFR does not use GMP internal symbols.
+------------------------------------------------------------------------
+r11866 | vlefevre | 2017-11-30 15:17:10 +0000 (Thu, 30 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/Makefile.am
+   M /trunk/src/Makefile.am
+
+Added comment about the check-gmp-symbols make rule (added in r11865).
+------------------------------------------------------------------------
+r11865 | vlefevre | 2017-11-30 15:12:20 +0000 (Thu, 30 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/Makefile.am
+   M /trunk/src/Makefile.am
+
+Added check-gmp-symbols make rule to check that MPFR does not use
+GMP internal symbols.
+------------------------------------------------------------------------
+r11864 | vlefevre | 2017-11-30 13:57:29 +0000 (Thu, 30 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/doc/README.dev
+
+[doc/README.dev] Detailed the note about the list of GMP symbols.
+------------------------------------------------------------------------
+r11863 | vlefevre | 2017-11-30 13:44:10 +0000 (Thu, 30 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/README.dev
+
+[doc/README.dev] Document how to get the list of GMP symbols used
+by MPFR and how to detect GMP internal symbols used by MPFR.
+------------------------------------------------------------------------
+r11862 | vlefevre | 2017-11-30 13:19:03 +0000 (Thu, 30 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/INSTALL
+
+[INSTALL] Added a paragraph about the potential incorrect use of
+GMP internals.
+------------------------------------------------------------------------
+r11861 | vlefevre | 2017-11-29 15:26:52 +0000 (Wed, 29 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/src/fpif.c
+
+[src/fpif.c] Fixed the sign bug for mpfr_fpif_import.
+------------------------------------------------------------------------
+r11860 | vlefevre | 2017-11-29 15:05:28 +0000 (Wed, 29 Nov 2017) | 4 lines
+Changed paths:
+   M /trunk/tests/tfpif.c
+
+[tests/tfpif.c] In doit(), before the call to mpfr_fpif_import(), set
+the sign of the target to the opposite of the expected sign. Thus, if
+mpfr_fpif_import forgets to set the sign, this will be detected. And
+a failure actually occurs now!
+------------------------------------------------------------------------
+r11859 | vlefevre | 2017-11-29 14:59:03 +0000 (Wed, 29 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/tests/tfpif.c
+
+[tests/tfpif.c] For mpfr_fpif_import, check the precision too.
+------------------------------------------------------------------------
+r11858 | vlefevre | 2017-11-29 02:37:57 +0000 (Wed, 29 Nov 2017) | 3 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+   M /trunk/src/fpif.c
+
+[doc/mpfr.texi,src/fpif.c] For mpfr_fpif_import, in case of failure,
+the argument x is either unchanged or set to NaN, to make sure that
+x has valid contents (otherwise this could yield erratic behavior).
+------------------------------------------------------------------------
+r11857 | vlefevre | 2017-11-29 02:25:19 +0000 (Wed, 29 Nov 2017) | 3 lines
+Changed paths:
+   M /trunk/src/fpif.c
+
+[src/fpif.c] For mpfr_fpif_import, replaced an assertion by a failure
+(since the full format is not described in the manual and MPFR cannot
+currently generate such a case, this is OK).
+------------------------------------------------------------------------
+r11856 | vlefevre | 2017-11-29 02:06:02 +0000 (Wed, 29 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/tests/tfpif_r1.dat
+
+[tests/tfpif_r1.dat] Fixed an obvious error (incorrect sign of 0).
+------------------------------------------------------------------------
+r11855 | vlefevre | 2017-11-29 01:49:34 +0000 (Wed, 29 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/tests/tfpif.c
+
+[tests/tfpif.c] Output more information in case of error.
+------------------------------------------------------------------------
+r11853 | vlefevre | 2017-11-28 16:46:55 +0000 (Tue, 28 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/src/fpif.c
+
+[src/fpif.c] Fixed some bugs (though unlikely to occur in practice).
+Added comments. Minor code improvement.
+------------------------------------------------------------------------
+r11852 | vlefevre | 2017-11-28 15:41:17 +0000 (Tue, 28 Nov 2017) | 7 lines
+Changed paths:
+   M /trunk/acinclude.m4
+   D /trunk/m4/size_max.m4
+   M /trunk/src/vasprintf.c
+
+Got rid of the useless SIZE_MAX macro.
+  * src/vasprintf.c: replaced SIZE_MAX by (size_t) -1, already used
+    in some other files.
+  * acinclude.m4: no longer use gl_SIZE_MAX (from m4/size_max.m4).
+  * Removed m4/size_max.m4 as it is no longer needed (note that the
+    definition of SIZE_MAX by this file was unnecessarily complex
+    and potentially incorrect on some platforms).
+------------------------------------------------------------------------
+r11851 | vlefevre | 2017-11-28 15:07:33 +0000 (Tue, 28 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/src/fpif.c
+
+[src/fpif.c] Added static assertions in mpfr_fpif_import().
+------------------------------------------------------------------------
+r11850 | vlefevre | 2017-11-28 14:41:45 +0000 (Tue, 28 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/src/fpif.c
+
+[src/fpif.c] Improved a test (mpfr_regular_p → !MPFR_IS_SINGULAR).
+------------------------------------------------------------------------
+r11849 | vlefevre | 2017-11-28 14:38:47 +0000 (Tue, 28 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/src/mpfr-impl.h
+
+[src/mpfr-impl.h] Added a note about the use of the MPFR_IS_PURE_*(x)
+and MPFR_IS_SINGULAR*(x) macros.
+------------------------------------------------------------------------
+r11848 | vlefevre | 2017-11-27 16:07:23 +0000 (Mon, 27 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/src/fpif.c
+
+[src/fpif.c] Added format description from past mail messages, to be
+checked in case of change (+ FIXME for NaN). Minor code improvement.
+------------------------------------------------------------------------
+r11847 | vlefevre | 2017-11-27 15:04:59 +0000 (Mon, 27 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/tests/tfpif.c
+
+[tests/tfpif.c] Added TODO's (but the failure should be fixed first).
+------------------------------------------------------------------------
+r11846 | vlefevre | 2017-11-27 14:33:53 +0000 (Mon, 27 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/src/fpif.c
+
+[src/fpif.c] Clarified sign variable.
+------------------------------------------------------------------------
+r11845 | vlefevre | 2017-11-27 14:17:52 +0000 (Mon, 27 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/tests/tfpif.c
+
+[tests/tfpif.c] Use SAME_VAL instead of mpfr_cmp. This triggers a bug
+that was not detected yet.
+------------------------------------------------------------------------
+r11844 | vlefevre | 2017-11-27 14:15:52 +0000 (Mon, 27 Nov 2017) | 3 lines
+Changed paths:
+   M /trunk/tests/tfpif.c
+
+[tests/tfpif.c] Split the main test function into:
+  * doit(): keep only the tests that depend on the precisions.
+  * check_bad(): tests for bad file/data; precisions are not involved.
+------------------------------------------------------------------------
+r11843 | vlefevre | 2017-11-27 13:58:24 +0000 (Mon, 27 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/tests/tfpif.c
+
+[tests/tfpif.c] Improved a test (NaN checking). Added comments.
+------------------------------------------------------------------------
+r11842 | vlefevre | 2017-11-27 13:53:43 +0000 (Mon, 27 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/tests/tfpif.c
+
+[tests/tfpif.c] Removed a TODO done in r10326 and r10338.
+------------------------------------------------------------------------
+r11841 | vlefevre | 2017-11-27 10:31:33 +0000 (Mon, 27 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/autogen.sh
+
+Updated autogen.sh so that doc/texinfo.tex isn't replaced.
+------------------------------------------------------------------------
+r11840 | vlefevre | 2017-11-27 10:25:01 +0000 (Mon, 27 Nov 2017) | 3 lines
+Changed paths:
+   A /trunk/doc/texinfo.tex
+
+Added doc/texinfo.tex file from Texinfo 6.5 since the version installed
+by Automake (via "autoreconf -i" as called by autogen.sh) is obsolete:
+more than 4 years older than the current version!
+------------------------------------------------------------------------
+r11839 | vlefevre | 2017-11-27 09:17:37 +0000 (Mon, 27 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Updated a comment about a bug in Texinfo.
+------------------------------------------------------------------------
+r11838 | vlefevre | 2017-11-23 14:33:18 +0000 (Thu, 23 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/tests/tset_exp.c
+
+[tests/tset_exp.c] Check mpfr_get_exp too (with two additional tests
+for mpfr_set_exp).
+------------------------------------------------------------------------
+r11837 | vlefevre | 2017-11-23 13:58:12 +0000 (Thu, 23 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/tests/texceptions.c
+
+[tests/texceptions.c] Minor improvements.
+------------------------------------------------------------------------
+r11836 | vlefevre | 2017-11-23 13:53:24 +0000 (Thu, 23 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] For mpfr_get_exp, document that x can be outside of
+the current range of acceptable values (this was ambiguous).
+------------------------------------------------------------------------
+r11835 | vlefevre | 2017-11-21 15:03:59 +0000 (Tue, 21 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Corrected Texinfo typography issues.
+------------------------------------------------------------------------
+r11834 | zimmerma | 2017-11-21 14:11:23 +0000 (Tue, 21 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+added another example where we can have an overflow
+
+------------------------------------------------------------------------
+r11833 | zimmerma | 2017-11-21 13:14:23 +0000 (Tue, 21 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+added pointer to mpfr_subnormalize
+
+------------------------------------------------------------------------
+r11832 | vlefevre | 2017-11-21 12:52:40 +0000 (Tue, 21 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Major update of "MPFR and the IEEE 754 Standard".
+------------------------------------------------------------------------
+r11831 | vlefevre | 2017-11-21 11:44:50 +0000 (Tue, 21 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Added "MPFR and the IEEE 754 Standard" to the main menu
+as required. Title capitalization.
+------------------------------------------------------------------------
+r11830 | vlefevre | 2017-11-21 11:41:29 +0000 (Tue, 21 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Correction of a @node.
+------------------------------------------------------------------------
+r11829 | zimmerma | 2017-11-21 10:27:43 +0000 (Tue, 21 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+added section "MPFR and the IEEE 754 standard"
+
+------------------------------------------------------------------------
+r11828 | vlefevre | 2017-11-20 17:48:30 +0000 (Mon, 20 Nov 2017) | 3 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] mpfr_can_round: corrected the example; removed
+a reference to "ternary value" as there is already one in the
+previous sentence; clarification.
+------------------------------------------------------------------------
+r11827 | vlefevre | 2017-11-20 17:37:54 +0000 (Mon, 20 Nov 2017) | 4 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Faithful rounding (MPFR_RNDF):
+  * Document that this feature is experimental and partially supported.
+  * Update Section "API Compatibility".
+Note: the NEWS file was up-to-date.
+------------------------------------------------------------------------
+r11822 | vlefevre | 2017-11-15 16:17:14 +0000 (Wed, 15 Nov 2017) | 5 lines
+Changed paths:
+   M /trunk/tests/talloc-cache.c
+
+[tests/talloc-cache.c]
+  * Replaced test + abort() by the more informative MPFR_ASSERTN().
+  * Also check that the allocator is the current GMP one (this would
+    fail with MPFR 3.1.6, where the allocation functions are memorized
+    the first time they are seen).
+------------------------------------------------------------------------
+r11821 | vlefevre | 2017-11-15 12:35:39 +0000 (Wed, 15 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+   M /trunk/src/free_cache.c
+   M /trunk/src/mpfr.h
+   M /trunk/tests/talloc-cache.c
+
+mpfr_mp_memory_cleanup() now returns an error code (currently always 0)
+to avoid a future prototype change in case errors would be possible.
+------------------------------------------------------------------------
+r11820 | vlefevre | 2017-11-10 16:48:39 +0000 (Fri, 10 Nov 2017) | 6 lines
+Changed paths:
+   M /trunk/TODO
+   M /trunk/src/ai.c
+   M /trunk/src/bernoulli.c
+   M /trunk/src/clear.c
+   M /trunk/src/exp3.c
+   M /trunk/src/fpif.c
+   M /trunk/src/get_str.c
+   M /trunk/src/init2.c
+   M /trunk/src/inp_str.c
+   M /trunk/src/lngamma.c
+   M /trunk/src/mpfr-gmp.c
+   M /trunk/src/mpfr-gmp.h
+   M /trunk/src/mpfr-impl.h
+   M /trunk/src/out_str.c
+   M /trunk/src/rndna.c
+   M /trunk/src/round_prec.c
+   M /trunk/src/set_prec.c
+   M /trunk/src/strtofr.c
+   M /trunk/src/vasprintf.c
+   M /trunk/src/zeta.c
+   M /trunk/tests/tabort_defalloc1.c
+   M /trunk/tests/tabort_defalloc2.c
+
+Cleanup: In src/mpfr-gmp.h, exchanged
+  mpfr_allocate_func    and  *__gmp_allocate_func
+  mpfr_reallocate_func  and  *__gmp_reallocate_func
+  mpfr_free_func        and  *__gmp_free_func
+and in the code, replaced *__gmp_{allocate,reallocate,free}_func
+by mpfr_{allocate,reallocate,free}_func; updated TODO file.
+------------------------------------------------------------------------
+r11819 | vlefevre | 2017-11-10 13:58:25 +0000 (Fri, 10 Nov 2017) | 3 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] The sign bit of a NaN is now specified for mpfr_abs,
+mpfr_neg and mpfr_set, in order to mimic the IEEE-754 abs, negate
+and copy operations.
+------------------------------------------------------------------------
+r11818 | vlefevre | 2017-11-10 13:13:13 +0000 (Fri, 10 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/tests/tabs.c
+
+[tests/tabs.c] More tests on mpfr_abs, including the ternary value
+and the NaN flag and sign bit for ±NaN.
+------------------------------------------------------------------------
+r11817 | vlefevre | 2017-11-10 12:53:48 +0000 (Fri, 10 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/tests/tabs.c
+
+[tests/tabs.c] Coding style.
+------------------------------------------------------------------------
+r11816 | vlefevre | 2017-11-10 12:47:09 +0000 (Fri, 10 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/tests/tset.c
+
+[tests/tset.c] For mpfr_neg on NaN, also check that the variable is
+set to NaN and that the ternary value is 0.
+------------------------------------------------------------------------
+r11815 | vlefevre | 2017-11-10 12:43:04 +0000 (Fri, 10 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/tests/tset.c
+
+[tests/tset.c] More NaN tests for mpfr_set.
+------------------------------------------------------------------------
+r11814 | vlefevre | 2017-11-10 12:34:17 +0000 (Fri, 10 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/tests/tset.c
+
+[tests/tset.c] More tests of the NaN flag and the sign bit for mpfr_neg
+on NaN.
+------------------------------------------------------------------------
+r11813 | vlefevre | 2017-11-10 12:22:26 +0000 (Fri, 10 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/tests/tset.c
+
+[tests/tset.c] The global variable "error" is better as static.
+------------------------------------------------------------------------
+r11812 | vlefevre | 2017-11-10 12:17:15 +0000 (Fri, 10 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/tests/tset.c
+
+[tests/tset.c] For mpfr_neg on NaN, check that the sign bit is flipped
+in both ways.
+------------------------------------------------------------------------
+r11811 | vlefevre | 2017-11-10 12:02:02 +0000 (Fri, 10 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/tests
+
+[tests] Added talloc-cache to svn:ignore property.
+------------------------------------------------------------------------
+r11810 | vlefevre | 2017-11-09 14:49:39 +0000 (Thu, 09 Nov 2017) | 3 lines
+Changed paths:
+   M /trunk/tests/tset.c
+
+[tests/tset.c] In the mpfr_neg test on the sign of NaN:
+C90 compatibility; improved robustness since as specified,
+mpfr_signbit can return any value (not just 0 or 1).
+------------------------------------------------------------------------
+r11809 | vlefevre | 2017-11-09 14:35:17 +0000 (Thu, 09 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/src/neg.c
+
+[src/neg.c] Refactored code (BTW, this was not a bug as the sign of NaN
+is currently unspecified for mpfr_neg).
+------------------------------------------------------------------------
+r11808 | zimmerma | 2017-11-09 13:57:40 +0000 (Thu, 09 Nov 2017) | 3 lines
+Changed paths:
+   M /trunk/src/neg.c
+   M /trunk/tests/tset.c
+
+fixed bug reported by Trevor Spiteri
+(https://sympa.inria.fr/sympa/arc/mpfr/2017-11/msg00003.html)
+
+------------------------------------------------------------------------
+r11807 | vlefevre | 2017-11-08 17:04:45 +0000 (Wed, 08 Nov 2017) | 7 lines
+Changed paths:
+   M /trunk/NEWS
+   M /trunk/TODO
+   M /trunk/doc/mpfr.texi
+   M /trunk/src/free_cache.c
+   M /trunk/src/mpfr-gmp.c
+   M /trunk/src/mpfr-gmp.h
+   M /trunk/src/mpfr-impl.h
+   M /trunk/src/mpfr.h
+   M /trunk/tests/talloc-cache.c
+
+Change the way memory is allocated (as discussed partly in private).
+  * src/mpfr-gmp.c, src/mpfr-gmp.h, src/mpfr-impl.h: update.
+  * src/free_cache.c, src/mpfr.h: added mpfr_mp_memory_cleanup function.
+  * NEWS: describe API change.
+  * TODO: added 2 related items (future clean-up and feature).
+  * doc/mpfr.texi: update.
+  * tests/talloc-cache.c: take API change into account.
+------------------------------------------------------------------------
+r11806 | vlefevre | 2017-11-07 15:59:03 +0000 (Tue, 07 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Updated Section "Compatibility With MPF".
+------------------------------------------------------------------------
+r11805 | vlefevre | 2017-11-07 15:34:11 +0000 (Tue, 07 Nov 2017) | 4 lines
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Removed a paragraph from r2962 concerning mpf2mpfr.h
+and mpf_init / mpf_init2: since r2985, the mpf_init / mpf_init2 macros
+initialize to 0 like MPF, so that users shouldn't see differences from
+MPF.
+------------------------------------------------------------------------
+r11804 | zimmerma | 2017-11-07 15:33:40 +0000 (Tue, 07 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/TODO
+
+added reference
+
+------------------------------------------------------------------------
+r11803 | vlefevre | 2017-11-07 09:21:02 +0000 (Tue, 07 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/src/mpfr.h
+
+[src/mpfr.h] Formatting.
+------------------------------------------------------------------------
+r11802 | vlefevre | 2017-11-07 09:14:30 +0000 (Tue, 07 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/src/mpfr.h
+
+[src/mpfr.h] mpfr_free_cache_t: added comments to show that these are
+flags.
+------------------------------------------------------------------------
+r11801 | vlefevre | 2017-11-07 09:09:03 +0000 (Tue, 07 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Updated mpfr_free_cache / mpfr_free_cache2 description.
+------------------------------------------------------------------------
+r11800 | vlefevre | 2017-11-07 08:31:45 +0000 (Tue, 07 Nov 2017) | 2 lines
+Changed paths:
+   M /trunk/src/free_cache.c
+
+[src/free_cache.c] Minor portability improvement for mpfr_free_cache2
+to accept way = 0 (no effect on two's complement machines).
+------------------------------------------------------------------------
+r11799 | vlefevre | 2017-11-06 16:39:40 +0000 (Mon, 06 Nov 2017) | 8 lines
+Changed paths:
+   M /trunk/tests/talloc-cache.c
+   M /trunk/tests/tests.c
+
+[tests]
+  * tests.c: for test programs that use GMP's mp_set_memory_functions,
+    tests_rand_start and tests_rand_end also need to be disabled; to do
+    that, require that tests_memory_disabled be set to 2 in this case
+    (the value 1 is already used for the use with mini-gmp, where only
+    tests_memory_start and tests_memory_end need to be disabled).
+  * talloc-cache.c: call tests_start_mpfr and tests_end_mpfr as usual,
+    with tests_memory_disabled set to 2.
+------------------------------------------------------------------------
+r11798 | vlefevre | 2017-11-06 16:01:32 +0000 (Mon, 06 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Updated the month.
+------------------------------------------------------------------------
+r11797 | vlefevre | 2017-11-06 14:22:11 +0000 (Mon, 06 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/doc/mpfr.texi
+
+[doc/mpfr.texi] Minor change.
+------------------------------------------------------------------------
+r11796 | vlefevre | 2017-11-06 14:17:51 +0000 (Mon, 06 Nov 2017) | 1 line
+... (truncated)

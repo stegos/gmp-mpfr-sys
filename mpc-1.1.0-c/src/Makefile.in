@@ -375,14 +375,14 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
 	  $(AUTOMAKE) --gnu src/Makefile
-# Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
-# 	@case '$?' in \
-# 	  *config.status*) \
-# 	    cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh;; \
-# 	  *) \
-# 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
-# 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
-# 	esac;
+#gmp-mpfr-sys Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+#gmp-mpfr-sys 	@case '$?' in \
+#gmp-mpfr-sys 	  *config.status*) \
+#gmp-mpfr-sys 	    cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh;; \
+#gmp-mpfr-sys 	  *) \
+#gmp-mpfr-sys 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
+#gmp-mpfr-sys 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
+#gmp-mpfr-sys 	esac;
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh

@@ -27604,6 +27604,554 @@ esac
 
 
 
+#gmp-mpfr-sys # Configs for demos/pexpr.c.
+#gmp-mpfr-sys #
+#gmp-mpfr-sys ac_config_files="$ac_config_files demos/pexpr-config.h:demos/pexpr-config-h.in"
+#gmp-mpfr-sys
+#gmp-mpfr-sys case $ac_cv_func_clock in
+#gmp-mpfr-sys yes) HAVE_CLOCK_01=1
+#gmp-mpfr-sys  ;;
+#gmp-mpfr-sys no)  HAVE_CLOCK_01=0 ;;
+#gmp-mpfr-sys esac
+#gmp-mpfr-sys
+#gmp-mpfr-sys case $ac_cv_func_cputime in
+#gmp-mpfr-sys yes) HAVE_CPUTIME_01=1
+#gmp-mpfr-sys  ;;
+#gmp-mpfr-sys no)  HAVE_CPUTIME_01=0 ;;
+#gmp-mpfr-sys esac
+#gmp-mpfr-sys
+#gmp-mpfr-sys case $ac_cv_func_getrusage in
+#gmp-mpfr-sys yes) HAVE_GETRUSAGE_01=1
+#gmp-mpfr-sys  ;;
+#gmp-mpfr-sys no)  HAVE_GETRUSAGE_01=0 ;;
+#gmp-mpfr-sys esac
+#gmp-mpfr-sys
+#gmp-mpfr-sys case $ac_cv_func_gettimeofday in
+#gmp-mpfr-sys yes) HAVE_GETTIMEOFDAY_01=1
+#gmp-mpfr-sys  ;;
+#gmp-mpfr-sys no)  HAVE_GETTIMEOFDAY_01=0 ;;
+#gmp-mpfr-sys esac
+#gmp-mpfr-sys
+#gmp-mpfr-sys case $ac_cv_func_sigaction in
+#gmp-mpfr-sys yes) HAVE_SIGACTION_01=1
+#gmp-mpfr-sys  ;;
+#gmp-mpfr-sys no)  HAVE_SIGACTION_01=0 ;;
+#gmp-mpfr-sys esac
+#gmp-mpfr-sys
+#gmp-mpfr-sys case $ac_cv_func_sigaltstack in
+#gmp-mpfr-sys yes) HAVE_SIGALTSTACK_01=1
+#gmp-mpfr-sys  ;;
+#gmp-mpfr-sys no)  HAVE_SIGALTSTACK_01=0 ;;
+#gmp-mpfr-sys esac
+#gmp-mpfr-sys
+#gmp-mpfr-sys case $ac_cv_func_sigstack in
+#gmp-mpfr-sys yes) HAVE_SIGSTACK_01=1
+#gmp-mpfr-sys  ;;
+#gmp-mpfr-sys no)  HAVE_SIGSTACK_01=0 ;;
+#gmp-mpfr-sys esac
+#gmp-mpfr-sys
+#gmp-mpfr-sys
+#gmp-mpfr-sys case $ac_cv_header_sys_resource_h in
+#gmp-mpfr-sys yes) HAVE_SYS_RESOURCE_H_01=1
+#gmp-mpfr-sys  ;;
+#gmp-mpfr-sys no)  HAVE_SYS_RESOURCE_H_01=0 ;;
+#gmp-mpfr-sys esac
+#gmp-mpfr-sys
+#gmp-mpfr-sys
+#gmp-mpfr-sys ac_fn_c_check_type "$LINENO" "stack_t" "ac_cv_type_stack_t" "#include <signal.h>
+#gmp-mpfr-sys "
+#gmp-mpfr-sys if test "x$ac_cv_type_stack_t" = xyes; then :
+#gmp-mpfr-sys
+#gmp-mpfr-sys cat >>confdefs.h <<_ACEOF
+#gmp-mpfr-sys #define HAVE_STACK_T 1
+#gmp-mpfr-sys _ACEOF
+#gmp-mpfr-sys
+#gmp-mpfr-sys HAVE_STACK_T_01=1
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   HAVE_STACK_T_01=0
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys
+#gmp-mpfr-sys
+#gmp-mpfr-sys
+#gmp-mpfr-sys # Configs for demos/calc directory
+#gmp-mpfr-sys #
+#gmp-mpfr-sys # AC_SUBST+AC_CONFIG_FILES is used for calc-config.h, rather than AC_DEFINE+
+#gmp-mpfr-sys # AC_CONFIG_HEADERS, since with the latter automake (1.8) will then put the
+#gmp-mpfr-sys # directory (ie. demos/calc) into $(DEFAULT_INCLUDES) for every Makefile.in,
+#gmp-mpfr-sys # which would look very strange.
+#gmp-mpfr-sys #
+#gmp-mpfr-sys # -lcurses is required by libreadline.  On a typical SVR4 style system this
+#gmp-mpfr-sys # normally doesn't have to be given explicitly, since libreadline.so will
+#gmp-mpfr-sys # have a NEEDED record for it.  But if someone for some reason is using only
+#gmp-mpfr-sys # a static libreadline.a then we must give -lcurses.  Readline (as of
+#gmp-mpfr-sys # version 4.3) doesn't use libtool, so we can't rely on a .la to cover
+#gmp-mpfr-sys # necessary dependencies.
+#gmp-mpfr-sys #
+#gmp-mpfr-sys # On a couple of systems we've seen libreadline available, but the headers
+#gmp-mpfr-sys # not in the default include path, so check for readline/readline.h.  We've
+#gmp-mpfr-sys # also seen readline/history.h missing, not sure if that's just a broken
+#gmp-mpfr-sys # install or a very old version, but check that too.
+#gmp-mpfr-sys #
+#gmp-mpfr-sys ac_config_files="$ac_config_files demos/calc/calc-config.h:demos/calc/calc-config-h.in"
+#gmp-mpfr-sys
+#gmp-mpfr-sys LIBCURSES=
+#gmp-mpfr-sys if test $with_readline != no; then
+#gmp-mpfr-sys   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for tputs in -lncurses" >&5
+#gmp-mpfr-sys $as_echo_n "checking for tputs in -lncurses... " >&6; }
+#gmp-mpfr-sys if ${ac_cv_lib_ncurses_tputs+:} false; then :
+#gmp-mpfr-sys   $as_echo_n "(cached) " >&6
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   ac_check_lib_save_LIBS=$LIBS
+#gmp-mpfr-sys LIBS="-lncurses  $LIBS"
+#gmp-mpfr-sys cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+#gmp-mpfr-sys /* end confdefs.h.  */
+#gmp-mpfr-sys
+#gmp-mpfr-sys /* Override any GCC internal prototype to avoid an error.
+#gmp-mpfr-sys    Use char because int might match the return type of a GCC
+#gmp-mpfr-sys    builtin and then its argument prototype would still apply.  */
+#gmp-mpfr-sys #ifdef __cplusplus
+#gmp-mpfr-sys extern "C"
+#gmp-mpfr-sys #endif
+#gmp-mpfr-sys char tputs ();
+#gmp-mpfr-sys int
+#gmp-mpfr-sys main ()
+#gmp-mpfr-sys {
+#gmp-mpfr-sys return tputs ();
+#gmp-mpfr-sys   ;
+#gmp-mpfr-sys   return 0;
+#gmp-mpfr-sys }
+#gmp-mpfr-sys _ACEOF
+#gmp-mpfr-sys if ac_fn_c_try_link "$LINENO"; then :
+#gmp-mpfr-sys   ac_cv_lib_ncurses_tputs=yes
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   ac_cv_lib_ncurses_tputs=no
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys rm -f core conftest.err conftest.$ac_objext \
+#gmp-mpfr-sys     conftest$ac_exeext conftest.$ac_ext
+#gmp-mpfr-sys LIBS=$ac_check_lib_save_LIBS
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ncurses_tputs" >&5
+#gmp-mpfr-sys $as_echo "$ac_cv_lib_ncurses_tputs" >&6; }
+#gmp-mpfr-sys if test "x$ac_cv_lib_ncurses_tputs" = xyes; then :
+#gmp-mpfr-sys   LIBCURSES=-lncurses
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for tputs in -lcurses" >&5
+#gmp-mpfr-sys $as_echo_n "checking for tputs in -lcurses... " >&6; }
+#gmp-mpfr-sys if ${ac_cv_lib_curses_tputs+:} false; then :
+#gmp-mpfr-sys   $as_echo_n "(cached) " >&6
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   ac_check_lib_save_LIBS=$LIBS
+#gmp-mpfr-sys LIBS="-lcurses  $LIBS"
+#gmp-mpfr-sys cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+#gmp-mpfr-sys /* end confdefs.h.  */
+#gmp-mpfr-sys
+#gmp-mpfr-sys /* Override any GCC internal prototype to avoid an error.
+#gmp-mpfr-sys    Use char because int might match the return type of a GCC
+#gmp-mpfr-sys    builtin and then its argument prototype would still apply.  */
+#gmp-mpfr-sys #ifdef __cplusplus
+#gmp-mpfr-sys extern "C"
+#gmp-mpfr-sys #endif
+#gmp-mpfr-sys char tputs ();
+#gmp-mpfr-sys int
+#gmp-mpfr-sys main ()
+#gmp-mpfr-sys {
+#gmp-mpfr-sys return tputs ();
+#gmp-mpfr-sys   ;
+#gmp-mpfr-sys   return 0;
+#gmp-mpfr-sys }
+#gmp-mpfr-sys _ACEOF
+#gmp-mpfr-sys if ac_fn_c_try_link "$LINENO"; then :
+#gmp-mpfr-sys   ac_cv_lib_curses_tputs=yes
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   ac_cv_lib_curses_tputs=no
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys rm -f core conftest.err conftest.$ac_objext \
+#gmp-mpfr-sys     conftest$ac_exeext conftest.$ac_ext
+#gmp-mpfr-sys LIBS=$ac_check_lib_save_LIBS
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_curses_tputs" >&5
+#gmp-mpfr-sys $as_echo "$ac_cv_lib_curses_tputs" >&6; }
+#gmp-mpfr-sys if test "x$ac_cv_lib_curses_tputs" = xyes; then :
+#gmp-mpfr-sys   LIBCURSES=-lcurses
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys
+#gmp-mpfr-sys use_readline=$with_readline
+#gmp-mpfr-sys if test $with_readline = detect; then
+#gmp-mpfr-sys   use_readline=no
+#gmp-mpfr-sys   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for readline in -lreadline" >&5
+#gmp-mpfr-sys $as_echo_n "checking for readline in -lreadline... " >&6; }
+#gmp-mpfr-sys if ${ac_cv_lib_readline_readline+:} false; then :
+#gmp-mpfr-sys   $as_echo_n "(cached) " >&6
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   ac_check_lib_save_LIBS=$LIBS
+#gmp-mpfr-sys LIBS="-lreadline $LIBCURSES $LIBS"
+#gmp-mpfr-sys cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+#gmp-mpfr-sys /* end confdefs.h.  */
+#gmp-mpfr-sys
+#gmp-mpfr-sys /* Override any GCC internal prototype to avoid an error.
+#gmp-mpfr-sys    Use char because int might match the return type of a GCC
+#gmp-mpfr-sys    builtin and then its argument prototype would still apply.  */
+#gmp-mpfr-sys #ifdef __cplusplus
+#gmp-mpfr-sys extern "C"
+#gmp-mpfr-sys #endif
+#gmp-mpfr-sys char readline ();
+#gmp-mpfr-sys int
+#gmp-mpfr-sys main ()
+#gmp-mpfr-sys {
+#gmp-mpfr-sys return readline ();
+#gmp-mpfr-sys   ;
+#gmp-mpfr-sys   return 0;
+#gmp-mpfr-sys }
+#gmp-mpfr-sys _ACEOF
+#gmp-mpfr-sys if ac_fn_c_try_link "$LINENO"; then :
+#gmp-mpfr-sys   ac_cv_lib_readline_readline=yes
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   ac_cv_lib_readline_readline=no
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys rm -f core conftest.err conftest.$ac_objext \
+#gmp-mpfr-sys     conftest$ac_exeext conftest.$ac_ext
+#gmp-mpfr-sys LIBS=$ac_check_lib_save_LIBS
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_readline_readline" >&5
+#gmp-mpfr-sys $as_echo "$ac_cv_lib_readline_readline" >&6; }
+#gmp-mpfr-sys if test "x$ac_cv_lib_readline_readline" = xyes; then :
+#gmp-mpfr-sys   ac_fn_c_check_header_mongrel "$LINENO" "readline/readline.h" "ac_cv_header_readline_readline_h" "$ac_includes_default"
+#gmp-mpfr-sys if test "x$ac_cv_header_readline_readline_h" = xyes; then :
+#gmp-mpfr-sys   ac_fn_c_check_header_mongrel "$LINENO" "readline/history.h" "ac_cv_header_readline_history_h" "$ac_includes_default"
+#gmp-mpfr-sys if test "x$ac_cv_header_readline_history_h" = xyes; then :
+#gmp-mpfr-sys   use_readline=yes
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys
+#gmp-mpfr-sys
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys
+#gmp-mpfr-sys
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys
+#gmp-mpfr-sys   { $as_echo "$as_me:${as_lineno-$LINENO}: checking readline detected" >&5
+#gmp-mpfr-sys $as_echo_n "checking readline detected... " >&6; }
+#gmp-mpfr-sys   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $use_readline" >&5
+#gmp-mpfr-sys $as_echo "$use_readline" >&6; }
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys if test $use_readline = yes; then
+#gmp-mpfr-sys   WITH_READLINE_01=1
+#gmp-mpfr-sys
+#gmp-mpfr-sys   LIBREADLINE=-lreadline
+#gmp-mpfr-sys
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   WITH_READLINE_01=0
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys for ac_prog in 'bison -y' byacc
+#gmp-mpfr-sys do
+#gmp-mpfr-sys   # Extract the first word of "$ac_prog", so it can be a program name with args.
+#gmp-mpfr-sys set dummy $ac_prog; ac_word=$2
+#gmp-mpfr-sys { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+#gmp-mpfr-sys $as_echo_n "checking for $ac_word... " >&6; }
+#gmp-mpfr-sys if ${ac_cv_prog_YACC+:} false; then :
+#gmp-mpfr-sys   $as_echo_n "(cached) " >&6
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   if test -n "$YACC"; then
+#gmp-mpfr-sys   ac_cv_prog_YACC="$YACC" # Let the user override the test.
+#gmp-mpfr-sys else
+#gmp-mpfr-sys as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+#gmp-mpfr-sys for as_dir in $PATH
+#gmp-mpfr-sys do
+#gmp-mpfr-sys   IFS=$as_save_IFS
+#gmp-mpfr-sys   test -z "$as_dir" && as_dir=.
+#gmp-mpfr-sys     for ac_exec_ext in '' $ac_executable_extensions; do
+#gmp-mpfr-sys   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+#gmp-mpfr-sys     ac_cv_prog_YACC="$ac_prog"
+#gmp-mpfr-sys     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+#gmp-mpfr-sys     break 2
+#gmp-mpfr-sys   fi
+#gmp-mpfr-sys done
+#gmp-mpfr-sys   done
+#gmp-mpfr-sys IFS=$as_save_IFS
+#gmp-mpfr-sys
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys YACC=$ac_cv_prog_YACC
+#gmp-mpfr-sys if test -n "$YACC"; then
+#gmp-mpfr-sys   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $YACC" >&5
+#gmp-mpfr-sys $as_echo "$YACC" >&6; }
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+#gmp-mpfr-sys $as_echo "no" >&6; }
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys
+#gmp-mpfr-sys
+#gmp-mpfr-sys   test -n "$YACC" && break
+#gmp-mpfr-sys done
+#gmp-mpfr-sys test -n "$YACC" || YACC="yacc"
+#gmp-mpfr-sys
+#gmp-mpfr-sys for ac_prog in flex lex
+#gmp-mpfr-sys do
+#gmp-mpfr-sys   # Extract the first word of "$ac_prog", so it can be a program name with args.
+#gmp-mpfr-sys set dummy $ac_prog; ac_word=$2
+#gmp-mpfr-sys { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+#gmp-mpfr-sys $as_echo_n "checking for $ac_word... " >&6; }
+#gmp-mpfr-sys if ${ac_cv_prog_LEX+:} false; then :
+#gmp-mpfr-sys   $as_echo_n "(cached) " >&6
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   if test -n "$LEX"; then
+#gmp-mpfr-sys   ac_cv_prog_LEX="$LEX" # Let the user override the test.
+#gmp-mpfr-sys else
+#gmp-mpfr-sys as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+#gmp-mpfr-sys for as_dir in $PATH
+#gmp-mpfr-sys do
+#gmp-mpfr-sys   IFS=$as_save_IFS
+#gmp-mpfr-sys   test -z "$as_dir" && as_dir=.
+#gmp-mpfr-sys     for ac_exec_ext in '' $ac_executable_extensions; do
+#gmp-mpfr-sys   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+#gmp-mpfr-sys     ac_cv_prog_LEX="$ac_prog"
+#gmp-mpfr-sys     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+#gmp-mpfr-sys     break 2
+#gmp-mpfr-sys   fi
+#gmp-mpfr-sys done
+#gmp-mpfr-sys   done
+#gmp-mpfr-sys IFS=$as_save_IFS
+#gmp-mpfr-sys
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys LEX=$ac_cv_prog_LEX
+#gmp-mpfr-sys if test -n "$LEX"; then
+#gmp-mpfr-sys   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LEX" >&5
+#gmp-mpfr-sys $as_echo "$LEX" >&6; }
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+#gmp-mpfr-sys $as_echo "no" >&6; }
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys
+#gmp-mpfr-sys
+#gmp-mpfr-sys   test -n "$LEX" && break
+#gmp-mpfr-sys done
+#gmp-mpfr-sys test -n "$LEX" || LEX=":"
+#gmp-mpfr-sys
+#gmp-mpfr-sys if test "x$LEX" != "x:"; then
+#gmp-mpfr-sys   cat >conftest.l <<_ACEOF
+#gmp-mpfr-sys %%
+#gmp-mpfr-sys a { ECHO; }
+#gmp-mpfr-sys b { REJECT; }
+#gmp-mpfr-sys c { yymore (); }
+#gmp-mpfr-sys d { yyless (1); }
+#gmp-mpfr-sys e { /* IRIX 6.5 flex 2.5.4 underquotes its yyless argument.  */
+#gmp-mpfr-sys     yyless ((input () != 0)); }
+#gmp-mpfr-sys f { unput (yytext[0]); }
+#gmp-mpfr-sys . { BEGIN INITIAL; }
+#gmp-mpfr-sys %%
+#gmp-mpfr-sys #ifdef YYTEXT_POINTER
+#gmp-mpfr-sys extern char *yytext;
+#gmp-mpfr-sys #endif
+#gmp-mpfr-sys int
+#gmp-mpfr-sys main (void)
+#gmp-mpfr-sys {
+#gmp-mpfr-sys   return ! yylex () + ! yywrap ();
+#gmp-mpfr-sys }
+#gmp-mpfr-sys _ACEOF
+#gmp-mpfr-sys { { ac_try="$LEX conftest.l"
+#gmp-mpfr-sys case "(($ac_try" in
+#gmp-mpfr-sys   *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+#gmp-mpfr-sys   *) ac_try_echo=$ac_try;;
+#gmp-mpfr-sys esac
+#gmp-mpfr-sys eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+#gmp-mpfr-sys $as_echo "$ac_try_echo"; } >&5
+#gmp-mpfr-sys   (eval "$LEX conftest.l") 2>&5
+#gmp-mpfr-sys   ac_status=$?
+#gmp-mpfr-sys   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+#gmp-mpfr-sys   test $ac_status = 0; }
+#gmp-mpfr-sys { $as_echo "$as_me:${as_lineno-$LINENO}: checking lex output file root" >&5
+#gmp-mpfr-sys $as_echo_n "checking lex output file root... " >&6; }
+#gmp-mpfr-sys if ${ac_cv_prog_lex_root+:} false; then :
+#gmp-mpfr-sys   $as_echo_n "(cached) " >&6
+#gmp-mpfr-sys else
+#gmp-mpfr-sys
+#gmp-mpfr-sys if test -f lex.yy.c; then
+#gmp-mpfr-sys   ac_cv_prog_lex_root=lex.yy
+#gmp-mpfr-sys elif test -f lexyy.c; then
+#gmp-mpfr-sys   ac_cv_prog_lex_root=lexyy
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   as_fn_error $? "cannot find output from $LEX; giving up" "$LINENO" 5
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_lex_root" >&5
+#gmp-mpfr-sys $as_echo "$ac_cv_prog_lex_root" >&6; }
+#gmp-mpfr-sys LEX_OUTPUT_ROOT=$ac_cv_prog_lex_root
+#gmp-mpfr-sys
+#gmp-mpfr-sys if test -z "${LEXLIB+set}"; then
+#gmp-mpfr-sys   { $as_echo "$as_me:${as_lineno-$LINENO}: checking lex library" >&5
+#gmp-mpfr-sys $as_echo_n "checking lex library... " >&6; }
+#gmp-mpfr-sys if ${ac_cv_lib_lex+:} false; then :
+#gmp-mpfr-sys   $as_echo_n "(cached) " >&6
+#gmp-mpfr-sys else
+#gmp-mpfr-sys
+#gmp-mpfr-sys     ac_save_LIBS=$LIBS
+#gmp-mpfr-sys     ac_cv_lib_lex='none needed'
+#gmp-mpfr-sys     for ac_lib in '' -lfl -ll; do
+#gmp-mpfr-sys       LIBS="$ac_lib $ac_save_LIBS"
+#gmp-mpfr-sys       cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+#gmp-mpfr-sys /* end confdefs.h.  */
+#gmp-mpfr-sys `cat $LEX_OUTPUT_ROOT.c`
+#gmp-mpfr-sys _ACEOF
+#gmp-mpfr-sys if ac_fn_c_try_link "$LINENO"; then :
+#gmp-mpfr-sys   ac_cv_lib_lex=$ac_lib
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys rm -f core conftest.err conftest.$ac_objext \
+#gmp-mpfr-sys     conftest$ac_exeext conftest.$ac_ext
+#gmp-mpfr-sys       test "$ac_cv_lib_lex" != 'none needed' && break
+#gmp-mpfr-sys     done
+#gmp-mpfr-sys     LIBS=$ac_save_LIBS
+#gmp-mpfr-sys
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lex" >&5
+#gmp-mpfr-sys $as_echo "$ac_cv_lib_lex" >&6; }
+#gmp-mpfr-sys   test "$ac_cv_lib_lex" != 'none needed' && LEXLIB=$ac_cv_lib_lex
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys
+#gmp-mpfr-sys
+#gmp-mpfr-sys { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether yytext is a pointer" >&5
+#gmp-mpfr-sys $as_echo_n "checking whether yytext is a pointer... " >&6; }
+#gmp-mpfr-sys if ${ac_cv_prog_lex_yytext_pointer+:} false; then :
+#gmp-mpfr-sys   $as_echo_n "(cached) " >&6
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   # POSIX says lex can declare yytext either as a pointer or an array; the
+#gmp-mpfr-sys # default is implementation-dependent.  Figure out which it is, since
+#gmp-mpfr-sys # not all implementations provide the %pointer and %array declarations.
+#gmp-mpfr-sys ac_cv_prog_lex_yytext_pointer=no
+#gmp-mpfr-sys ac_save_LIBS=$LIBS
+#gmp-mpfr-sys LIBS="$LEXLIB $ac_save_LIBS"
+#gmp-mpfr-sys cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+#gmp-mpfr-sys /* end confdefs.h.  */
+#gmp-mpfr-sys
+#gmp-mpfr-sys   #define YYTEXT_POINTER 1
+#gmp-mpfr-sys `cat $LEX_OUTPUT_ROOT.c`
+#gmp-mpfr-sys _ACEOF
+#gmp-mpfr-sys if ac_fn_c_try_link "$LINENO"; then :
+#gmp-mpfr-sys   ac_cv_prog_lex_yytext_pointer=yes
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys rm -f core conftest.err conftest.$ac_objext \
+#gmp-mpfr-sys     conftest$ac_exeext conftest.$ac_ext
+#gmp-mpfr-sys LIBS=$ac_save_LIBS
+#gmp-mpfr-sys
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_lex_yytext_pointer" >&5
+#gmp-mpfr-sys $as_echo "$ac_cv_prog_lex_yytext_pointer" >&6; }
+#gmp-mpfr-sys if test $ac_cv_prog_lex_yytext_pointer = yes; then
+#gmp-mpfr-sys
+#gmp-mpfr-sys $as_echo "#define YYTEXT_POINTER 1" >>confdefs.h
+#gmp-mpfr-sys
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys rm -f conftest.l $LEX_OUTPUT_ROOT.c
+#gmp-mpfr-sys
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys if test "$LEX" = :; then
+#gmp-mpfr-sys   LEX=${am_missing_run}flex
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys
+#gmp-mpfr-sys # Configs for demos/expr directory
+#gmp-mpfr-sys #
+#gmp-mpfr-sys # Libtool already runs an AC_CHECK_TOOL for ranlib, but we give
+#gmp-mpfr-sys # AC_PROG_RANLIB anyway since automake is supposed to complain if it's not
+#gmp-mpfr-sys # called.  (Automake 1.8.4 doesn't, at least not when the only library is in
+#gmp-mpfr-sys # an EXTRA_LIBRARIES.)
+#gmp-mpfr-sys #
+#gmp-mpfr-sys if test -n "$ac_tool_prefix"; then
+#gmp-mpfr-sys   # Extract the first word of "${ac_tool_prefix}ranlib", so it can be a program name with args.
+#gmp-mpfr-sys set dummy ${ac_tool_prefix}ranlib; ac_word=$2
+#gmp-mpfr-sys { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+#gmp-mpfr-sys $as_echo_n "checking for $ac_word... " >&6; }
+#gmp-mpfr-sys if ${ac_cv_prog_RANLIB+:} false; then :
+#gmp-mpfr-sys   $as_echo_n "(cached) " >&6
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   if test -n "$RANLIB"; then
+#gmp-mpfr-sys   ac_cv_prog_RANLIB="$RANLIB" # Let the user override the test.
+#gmp-mpfr-sys else
+#gmp-mpfr-sys as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+#gmp-mpfr-sys for as_dir in $PATH
+#gmp-mpfr-sys do
+#gmp-mpfr-sys   IFS=$as_save_IFS
+#gmp-mpfr-sys   test -z "$as_dir" && as_dir=.
+#gmp-mpfr-sys     for ac_exec_ext in '' $ac_executable_extensions; do
+#gmp-mpfr-sys   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+#gmp-mpfr-sys     ac_cv_prog_RANLIB="${ac_tool_prefix}ranlib"
+#gmp-mpfr-sys     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+#gmp-mpfr-sys     break 2
+#gmp-mpfr-sys   fi
+#gmp-mpfr-sys done
+#gmp-mpfr-sys   done
+#gmp-mpfr-sys IFS=$as_save_IFS
+#gmp-mpfr-sys
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys RANLIB=$ac_cv_prog_RANLIB
+#gmp-mpfr-sys if test -n "$RANLIB"; then
+#gmp-mpfr-sys   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $RANLIB" >&5
+#gmp-mpfr-sys $as_echo "$RANLIB" >&6; }
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+#gmp-mpfr-sys $as_echo "no" >&6; }
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys
+#gmp-mpfr-sys
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys if test -z "$ac_cv_prog_RANLIB"; then
+#gmp-mpfr-sys   ac_ct_RANLIB=$RANLIB
+#gmp-mpfr-sys   # Extract the first word of "ranlib", so it can be a program name with args.
+#gmp-mpfr-sys set dummy ranlib; ac_word=$2
+#gmp-mpfr-sys { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+#gmp-mpfr-sys $as_echo_n "checking for $ac_word... " >&6; }
+#gmp-mpfr-sys if ${ac_cv_prog_ac_ct_RANLIB+:} false; then :
+#gmp-mpfr-sys   $as_echo_n "(cached) " >&6
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   if test -n "$ac_ct_RANLIB"; then
+#gmp-mpfr-sys   ac_cv_prog_ac_ct_RANLIB="$ac_ct_RANLIB" # Let the user override the test.
+#gmp-mpfr-sys else
+#gmp-mpfr-sys as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+#gmp-mpfr-sys for as_dir in $PATH
+#gmp-mpfr-sys do
+#gmp-mpfr-sys   IFS=$as_save_IFS
+#gmp-mpfr-sys   test -z "$as_dir" && as_dir=.
+#gmp-mpfr-sys     for ac_exec_ext in '' $ac_executable_extensions; do
+#gmp-mpfr-sys   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+#gmp-mpfr-sys     ac_cv_prog_ac_ct_RANLIB="ranlib"
+#gmp-mpfr-sys     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+#gmp-mpfr-sys     break 2
+#gmp-mpfr-sys   fi
+#gmp-mpfr-sys done
+#gmp-mpfr-sys   done
+#gmp-mpfr-sys IFS=$as_save_IFS
+#gmp-mpfr-sys
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys ac_ct_RANLIB=$ac_cv_prog_ac_ct_RANLIB
+#gmp-mpfr-sys if test -n "$ac_ct_RANLIB"; then
+#gmp-mpfr-sys   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_ct_RANLIB" >&5
+#gmp-mpfr-sys $as_echo "$ac_ct_RANLIB" >&6; }
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+#gmp-mpfr-sys $as_echo "no" >&6; }
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys
+#gmp-mpfr-sys   if test "x$ac_ct_RANLIB" = x; then
+#gmp-mpfr-sys     RANLIB=":"
+#gmp-mpfr-sys   else
+#gmp-mpfr-sys     case $cross_compiling:$ac_tool_warned in
+#gmp-mpfr-sys yes:)
+#gmp-mpfr-sys { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+#gmp-mpfr-sys $as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+#gmp-mpfr-sys ac_tool_warned=yes ;;
+#gmp-mpfr-sys esac
+#gmp-mpfr-sys     RANLIB=$ac_ct_RANLIB
+#gmp-mpfr-sys   fi
+#gmp-mpfr-sys else
+#gmp-mpfr-sys   RANLIB="$ac_cv_prog_RANLIB"
+#gmp-mpfr-sys fi
+#gmp-mpfr-sys
+#gmp-mpfr-sys
+#gmp-mpfr-sys
 # Create config.m4.
 
 echo "creating $gmp_configm4"
@@ -27633,7 +28181,7 @@ echo "define(\`__CONFIG_M4_INCLUDED__')" >> $gmp_configm4
 # FIXME: Upcoming version of autoconf/automake may not like broken lines.
 #        Right now automake isn't accepting the new AC_CONFIG_FILES scheme.
 
-ac_config_files="$ac_config_files Makefile mpf/Makefile mpn/Makefile mpq/Makefile mpz/Makefile printf/Makefile scanf/Makefile rand/Makefile cxx/Makefile tests/Makefile tests/devel/Makefile tests/mpf/Makefile tests/mpn/Makefile tests/mpq/Makefile tests/mpz/Makefile tests/rand/Makefile tests/misc/Makefile tests/cxx/Makefile tune/Makefile gmp.h:gmp-h.in"
+ac_config_files="$ac_config_files Makefile mpf/Makefile mpn/Makefile mpq/Makefile mpz/Makefile printf/Makefile scanf/Makefile rand/Makefile cxx/Makefile tests/Makefile tests/devel/Makefile tests/mpf/Makefile tests/mpn/Makefile tests/mpq/Makefile tests/mpz/Makefile tests/rand/Makefile tests/misc/Makefile tests/cxx/Makefile tune/Makefile gmp.h:gmp-h.in" #gmp-mpfr-sys doc/Makefile demos/Makefile demos/calc/Makefile demos/expr/Makefile
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
