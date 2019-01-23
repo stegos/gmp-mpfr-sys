@@ -1,26 +1,28 @@
 gnulinux-beta:
   image: rust:1
-  before_script:
+  script:
   - rustup install beta
   - cargo +beta --version
   - rustc +beta --version
-  - mkdir cache
-  - export GMP_MPFR_SYS_CACHE=cache
-  script:
+  - mkdir gmp-mpfr-sys-cache-gnulinux-beta
+  - export GMP_MPFR_SYS_CACHE=gmp-mpfr-sys-cache-gnulinux-beta
   - cargo +beta test --release
   - cargo +beta test
+  - rustup component add rustfmt --toolchain beta
+  - cargo +beta fmt -- --check
+  - rustup component add clippy --toolchain beta
+  - cargo +beta clippy -- -D warnings
   except:
   - www
 
 gnulinux-1.13.0:
   image: rust:1
-  before_script:
+  script:
   - rustup install 1.13.0
   - cargo +1.13.0 --version
   - rustc +1.13.0 --version
-  - mkdir cache
-  - export GMP_MPFR_SYS_CACHE=cache
-  script:
+  - mkdir gmp-mpfr-sys-cache-gnulinux-1.13.0
+  - export GMP_MPFR_SYS_CACHE=gmp-mpfr-sys-cache-gnulinux-1.13.0
   - cargo +1.13.0 test --release
   - cargo +1.13.0 test
   except:
