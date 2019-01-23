@@ -8,7 +8,7 @@ gnulinux-beta:
   script:
   - cargo test --release
   - cargo test
-  exclude:
+  except:
   - www
 
 gnulinux-earliest:
@@ -21,7 +21,7 @@ gnulinux-earliest:
   script:
   - cargo test --release
   - cargo test
-  exclude:
+  except:
   - www
 
 pages:
