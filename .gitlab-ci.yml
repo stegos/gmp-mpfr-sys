@@ -1,5 +1,5 @@
 gnulinux-beta:
-  image: rust:slim
+  image: rust:1
   before_script:
   - rustup install beta
   - cargo +beta --version
@@ -12,8 +12,8 @@ gnulinux-beta:
   except:
   - www
 
-gnulinux-earliest:
-  image: rust:slim
+gnulinux-1.13.0:
+  image: rust:1
   before_script:
   - rustup install 1.13.0
   - cargo +1.13.0 --version
