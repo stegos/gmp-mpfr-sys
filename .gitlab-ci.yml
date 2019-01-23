@@ -1,3 +1,29 @@
+gnulinux-beta:
+  image: rust:beta-slim
+  before_script:
+  - cargo --version
+  - rustc --version
+  - mkdir cache
+  - export GMP_MPFR_SYS_CACHE=cache
+  script:
+  - cargo test --release
+  - cargo test
+  exclude:
+  - www
+
+gnulinux-earliest:
+  image: rust:1.13.0-slim
+  before_script:
+  - cargo --version
+  - rustc --version
+  - mkdir cache
+  - export GMP_MPFR_SYS_CACHE=cache
+  script:
+  - cargo test --release
+  - cargo test
+  exclude:
+  - www
+
 pages:
   script:
   - "true"
