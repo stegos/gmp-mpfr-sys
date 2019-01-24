@@ -103,8 +103,8 @@ unsafe fn mpfr_to_string(
 #![allow(non_camel_case_types, non_snake_case)]
 
 use gmp;
-
 use libc::{intmax_t, uintmax_t, FILE};
+use misc;
 use std::mem;
 use std::os::raw::{c_char, c_int, c_long, c_uint, c_ulong, c_void};
 
@@ -1766,7 +1766,7 @@ pub unsafe extern "C" fn div_2exp(
 /// See: [`mpfr_custom_get_size`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005fget_005fsize)
 #[inline]
 pub unsafe extern "C" fn custom_get_size(prec: prec_t) -> usize {
-    let bits = prec_t::from(gmp::NUMB_BITS);
+    let bits = misc::int_to_long(gmp::NUMB_BITS);
     ((prec + bits - 1) / bits) as usize * mem::size_of::<gmp::limb_t>()
 }
 /// See: [`mpfr_custom_init`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#index-mpfr_005fcustom_005finit)

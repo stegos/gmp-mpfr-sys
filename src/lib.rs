@@ -243,3 +243,19 @@ pub mod gmp;
 pub mod mpc;
 #[cfg(feature = "mpfr")]
 pub mod mpfr;
+
+mod misc {
+    use std::os::raw::{c_int, c_long};
+
+    #[cfg(any(target_pointer_width = "32", windows))]
+    #[inline]
+    pub fn int_to_long(i: c_int) -> c_long {
+        i
+    }
+
+    #[cfg(all(target_pointer_width = "64", not(windows)))]
+    #[inline]
+    pub fn int_to_long(i: c_int) -> c_long {
+        i.into()
+    }
+}
