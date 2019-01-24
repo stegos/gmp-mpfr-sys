@@ -23,6 +23,7 @@ links = "gmp"
 default = ["mpfr", "mpc"]
 mpfr = []
 mpc = ["mpfr"]
+fail-on-warnings = []
 
 # When building the C libraries, make is followed by make check
 # according to the following:

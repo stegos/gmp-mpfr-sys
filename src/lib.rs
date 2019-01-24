@@ -234,6 +234,7 @@ Then, to build a crate with a dependency on this crate:
 #![warn(missing_docs)]
 #![doc(html_root_url = "https://docs.rs/gmp-mpfr-sys/~1.1")]
 #![doc(test(attr(deny(warnings))))]
+#![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
 
 extern crate libc;
 
