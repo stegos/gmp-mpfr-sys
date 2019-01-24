@@ -61,17 +61,18 @@ fn main() {
     let src_dir = PathBuf::from(cargo_env("CARGO_MANIFEST_DIR"));
     let out_dir = PathBuf::from(cargo_env("OUT_DIR"));
 
+    let host = cargo_env("HOST");
+    let target = cargo_env("TARGET");
+    assert_eq!(host, target, "cross compilation is not supported");
+
     // The cache dir is for testing purposes, it is *not* meant for
     // general use.
     println!("cargo:rerun-if-env-changed=GMP_MPFR_SYS_CACHE");
     let cache_dir = env::var_os("GMP_MPFR_SYS_CACHE").map(|cache| {
         let version = cargo_env("CARGO_PKG_VERSION");
-        PathBuf::from(cache).join(version)
+        PathBuf::from(cache).join(version).join(host)
     });
 
-    let host = cargo_env("HOST");
-    let target = cargo_env("TARGET");
-    assert_eq!(host, target, "cross compilation is not supported");
     let target = target
         .into_string()
         .expect("cannot convert environment variable TARGET into a `String`");
