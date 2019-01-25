@@ -19,6 +19,9 @@ environment:
       MSYSTEM_CHOST: i686-w64-mingw32
       MSYSTEM_PREFIX: C:/msys64/mingw32
 
+cache:
+  - '%USERPROFILE%\.cargo\registry\cache'
+
 install:
   - set PATH=C:\msys64\%MSYSTEM%\bin;C:\msys64\usr\bin;%USERPROFILE%\.cargo\bin;%PATH%
   - curl -sSf -o rustup-init.exe https://win.rustup.rs
@@ -29,11 +32,14 @@ install:
 
 build: false
 
-test_script:
+before_test:
+  - bash -c "if [ -d ""$USERPROFILE/.cargo/registry/cache"" ]; then cd ""$USERPROFILE/.cargo/registry""; find cache -name \*.crate; fi"
   - set GMP_MPFR_SYS_CACHE=%APPVEYOR_BUILD_FOLDER%\gmp-mpfr-sys-cache
+
+test_script:
   - cargo +beta-%TARGET% test --features "fail-on-warnings ctest"
   - cargo +beta-%TARGET% test --release --features fail-on-warnings
   - cargo +beta-%TARGET% fmt -- --check
-  - cargo +beta-%TARGET% clippy --release --all-targets --features fail-on-warnings
+  - cargo +beta-%TARGET% clippy --all-targets --features fail-on-warnings
   - cargo +1.13.0-%TARGET% test --features fail-on-warnings
   - cargo +1.13.0-%TARGET% test --release --features fail-on-warnings
