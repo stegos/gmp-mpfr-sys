@@ -7,7 +7,6 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="128"
@@ -16,62 +15,12 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.4 (unknown)"
-   sodipodi:docname="nums.svg"
-   inkscape:export-filename="/tmp/nums.png"
+   sodipodi:docname="rug.svg"
+   inkscape:export-filename="rug.png"
    inkscape:export-xdpi="300"
    inkscape:export-ydpi="300">
   <defs
-     id="defs2">
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect905"
-       is_visible="true" />
-    <linearGradient
-       inkscape:collect="always"
-       id="linearGradient874">
-      <stop
-         style="stop-color:#001030;stop-opacity:1;"
-         offset="0"
-         id="stop870" />
-      <stop
-         style="stop-color:#001030;stop-opacity:0;"
-         offset="1"
-         id="stop872" />
-    </linearGradient>
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect940"
-       is_visible="true" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect936"
-       is_visible="true" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect932"
-       is_visible="true" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect928"
-       is_visible="true" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect924"
-       is_visible="true" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect920"
-       is_visible="true" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient874"
-       id="linearGradient876"
-       x1="177.40949"
-       y1="367.95983"
-       x2="303.13949"
-       y2="367.95983"
-       gradientUnits="userSpaceOnUse" />
-  </defs>
+     id="defs2" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -79,9 +28,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4"
-     inkscape:cx="-65.407361"
-     inkscape:cy="47.979393"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="84.117778"
+     inkscape:cy="68.2265"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -148,38 +97,29 @@
        r="16.933334" />
     <text
        xml:space="preserve"
-       style="font-size:5.64444494px;line-height:6.61458349px;font-family:Candara;-inkscape-font-specification:Candara;letter-spacing:0px;word-spacing:0px;fill:none;stroke:#000000;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="171.97917"
-       y="340.65622"
-       id="text899"><tspan
-         sodipodi:role="line"
-         id="tspan897"
-         x="171.97917"
-         y="345.23129"
-         style="stroke-width:0.26458335px"></tspan></text>
-    <text
-       xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:18.34444427px;line-height:6.61458349px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Bold';letter-spacing:0px;word-spacing:0px;fill:none;stroke:#000000;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="10.018537"
+       x="9.2247858"
        y="283.84735"
        id="text1010"><tspan
          sodipodi:role="line"
          id="tspan1008"
-         x="10.018537"
+         x="9.2247858"
          y="283.84735"
-         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:18.34444427px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Heavy';fill:#001030;fill-opacity:1;stroke:none;stroke-width:0.26458335px;stroke-opacity:1">6</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:18.34444427px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Heavy';fill:#001030;fill-opacity:1;stroke:none;stroke-width:0.26458335px;stroke-opacity:1">6<tspan
+   style="font-size:11.28888893px"
+   id="tspan95" /></tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.70000076px;line-height:6.61458349px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Bold';letter-spacing:0px;word-spacing:0px;fill:none;stroke:#000000;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="-7.6416235"
-       y="284.35257"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.70000076px;line-height:6.61458349px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Bold';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:none;stroke:#000000;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="103.57057"
+       y="267.94586"
        id="text1010-0"
-       transform="rotate(-6.0941666)"><tspan
+       transform="rotate(15.51476)"><tspan
          sodipodi:role="line"
          id="tspan1008-0"
-         x="-7.6416235"
-         y="284.35257"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.28888893px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Bold';fill:#001030;fill-opacity:0.97254902;stroke:none;stroke-width:0.26458335px;stroke-opacity:1">2</tspan></text>
+         x="103.57057"
+         y="267.94586"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.28888893px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Bold';text-align:end;text-anchor:end;fill:#001030;fill-opacity:0.97254902;stroke:none;stroke-width:0.26458335px;stroke-opacity:1">2</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.58333302px;line-height:6.61458349px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Bold';letter-spacing:0px;word-spacing:0px;fill:none;stroke:#000000;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -219,26 +159,26 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.58333302px;line-height:6.61458349px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Bold';letter-spacing:0px;word-spacing:0px;fill:none;stroke:#000000;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="-34.148857"
-       y="273.49805"
+       x="82.86026"
+       y="261.52719"
        id="text1010-0-8-4"
-       transform="rotate(-11.889483)"><tspan
+       transform="rotate(12.860516)"><tspan
          sodipodi:role="line"
          id="tspan1008-0-0-6"
-         x="-34.148857"
-         y="273.49805"
+         x="82.86026"
+         y="261.52719"
          style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.46666718px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Semi-Bold';fill:#001030;fill-opacity:0.62745098;stroke:none;stroke-width:0.26458335px;stroke-opacity:1">8</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.58333302px;line-height:6.61458349px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Bold';letter-spacing:0px;word-spacing:0px;fill:none;stroke:#000000;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="43.870033"
-       y="289.4248"
+       x="44.300194"
+       y="289.3924"
        id="text1010-0-8-29"
        transform="rotate(4.3098803)"><tspan
          sodipodi:role="line"
          id="tspan1008-0-0-8"
-         x="43.870033"
-         y="289.4248"
+         x="44.300194"
+         y="289.3924"
          style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.46666718px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Semi-Bold';fill:#001030;fill-opacity:0.50196078;stroke:none;stroke-width:0.26458335px;stroke-opacity:1">5</tspan></text>
     <text
        xml:space="preserve"
@@ -254,14 +194,14 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.58333302px;line-height:6.61458349px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Bold';letter-spacing:0px;word-spacing:0px;fill:none;stroke:#000000;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="-53.771774"
-       y="276.65408"
+       x="-53.638657"
+       y="276.06717"
        id="text1010-0-8-29-5"
        transform="rotate(-11.351956)"><tspan
          sodipodi:role="line"
          id="tspan1008-0-0-8-4"
-         x="-53.771774"
-         y="276.65408"
+         x="-53.638657"
+         y="276.06717"
          style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.46666718px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Semi-Bold';fill:#001030;fill-opacity:0.25098039;stroke:none;stroke-width:0.26458335px;stroke-opacity:1">0</tspan></text>
     <text
        xml:space="preserve"
@@ -274,18 +214,31 @@
          id="tspan1008-0-0-8-5"
          x="116.79192"
          y="243.08046"
-         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.46666718px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Semi-Bold';fill:#001030;fill-opacity:0.1254902;stroke:none;stroke-width:0.26458335px;stroke-opacity:1">0</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.46666718px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Semi-Bold';fill:#001030;fill-opacity:0.1254902;stroke:none;stroke-width:0.26458335px;stroke-opacity:1">7</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.58333302px;line-height:6.61458349px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Bold';letter-spacing:0px;word-spacing:0px;fill:none;stroke:#000000;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="71.994217"
-       y="276.81506"
+       x="-18.925789"
+       y="282.79477"
        id="text1010-0-8-29-6"
-       transform="rotate(8.8469635)"><tspan
+       transform="rotate(-9.7272906)"
+       inkscape:transform-center-x="-0.61056346"
+       inkscape:transform-center-y="-0.51919677"><tspan
          sodipodi:role="line"
          id="tspan1008-0-0-8-17"
-         x="71.994217"
-         y="276.81506"
-         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.46666718px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Semi-Bold';fill:#001030;fill-opacity:0.0627451;stroke:none;stroke-width:0.26458335px;stroke-opacity:1">7</tspan></text>
+         x="-18.925789"
+         y="282.79477"
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.46666718px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Semi-Bold';fill:#001030;fill-opacity:0.0627451;stroke:none;stroke-width:0.26458335px;stroke-opacity:1">1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:18.34444237px;line-height:6.61458349px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#241030;fill-opacity:1;stroke:none;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+       x="19.113501"
+       y="283.84702"
+       id="text1010-9"><tspan
+         sodipodi:role="line"
+         id="tspan1008-9"
+         x="19.113501"
+         y="283.84702"
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:11.28888893px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Heavy';fill:#001030;fill-opacity:1;stroke:none;stroke-width:0.26458335px;stroke-opacity:1">.</tspan></text>
   </g>
 </svg>
