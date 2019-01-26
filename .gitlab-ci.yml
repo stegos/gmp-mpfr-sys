@@ -50,8 +50,12 @@ i686-gnulinux:
   - www
 
 pages:
-  image: alphine:latest
+  image: alpine:latest
+  before_script:
+  - "true"
   script:
+  - "true"
+  after_script:
   - "true"
   artifacts:
     paths:
