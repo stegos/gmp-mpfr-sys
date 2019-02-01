@@ -24,9 +24,9 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
-### Version 1.1.10 (2019-01-04)
+### Version 1.1.11 news (2019-02-01)
 
-  * [MPFR] was updated from version 4.0.1-p13 to version 4.0.1-p14.
+  * [MPFR] was updated from version 4.0.1-p14 to 4.0.2.
 
 ### Other releases
 
