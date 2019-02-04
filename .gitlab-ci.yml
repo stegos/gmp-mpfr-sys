@@ -7,6 +7,8 @@
 
 before_script:
   - getconf LONG_BIT
+  - apt-get -y update
+  - apt-get -y install diffutils gcc make m4
   - rustup --version
   - rustup install beta-$TARGET 1.13.0-$TARGET
   - rustup component add --toolchain beta-$TARGET rustfmt clippy
@@ -21,7 +23,7 @@ after_script:
   - if [ -d $CARGO_HOME/registry/cache ]; then cp -R $CARGO_HOME/registry/cache cargo/registry/; echo Updated registry/cache; fi
 
 x86_64-gnulinux:
-  image: amd64/rust:1
+  image: amd64/rust:slim
   variables:
     TARGET: x86_64
   cache:
@@ -39,7 +41,7 @@ x86_64-gnulinux:
   - www
 
 i686-gnulinux:
-  image: i386/rust:1
+  image: i386/rust:slim
   variables:
     TARGET: i686
   cache:
