@@ -159,11 +159,7 @@ extern "C" {
     pub fn get_prec(x: mpc_srcptr) -> mpfr::prec_t;
     /// See: [`mpc_get_prec2`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fget_005fprec2)
     #[link_name = "mpc_get_prec2"]
-    pub fn get_prec2(
-        pr: *mut mpfr::prec_t,
-        pi: *mut mpfr::prec_t,
-        x: mpc_srcptr,
-    );
+    pub fn get_prec2(pr: *mut mpfr::prec_t, pi: *mut mpfr::prec_t, x: mpc_srcptr);
 
     // Assignment Functions
 
@@ -199,71 +195,31 @@ extern "C" {
     pub fn set_fr(rop: mpc_ptr, op: mpfr_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_set_ui_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fui_005fui)
     #[link_name = "mpc_set_ui_ui"]
-    pub fn set_ui_ui(
-        rop: mpc_ptr,
-        op1: c_ulong,
-        op2: c_ulong,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn set_ui_ui(rop: mpc_ptr, op1: c_ulong, op2: c_ulong, rnd: rnd_t) -> c_int;
     /// See: [`mpc_set_si_si`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fsi_005fsi)
     #[link_name = "mpc_set_si_si"]
-    pub fn set_si_si(
-        rop: mpc_ptr,
-        op1: c_long,
-        op2: c_long,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn set_si_si(rop: mpc_ptr, op1: c_long, op2: c_long, rnd: rnd_t) -> c_int;
     /// See: [`mpc_set_uj_uj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fuj_005fuj)
     #[link_name = "mpc_set_uj_uj"]
-    pub fn set_uj_uj(
-        rop: mpc_ptr,
-        op1: uintmax_t,
-        op2: uintmax_t,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn set_uj_uj(rop: mpc_ptr, op1: uintmax_t, op2: uintmax_t, rnd: rnd_t) -> c_int;
     /// See: [`mpc_set_sj_sj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fsj_005fsj)
     #[link_name = "mpc_set_sj_sj"]
-    pub fn set_sj_sj(
-        rop: mpc_ptr,
-        op1: intmax_t,
-        op2: intmax_t,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn set_sj_sj(rop: mpc_ptr, op1: intmax_t, op2: intmax_t, rnd: rnd_t) -> c_int;
     /// See: [`mpc_set_d_d`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fd_005fd)
     #[link_name = "mpc_set_d_d"]
     pub fn set_d_d(rop: mpc_ptr, op1: f64, op2: f64, rnd: rnd_t) -> c_int;
     /// See: [`mpc_set_z_z`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fz_005fz)
     #[link_name = "mpc_set_z_z"]
-    pub fn set_z_z(
-        rop: mpc_ptr,
-        op1: mpz_srcptr,
-        op2: mpz_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn set_z_z(rop: mpc_ptr, op1: mpz_srcptr, op2: mpz_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_set_q_q`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fq_005fq)
     #[link_name = "mpc_set_q_q"]
-    pub fn set_q_q(
-        rop: mpc_ptr,
-        op1: mpq_srcptr,
-        op2: mpq_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn set_q_q(rop: mpc_ptr, op1: mpq_srcptr, op2: mpq_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_set_f_f`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005ff_005ff)
     #[link_name = "mpc_set_f_f"]
-    pub fn set_f_f(
-        rop: mpc_ptr,
-        op1: mpf_srcptr,
-        op2: mpf_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn set_f_f(rop: mpc_ptr, op1: mpf_srcptr, op2: mpf_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_set_fr_fr`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005ffr_005ffr)
     #[link_name = "mpc_set_fr_fr"]
-    pub fn set_fr_fr(
-        rop: mpc_ptr,
-        op1: mpfr_srcptr,
-        op2: mpfr_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn set_fr_fr(rop: mpc_ptr, op1: mpfr_srcptr, op2: mpfr_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_set_nan`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fnan)
     #[link_name = "mpc_set_nan"]
     pub fn set_nan(rop: mpc_ptr);
@@ -284,20 +240,10 @@ extern "C" {
     ) -> c_int;
     /// See: [`mpc_set_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fset_005fstr)
     #[link_name = "mpc_set_str"]
-    pub fn set_str(
-        rop: mpc_ptr,
-        s: *const c_char,
-        base: c_int,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn set_str(rop: mpc_ptr, s: *const c_char, base: c_int, rnd: rnd_t) -> c_int;
     /// See: [`mpc_get_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fget_005fstr)
     #[link_name = "mpc_get_str"]
-    pub fn get_str(
-        b: c_int,
-        n: usize,
-        op: mpc_srcptr,
-        rnd: rnd_t,
-    ) -> *mut c_char;
+    pub fn get_str(b: c_int, n: usize, op: mpc_srcptr, rnd: rnd_t) -> *mut c_char;
     /// See: [`mpc_free_str`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005ffree_005fstr)
     #[link_name = "mpc_free_str"]
     pub fn free_str(rop: *mut c_char);
@@ -379,69 +325,29 @@ extern "C" {
 
     /// See: [`mpc_add`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fadd)
     #[link_name = "mpc_add"]
-    pub fn add(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: mpc_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn add(rop: mpc_ptr, op1: mpc_srcptr, op2: mpc_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_add_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fadd_005fui)
     #[link_name = "mpc_add_ui"]
-    pub fn add_ui(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: c_ulong,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn add_ui(rop: mpc_ptr, op1: mpc_srcptr, op2: c_ulong, rnd: rnd_t) -> c_int;
     /// See: [`mpc_add_fr`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fadd_005ffr)
     #[link_name = "mpc_add_fr"]
-    pub fn add_fr(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: mpfr_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn add_fr(rop: mpc_ptr, op1: mpc_srcptr, op2: mpfr_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_fr_sub`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005ffr_005fsub)
     #[link_name = "mpc_sub"]
-    pub fn sub(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: mpc_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn sub(rop: mpc_ptr, op1: mpc_srcptr, op2: mpc_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_sub_fr`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fsub_005ffr)
     #[link_name = "mpc_sub_fr"]
-    pub fn sub_fr(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: mpfr_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn sub_fr(rop: mpc_ptr, op1: mpc_srcptr, op2: mpfr_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_fr_sub`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005ffr_005fsub)
     #[link_name = "mpc_fr_sub"]
-    pub fn fr_sub(
-        rop: mpc_ptr,
-        op1: mpfr_srcptr,
-        op2: mpc_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn fr_sub(rop: mpc_ptr, op1: mpfr_srcptr, op2: mpc_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_sub_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fsub_005fui)
     #[link_name = "mpc_sub_ui"]
-    pub fn sub_ui(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: c_ulong,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn sub_ui(rop: mpc_ptr, op1: mpc_srcptr, op2: c_ulong, rnd: rnd_t) -> c_int;
 }
 /// See: [`mpc_ui_sub`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fui_005fsub)
 #[inline]
-pub unsafe extern "C" fn ui_sub(
-    rop: mpc_ptr,
-    op1: c_ulong,
-    op2: mpc_srcptr,
-    rnd: rnd_t,
-) -> c_int {
+pub unsafe extern "C" fn ui_sub(rop: mpc_ptr, op1: c_ulong, op2: mpc_srcptr, rnd: rnd_t) -> c_int {
     ui_ui_sub(rop, op1, 0, op2, rnd)
 }
 extern "C" {
@@ -459,40 +365,19 @@ extern "C" {
     pub fn neg(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_mul`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fmul)
     #[link_name = "mpc_mul"]
-    pub fn mul(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: mpc_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn mul(rop: mpc_ptr, op1: mpc_srcptr, op2: mpc_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_mul_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fmul_005fui)
     #[link_name = "mpc_mul_ui"]
-    pub fn mul_ui(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: c_ulong,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn mul_ui(rop: mpc_ptr, op1: mpc_srcptr, op2: c_ulong, rnd: rnd_t) -> c_int;
     /// See: [`mpc_mul_si`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fmul_005fsi)
     #[link_name = "mpc_mul_si"]
-    pub fn mul_si(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: c_long,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn mul_si(rop: mpc_ptr, op1: mpc_srcptr, op2: c_long, rnd: rnd_t) -> c_int;
     /// See: [`mpc_mul_fr`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fmul_005ffr)
     #[link_name = "mpc_mul_fr"]
-    pub fn mul_fr(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: mpfr_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn mul_fr(rop: mpc_ptr, op1: mpc_srcptr, op2: mpfr_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_mul_i`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fmul_005fi)
     #[link_name = "mpc_mul_i"]
-    pub fn mul_i(rop: mpc_ptr, op: mpc_srcptr, sgn: c_int, rnd: rnd_t)
-        -> c_int;
+    pub fn mul_i(rop: mpc_ptr, op: mpc_srcptr, sgn: c_int, rnd: rnd_t) -> c_int;
     /// See: [`mpc_sqr`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fsqr)
     #[link_name = "mpc_sqr"]
     pub fn sqr(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
@@ -507,44 +392,19 @@ extern "C" {
     ) -> c_int;
     /// See: [`mpc_div`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fdiv)
     #[link_name = "mpc_div"]
-    pub fn div(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: mpc_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn div(rop: mpc_ptr, op1: mpc_srcptr, op2: mpc_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_div_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fdiv_005fui)
     #[link_name = "mpc_div_ui"]
-    pub fn div_ui(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: c_ulong,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn div_ui(rop: mpc_ptr, op1: mpc_srcptr, op2: c_ulong, rnd: rnd_t) -> c_int;
     /// See: [`mpc_div_fr`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fdiv_005ffr)
     #[link_name = "mpc_div_fr"]
-    pub fn div_fr(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: mpfr_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn div_fr(rop: mpc_ptr, op1: mpc_srcptr, op2: mpfr_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_ui_div`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fui_005fdiv)
     #[link_name = "mpc_ui_div"]
-    pub fn ui_div(
-        rop: mpc_ptr,
-        op1: c_ulong,
-        op2: mpc_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn ui_div(rop: mpc_ptr, op1: c_ulong, op2: mpc_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_fr_div`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005ffr_005fdiv)
     #[link_name = "mpc_fr_div"]
-    pub fn fr_div(
-        rop: mpc_ptr,
-        op1: mpfr_srcptr,
-        op2: mpc_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn fr_div(rop: mpc_ptr, op1: mpfr_srcptr, op2: mpc_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_conj`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fconj)
     #[link_name = "mpc_conj"]
     pub fn conj(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
@@ -556,36 +416,16 @@ extern "C" {
     pub fn norm(rop: mpfr_ptr, op: mpc_srcptr, rnd: mpfr::rnd_t) -> c_int;
     /// See: [`mpc_mul_2ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fmul_005f2ui)
     #[link_name = "mpc_mul_2ui"]
-    pub fn mul_2ui(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: c_ulong,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn mul_2ui(rop: mpc_ptr, op1: mpc_srcptr, op2: c_ulong, rnd: rnd_t) -> c_int;
     /// See: [`mpc_mul_2si`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fmul_005f2si)
     #[link_name = "mpc_mul_2si"]
-    pub fn mul_2si(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: c_long,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn mul_2si(rop: mpc_ptr, op1: mpc_srcptr, op2: c_long, rnd: rnd_t) -> c_int;
     /// See: [`mpc_div_2ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fdiv_005f2ui)
     #[link_name = "mpc_div_2ui"]
-    pub fn div_2ui(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: c_ulong,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn div_2ui(rop: mpc_ptr, op1: mpc_srcptr, op2: c_ulong, rnd: rnd_t) -> c_int;
     /// See: [`mpc_div_2si`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fdiv_005f2si)
     #[link_name = "mpc_div_2si"]
-    pub fn div_2si(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: c_long,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn div_2si(rop: mpc_ptr, op1: mpc_srcptr, op2: c_long, rnd: rnd_t) -> c_int;
 
     // Power Functions and Logarithms
 
@@ -594,47 +434,22 @@ extern "C" {
     pub fn sqrt(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_pow`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fpow)
     #[link_name = "mpc_pow"]
-    pub fn pow(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: mpc_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn pow(rop: mpc_ptr, op1: mpc_srcptr, op2: mpc_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_pow_d`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fpow_005fd)
     #[link_name = "mpc_pow_d"]
     pub fn pow_d(rop: mpc_ptr, op1: mpc_srcptr, op2: f64, rnd: rnd_t) -> c_int;
     /// See: [`mpc_pow_si`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fpow_005fsi)
     #[link_name = "mpc_pow_si"]
-    pub fn pow_si(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: c_long,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn pow_si(rop: mpc_ptr, op1: mpc_srcptr, op2: c_long, rnd: rnd_t) -> c_int;
     /// See: [`mpc_pow_ui`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fpow_005fui)
     #[link_name = "mpc_pow_ui"]
-    pub fn pow_ui(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: c_ulong,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn pow_ui(rop: mpc_ptr, op1: mpc_srcptr, op2: c_ulong, rnd: rnd_t) -> c_int;
     /// See: [`mpc_pow_z`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fpow_005fz)
     #[link_name = "mpc_pow_z"]
-    pub fn pow_z(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: mpz_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn pow_z(rop: mpc_ptr, op1: mpc_srcptr, op2: mpz_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_pow_fr`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fpow_005ffr)
     #[link_name = "mpc_pow_fr"]
-    pub fn pow_fr(
-        rop: mpc_ptr,
-        op1: mpc_srcptr,
-        op2: mpfr_srcptr,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn pow_fr(rop: mpc_ptr, op1: mpc_srcptr, op2: mpfr_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_exp`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fexp)
     #[link_name = "mpc_exp"]
     pub fn exp(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
@@ -646,12 +461,7 @@ extern "C" {
     pub fn log10(rop: mpc_ptr, op: mpc_srcptr, rnd: rnd_t) -> c_int;
     /// See: [`mpc_rootofunity`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005frootofunity)
     #[link_name = "mpc_rootofunity"]
-    pub fn rootofunity(
-        rop: mpc_ptr,
-        n: c_ulong,
-        k: c_ulong,
-        rnd: rnd_t,
-    ) -> c_int;
+    pub fn rootofunity(rop: mpc_ptr, n: c_ulong, k: c_ulong, rnd: rnd_t) -> c_int;
 
     // Trigonometric Functions
 
@@ -711,8 +521,7 @@ extern "C" {
     pub fn get_version() -> *const c_char;
 }
 /// See: [`MPC_VERSION`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION)
-pub const VERSION: c_int =
-    (VERSION_MAJOR << 16) | (VERSION_MINOR << 8) | VERSION_PATCHLEVEL;
+pub const VERSION: c_int = (VERSION_MAJOR << 16) | (VERSION_MINOR << 8) | VERSION_PATCHLEVEL;
 /// See: [`MPC_VERSION_MAJOR`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fMAJOR)
 pub const VERSION_MAJOR: c_int = 1;
 /// See: [`MPC_VERSION_MINOR`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fMINOR)
@@ -720,15 +529,10 @@ pub const VERSION_MINOR: c_int = 1;
 /// See: [`MPC_VERSION_PATCHLEVEL`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fPATCHLEVEL)
 pub const VERSION_PATCHLEVEL: c_int = 0;
 /// See: [`MPC_VERSION_STRING`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fSTRING)
-pub const VERSION_STRING: *const c_char =
-    b"1.1.0\0" as *const u8 as *const c_char;
+pub const VERSION_STRING: *const c_char = b"1.1.0\0" as *const u8 as *const c_char;
 /// See: [`MPC_VERSION_NUM`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-MPC_005fVERSION_005fNUM)
 #[inline]
-pub extern "C" fn VERSION_NUM(
-    major: c_int,
-    minor: c_int,
-    patchlevel: c_int,
-) -> c_int {
+pub extern "C" fn VERSION_NUM(major: c_int, minor: c_int, patchlevel: c_int) -> c_int {
     (major << 16) | (minor << 8) | patchlevel
 }
 

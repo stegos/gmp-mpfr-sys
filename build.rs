@@ -120,8 +120,7 @@ fn main() {
         None
     };
 
-    let (compile_gmp, compile_mpfr, compile_mpc) =
-        need_compile(&env, &gmp_ah, &mpfr_ah, &mpc_ah);
+    let (compile_gmp, compile_mpfr, compile_mpc) = need_compile(&env, &gmp_ah, &mpfr_ah, &mpc_ah);
     if compile_gmp {
         check_for_msvc(&env);
         remove_dir_or_panic(&env.build_dir);
@@ -147,12 +146,7 @@ fn main() {
         save_cache(&env, &gmp_ah, &mpfr_ah, &mpc_ah);
     }
     process_gmp_header(&gmp_ah.1, &out_dir.join("gmp_h.rs"));
-    write_link_info(
-        &env,
-        workaround_47048,
-        mpfr_ah.is_some(),
-        mpc_ah.is_some(),
-    );
+    write_link_info(&env, workaround_47048, mpfr_ah.is_some(), mpc_ah.is_some());
 }
 
 fn need_compile(
@@ -393,18 +387,15 @@ fn process_gmp_header(header: &Path, out_file: &Path) {
     }
     drop(reader);
 
-    let limb_bits =
-        limb_bits.expect("Cannot determine GMP_LIMB_BITS from gmp.h");
+    let limb_bits = limb_bits.expect("Cannot determine GMP_LIMB_BITS from gmp.h");
     println!("cargo:limb_bits={}", limb_bits);
 
-    let nail_bits =
-        nail_bits.expect("Cannot determine GMP_NAIL_BITS from gmp.h");
+    let nail_bits = nail_bits.expect("Cannot determine GMP_NAIL_BITS from gmp.h");
     if nail_bits > 0 {
         println!("cargo:rustc-cfg=nails");
     }
 
-    let long_long_limb =
-        long_long_limb.expect("Cannot determine _LONG_LONG_LIMB from gmp.h");
+    let long_long_limb = long_long_limb.expect("Cannot determine _LONG_LONG_LIMB from gmp.h");
     let long_long_limb = if long_long_limb {
         println!("cargo:rustc-cfg=long_long_limb");
         "::std::os::raw::c_ulonglong"
@@ -518,9 +509,8 @@ fn write_link_info(
 }
 
 fn cargo_env(name: &str) -> OsString {
-    env::var_os(name).unwrap_or_else(|| {
-        panic!("environment variable not found: {}, please use cargo", name)
-    })
+    env::var_os(name)
+        .unwrap_or_else(|| panic!("environment variable not found: {}, please use cargo", name))
 }
 
 fn there_is_env(name: &str) -> bool {
@@ -557,13 +547,8 @@ fn check_for_bug_47048(env: &Environment) -> Workaround47048 {
     execute(cmd);
 
     cmd = Command::new("gcc");
-    cmd.current_dir(&try_dir).args(&[
-        "c_main.c",
-        "-L.",
-        "-lsay_hi",
-        "-o",
-        "c_main.exe",
-    ]);
+    cmd.current_dir(&try_dir)
+        .args(&["c_main.c", "-L.", "-lsay_hi", "-o", "c_main.exe"]);
     execute(cmd);
 
     // try simple rustc command that should work, so that failure
@@ -573,13 +558,8 @@ fn check_for_bug_47048(env: &Environment) -> Workaround47048 {
     execute(cmd);
 
     cmd = Command::new(&rustc);
-    cmd.current_dir(&try_dir).args(&[
-        "r_main.rs",
-        "-L.",
-        "-lsay_hi",
-        "-o",
-        "r_main.exe",
-    ]);
+    cmd.current_dir(&try_dir)
+        .args(&["r_main.rs", "-L.", "-lsay_hi", "-o", "r_main.exe"]);
     println!("$ {:?}", cmd);
     let status = cmd
         .status()
@@ -594,11 +574,8 @@ fn check_for_bug_47048(env: &Environment) -> Workaround47048 {
         execute(cmd);
 
         cmd = Command::new("ar");
-        cmd.current_dir(&try_dir).args(&[
-            "cr",
-            "libworkaround_47048.a",
-            "workaround.o",
-        ]);
+        cmd.current_dir(&try_dir)
+            .args(&["cr", "libworkaround_47048.a", "workaround.o"]);
         execute(cmd);
 
         cmd = Command::new(&rustc);
@@ -645,8 +622,7 @@ fn rustc_later_eq(major: i32, minor: i32) -> bool {
         .arg("--version")
         .output()
         .expect("unable to run rustc --version");
-    let version =
-        String::from_utf8(output.stdout).expect("unrecognized rustc version");
+    let version = String::from_utf8(output.stdout).expect("unrecognized rustc version");
     if !version.starts_with("rustc ") {
         panic!("unrecognized rustc version: {}", version);
     }
@@ -678,8 +654,7 @@ fn remove_dir(dir: &Path) -> IoResult<()> {
 }
 
 fn remove_dir_or_panic(dir: &Path) {
-    remove_dir(dir)
-        .unwrap_or_else(|_| panic!("Unable to remove directory: {:?}", dir));
+    remove_dir(dir).unwrap_or_else(|_| panic!("Unable to remove directory: {:?}", dir));
 }
 
 fn create_dir(dir: &Path) -> IoResult<()> {
@@ -688,14 +663,13 @@ fn create_dir(dir: &Path) -> IoResult<()> {
 }
 
 fn create_dir_or_panic(dir: &Path) {
-    create_dir(dir)
-        .unwrap_or_else(|_| panic!("Unable to create directory: {:?}", dir));
+    create_dir(dir).unwrap_or_else(|_| panic!("Unable to create directory: {:?}", dir));
 }
 
 fn create_file_or_panic(filename: &Path, contents: &str) {
     println!("$ printf '%s' {:?}... > {:?}", &contents[0..10], filename);
-    let mut file = File::create(filename)
-        .unwrap_or_else(|_| panic!("Unable to create file: {:?}", filename));
+    let mut file =
+        File::create(filename).unwrap_or_else(|_| panic!("Unable to create file: {:?}", filename));
     file.write_all(contents.as_bytes())
         .unwrap_or_else(|_| panic!("Unable to write to file: {:?}", filename));
 }
@@ -773,22 +747,16 @@ fn execute(mut command: Command) {
 }
 
 fn open(name: &Path) -> BufReader<File> {
-    let file = File::open(name)
-        .unwrap_or_else(|_| panic!("Cannot open file: {:?}", name));
+    let file = File::open(name).unwrap_or_else(|_| panic!("Cannot open file: {:?}", name));
     BufReader::new(file)
 }
 
 fn create(name: &Path) -> BufWriter<File> {
-    let file = File::create(name)
-        .unwrap_or_else(|_| panic!("Cannot create file: {:?}", name));
+    let file = File::create(name).unwrap_or_else(|_| panic!("Cannot create file: {:?}", name));
     BufWriter::new(file)
 }
 
-fn read_line(
-    reader: &mut BufReader<File>,
-    buf: &mut String,
-    name: &Path,
-) -> usize {
+fn read_line(reader: &mut BufReader<File>, buf: &mut String, name: &Path) -> usize {
     reader
         .read_line(buf)
         .unwrap_or_else(|_| panic!("Cannot read from: {:?}", name))
