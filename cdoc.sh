@@ -33,6 +33,7 @@ rustdoc cdoc-src/index.md --markdown-no-toc --output public \
 	--markdown-css light.css \
 	--html-before-content cdoc-src/before-content.html \
 	--html-after-content cdoc-src/after-content.html
+sed -i.rm~ 's/\.docblock\(.*\) table /.docblock-no\1 table /' public/rustdoc.css
 for l in gmp mpfr mpc; do
 	L=$(echo $l | tr '[a-z]' '[A-Z]')
 	for f in public/$l/*.html; do
