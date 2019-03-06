@@ -43,6 +43,12 @@
 }
 @font-face {
 	font-family: 'Source Code Pro';
+	font-style: italic;
+	font-weight: 400;
+	src: url("SourceCodePro-It.ttf.woff") format('woff');
+}
+@font-face {
+	font-family: 'Source Code Pro';
 	font-style: normal;
 	font-weight: 600;
 	src: url("SourceCodePro-Semibold.ttf.woff") format('woff');
