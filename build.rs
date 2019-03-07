@@ -49,6 +49,8 @@ struct Environment {
     jobs: OsString,
     target: Target,
     make_check: bool,
+    version_prefix: String,
+    version_patch: Option<u64>,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -65,13 +67,13 @@ fn main() {
     let target = cargo_env("TARGET");
     assert_eq!(host, target, "cross compilation is not supported");
 
+    let (version_prefix, version_patch) = get_version();
+
     // The cache dir is for testing purposes, it is *not* meant for
     // general use.
     println!("cargo:rerun-if-env-changed=GMP_MPFR_SYS_CACHE");
-    let cache_dir = env::var_os("GMP_MPFR_SYS_CACHE").map(|cache| {
-        let version = cargo_env("CARGO_PKG_VERSION");
-        PathBuf::from(cache).join(version).join(host)
-    });
+    let cache_dir = env::var_os("GMP_MPFR_SYS_CACHE")
+        .map(|cache| PathBuf::from(cache).join(&version_prefix).join(host));
 
     let target = target
         .into_string()
@@ -97,6 +99,8 @@ fn main() {
         jobs: cargo_env("NUM_JOBS"),
         target: target,
         make_check: make_check,
+        version_prefix: version_prefix,
+        version_patch: version_patch,
     };
 
     // make sure we have target directories
@@ -143,10 +147,32 @@ fn main() {
         if !there_is_env("CARGO_FEATURE_CNODELETE") {
             remove_dir_or_panic(&env.build_dir);
         }
-        save_cache(&env, &gmp_ah, &mpfr_ah, &mpc_ah);
+        if save_cache(&env, &gmp_ah, &mpfr_ah, &mpc_ah) {
+            clear_cache_redundancies(&env, mpfr_ah.is_some(), mpc_ah.is_some());
+        }
     }
     process_gmp_header(&gmp_ah.1, &out_dir.join("gmp_h.rs"));
     write_link_info(&env, workaround_47048, mpfr_ah.is_some(), mpc_ah.is_some());
+}
+
+fn get_version() -> (String, Option<u64>) {
+    let version = cargo_env("CARGO_PKG_VERSION")
+        .into_string()
+        .unwrap_or_else(|e| panic!("version not in utf-8: {:?}", e));
+    let last_dot = version
+        .rfind('.')
+        .unwrap_or_else(|| panic!("version has no dots: {}", version));
+    if last_dot == 0 {
+        panic!("version starts with dot: {}", version);
+    }
+    match version[last_dot + 1..].parse::<u64>() {
+        Ok(patch) => {
+            let mut v = version;
+            v.truncate(last_dot);
+            (v, Some(patch))
+        }
+        Err(_) => (version, None),
+    }
 }
 
 fn need_compile(
@@ -166,7 +192,9 @@ fn need_compile(
     };
     if gmp_fine && mpfr_fine && mpc_fine {
         if should_save_cache(env, mpfr_ah.is_some(), mpc_ah.is_some()) {
-            save_cache(env, gmp_ah, mpfr_ah, mpc_ah);
+            if save_cache(env, gmp_ah, mpfr_ah, mpc_ah) {
+                clear_cache_redundancies(&env, mpfr_ah.is_some(), mpc_ah.is_some());
+            }
         }
         return (false, false, false);
     } else if load_cache(env, gmp_ah, mpfr_ah, mpc_ah) {
@@ -189,28 +217,110 @@ fn save_cache(
         Some(ref s) => s,
         None => return false,
     };
-    let req_check = if env.make_check { "check" } else { "nocheck" };
-    let req_libs = if mpc_ah.is_some() {
-        "gmp_mpfr_mpc"
-    } else if mpfr_ah.is_some() {
-        "gmp_mpfr"
-    } else {
-        "gmp"
+    let req_check = if env.make_check { "ctest" } else { "cnotest" };
+    let version_dir = match env.version_patch {
+        None => cache_dir.join(&env.version_prefix),
+        Some(patch) => cache_dir.join(format!("{}.{}", env.version_prefix, patch)),
     };
-    let dir = cache_dir.join(req_check).join(req_libs);
-    let mut ok = create_dir(&dir).is_ok();
+    let check_dir = version_dir.join(req_check);
+    let mut ok = create_dir(&check_dir).is_ok();
     let (ref a, ref h) = *gmp_ah;
-    ok = ok && copy_file(a, &dir.join("libgmp.a")).is_ok();
-    ok = ok && copy_file(h, &dir.join("gmp.h")).is_ok();
+    ok = ok && copy_file(a, &check_dir.join("libgmp.a")).is_ok();
+    ok = ok && copy_file(h, &check_dir.join("gmp.h")).is_ok();
     if let Some((ref a, ref h)) = *mpfr_ah {
-        ok = ok && copy_file(a, &dir.join("libmpfr.a")).is_ok();
-        ok = ok && copy_file(h, &dir.join("mpfr.h")).is_ok();
+        ok = ok && copy_file(a, &check_dir.join("libmpfr.a")).is_ok();
+        ok = ok && copy_file(h, &check_dir.join("mpfr.h")).is_ok();
     }
     if let Some((ref a, ref h)) = *mpc_ah {
-        ok = ok && copy_file(a, &dir.join("libmpc.a")).is_ok();
-        ok = ok && copy_file(h, &dir.join("mpc.h")).is_ok();
+        ok = ok && copy_file(a, &check_dir.join("libmpc.a")).is_ok();
+        ok = ok && copy_file(h, &check_dir.join("mpc.h")).is_ok();
     }
     ok
+}
+
+fn clear_cache_redundancies(env: &Environment, mpfr: bool, mpc: bool) {
+    let cache_dir = match env.cache_dir {
+        Some(ref s) => s,
+        None => return,
+    };
+    let cache_dirs = cache_directories(env, &cache_dir)
+        .into_iter()
+        .rev()
+        .filter(|x| match env.version_patch {
+            None => x.1.is_none(),
+            Some(patch) => x.1.map(|p| p <= patch).unwrap_or(false),
+        });
+    let checks = ["cnotest", "ctest"];
+    let req_checks = if env.make_check {
+        &checks
+    } else {
+        &checks[..1]
+    };
+    for (version_dir, version_patch) in cache_dirs {
+        for req_check in req_checks {
+            let check_dir = version_dir.join(req_check);
+
+            // do not clear newly saved cache
+            let make_check = *req_check == "ctest";
+            if version_patch == env.version_patch && make_check == env.make_check {
+                continue;
+            }
+
+            // do not clear cache with more libraries  than newly saved cache
+            if (!mpc && check_dir.join("libmpc.a").is_file())
+                || (!mpfr && check_dir.join("libmpfr.a").is_file())
+            {
+                continue;
+            }
+
+            let _ = remove_dir(&check_dir);
+        }
+        if !version_dir.join(checks[0]).is_dir() && !version_dir.join(checks[1]).is_dir() {
+            let _ = remove_dir(&version_dir);
+        }
+    }
+}
+
+fn cache_directories(env: &Environment, base: &Path) -> Vec<(PathBuf, Option<u64>)> {
+    let dir = match fs::read_dir(base) {
+        Ok(dir) => dir,
+        Err(_) => return Vec::new(),
+    };
+    let mut vec = Vec::new();
+    for entry in dir {
+        let path = match entry {
+            Ok(e) => e.path(),
+            Err(_) => continue,
+        };
+        if !path.is_dir() {
+            continue;
+        }
+        let patch = {
+            let file_name = match path.file_name() {
+                Some(name) => name,
+                None => continue,
+            };
+            let path_str = match file_name.to_str() {
+                Some(p) => p,
+                None => continue,
+            };
+            if path_str == &env.version_prefix {
+                None
+            } else if !path_str.starts_with(&env.version_prefix) {
+                continue;
+            } else if !path_str[env.version_prefix.len()..].starts_with('.') {
+                continue;
+            } else {
+                match path_str[env.version_prefix.len() + 1..].parse::<u64>() {
+                    Ok(patch) => Some(patch),
+                    Err(_) => continue,
+                }
+            }
+        };
+        vec.push((path, patch));
+    }
+    vec.sort_by_key(|k| k.1);
+    vec
 }
 
 fn load_cache(
@@ -223,53 +333,37 @@ fn load_cache(
         Some(ref s) => s,
         None => return false,
     };
-    let checks = ["nocheck", "check"];
+    let cache_dirs = cache_directories(env, &cache_dir)
+        .into_iter()
+        .rev()
+        .filter(|x| match env.version_patch {
+            None => x.1.is_none(),
+            Some(patch) => x.1.map(|p| p >= patch).unwrap_or(false),
+        });
+    let checks = ["cnotest", "ctest"];
     let req_checks = if env.make_check {
         &checks[1..]
     } else {
         &checks
     };
-    for req_check in req_checks {
-        let check_dir = cache_dir.join(req_check);
-        // first try "gmp" directory
-        if mpfr_ah.is_none() {
-            let dir = check_dir.join("gmp");
-            let (ref a, ref h) = *gmp_ah;
-            let mut ok = copy_file(&dir.join("libgmp.a"), a).is_ok();
-            ok = ok && copy_file(&dir.join("gmp.h"), h).is_ok();
-            if ok {
-                return true;
+    for (version_dir, _) in cache_dirs {
+        for req_check in req_checks {
+            let check_dir = version_dir.join(req_check);
+            let mut ok = true;
+            if let Some((ref a, ref h)) = *mpc_ah {
+                ok = ok && copy_file(&check_dir.join("libmpc.a"), a).is_ok();
+                ok = ok && copy_file(&check_dir.join("mpc.h"), h).is_ok();
             }
-        }
-        // next try "gmp_mpfr" directory
-        if mpc_ah.is_none() {
-            let dir = check_dir.join("gmp_mpfr");
-            let (ref a, ref h) = *gmp_ah;
-            let mut ok = copy_file(&dir.join("libgmp.a"), a).is_ok();
-            ok = ok && copy_file(&dir.join("gmp.h"), h).is_ok();
             if let Some((ref a, ref h)) = *mpfr_ah {
-                ok = ok && copy_file(&dir.join("libmpfr.a"), a).is_ok();
-                ok = ok && copy_file(&dir.join("mpfr.h"), h).is_ok();
+                ok = ok && copy_file(&check_dir.join("libmpfr.a"), a).is_ok();
+                ok = ok && copy_file(&check_dir.join("mpfr.h"), h).is_ok();
             }
+            let (ref a, ref h) = *gmp_ah;
+            ok = ok && copy_file(&check_dir.join("libgmp.a"), a).is_ok();
+            ok = ok && copy_file(&check_dir.join("gmp.h"), h).is_ok();
             if ok {
                 return true;
             }
-        }
-        // finally try "gmp_mpfr_mpc" directory
-        let dir = check_dir.join("gmp_mpfr_mpc");
-        let (ref a, ref h) = *gmp_ah;
-        let mut ok = copy_file(&dir.join("libgmp.a"), a).is_ok();
-        ok = ok && copy_file(&dir.join("gmp.h"), h).is_ok();
-        if let Some((ref a, ref h)) = *mpfr_ah {
-            ok = ok && copy_file(&dir.join("libmpfr.a"), a).is_ok();
-            ok = ok && copy_file(&dir.join("mpfr.h"), h).is_ok();
-        }
-        if let Some((ref a, ref h)) = *mpc_ah {
-            ok = ok && copy_file(&dir.join("libmpc.a"), a).is_ok();
-            ok = ok && copy_file(&dir.join("mpc.h"), h).is_ok();
-        }
-        if ok {
-            return true;
         }
     }
     false
@@ -280,50 +374,36 @@ fn should_save_cache(env: &Environment, mpfr: bool, mpc: bool) -> bool {
         Some(ref s) => s,
         None => return false,
     };
-    let checks = ["nocheck", "check"];
+    let cache_dirs = cache_directories(env, &cache_dir)
+        .into_iter()
+        .rev()
+        .filter(|x| match env.version_patch {
+            None => x.1.is_none(),
+            Some(patch) => x.1.map(|p| p >= patch).unwrap_or(false),
+        });
+    let checks = ["cnotest", "ctest"];
     let req_checks = if env.make_check {
         &checks[1..]
     } else {
         &checks
     };
-    for req_check in req_checks {
-        let check_dir = cache_dir.join(req_check);
-        // first try "gmp" directory
-        if !mpfr {
-            let dir = check_dir.join("gmp");
-            let mut ok = dir.join("libgmp.a").is_file();
-            ok = ok && dir.join("gmp.h").is_file();
-            if ok {
-                return false;
+    for (version_dir, _) in cache_dirs {
+        for req_check in req_checks {
+            let check_dir = version_dir.join(req_check);
+            let mut ok = true;
+            if mpc {
+                ok = ok && check_dir.join("libmpc.a").is_file();
+                ok = ok && check_dir.join("mpc.h").is_file();
             }
-        }
-        // next try "gmp_mpfr" directory
-        if !mpc {
-            let dir = check_dir.join("gmp_mpfr");
-            let mut ok = dir.join("libgmp.a").is_file();
-            ok = ok && dir.join("gmp.h").is_file();
             if mpfr {
-                ok = ok && dir.join("libmpfr.a").is_file();
-                ok = ok && dir.join("mpfr.h").is_file();
+                ok = ok && check_dir.join("libmpfr.a").is_file();
+                ok = ok && check_dir.join("mpfr.h").is_file();
             }
+            ok = ok && check_dir.join("libgmp.a").is_file();
+            ok = ok && check_dir.join("gmp.h").is_file();
             if ok {
                 return false;
             }
-        }
-        // finally try "gmp_mpfr_mpc" directory
-        let dir = check_dir.join("gmp_mpfr_mpc");
-        let mut ok = dir.join("libgmp.a").is_file();
-        ok = ok && dir.join("gmp.h").is_file();
-        if mpfr {
-            ok = ok && dir.join("libmpfr.a").is_file();
-            ok = ok && dir.join("mpfr.h").is_file();
-        }
-        if mpc {
-            ok = ok && dir.join("libmpc.a").is_file();
-            ok = ok && dir.join("mpc.h").is_file();
-        }
-        if ok {
-            return false;
         }
     }
     true
@@ -701,7 +781,7 @@ fn make_and_check(env: &Environment, build_dir: &Path) {
             .current_dir(build_dir)
             .arg("-j")
             .arg(&env.jobs)
-            .arg("check");
+            .arg("ctest");
         execute(make_check);
     }
 }
