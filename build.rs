@@ -781,7 +781,7 @@ fn make_and_check(env: &Environment, build_dir: &Path) {
             .current_dir(build_dir)
             .arg("-j")
             .arg(&env.jobs)
-            .arg("ctest");
+            .arg("check");
         execute(make_check);
     }
 }
