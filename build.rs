@@ -72,10 +72,12 @@ fn main() {
     let (version_prefix, version_patch) = get_version();
 
     println!("cargo:rerun-if-env-changed=GMP_MPFR_SYS_CACHE");
-    let cache_dir = env::var_os("GMP_MPFR_SYS_CACHE")
-        .map(PathBuf::from)
-        .or_else(|| dirs::cache_dir().map(|c| c.join("gmp-mpfr-sys")))
-        .map(|cache| cache.join(&version_prefix).join(host));
+    let cache_dir = match env::var_os("GMP_MPFR_SYS_CACHE") {
+        Some(ref c) if c.is_empty() => None,
+        Some(c) => Some(PathBuf::from(c)),
+        None => dirs::cache_dir().map(|c| c.join("gmp-mpfr-sys")),
+    };
+    let cache_dir = cache_dir.map(|cache| cache.join(&version_prefix).join(host));
 
     let target = target
         .into_string()
