@@ -200,6 +200,21 @@ Then, to build a crate with a dependency on this crate:
 
  3. Build the crate using `cargo`.
 
+## Caching the built C libraries
+
+Building the C libraries can take some time. In order to save
+compilation time, the built libraries are cached in the user’s cache
+directory as follows:
+
+  * on GNU/Linux: inside `$XDG_CACHE_HOME/gmp-mpfr-sys` or
+    `$HOME/.cache/gmp-mpfr-sys`
+  * on macOS: inside `$HOME/Library/Caches/gmp-mpfr-sys`
+  * on Windows: inside `{FOLDERID_LocalAppData}\gmp-mpfr-sys`
+
+To use a different directory, you can set the environment variable
+`GMP_MPFR_SYS_CACHE` to the desired cache directory. Setting the
+`GMP_MPFR_SYS_CACHE` variable to an empty string will disable caching.
+
 [*Cargo.toml*]: https://doc.rust-lang.org/cargo/guide/dependencies.html
 [GMP]: https://gmplib.org/
 [GNU GPL]: https://www.gnu.org/licenses/gpl-3.0.html

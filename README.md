@@ -24,6 +24,10 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
+### Version 1.1.12 news (unreleased)
+
+  * The built C libraries are now cached.
+
 ### Version 1.1.11 news (2019-02-01)
 
   * [MPFR] was updated from version 4.0.1-p14 to 4.0.2.
@@ -198,6 +202,21 @@ Then, to build a crate with a dependency on this crate:
  2. Change to the crate directory.
 
  3. Build the crate using `cargo`.
+
+## Caching the built C libraries
+
+Building the C libraries can take some time. In order to save
+compilation time, the built libraries are cached in the user’s cache
+directory as follows:
+
+  * on GNU/Linux: inside `$XDG_CACHE_HOME/gmp-mpfr-sys` or
+    `$HOME/.cache/gmp-mpfr-sys`
+  * on macOS: inside `$HOME/Library/Caches/gmp-mpfr-sys`
+  * on Windows: inside `{FOLDERID_LocalAppData}\gmp-mpfr-sys`
+
+To use a different directory, you can set the environment variable
+`GMP_MPFR_SYS_CACHE` to the desired cache directory. Setting the
+`GMP_MPFR_SYS_CACHE` variable to an empty string will disable caching.
 
 [*Cargo.toml*]: https://doc.rust-lang.org/cargo/guide/dependencies.html
 [*RELEASES.md*]: https://gitlab.com/tspiteri/gmp-mpfr-sys/blob/master/RELEASES.md
