@@ -47,7 +47,6 @@ build: false
 
 before_test:
   - bash -c "if [ -d ""$USERPROFILE/.cargo/registry/cache"" ]; then cd ""$USERPROFILE/.cargo/registry""; find cache -name \*.crate; fi"
-  - set GMP_MPFR_SYS_CACHE=%APPVEYOR_BUILD_FOLDER%\gmp-mpfr-sys-cache
 
 test_script:
   - cargo +beta-%TARGET% test --features "fail-on-warnings ctest"
