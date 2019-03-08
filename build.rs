@@ -18,6 +18,8 @@
 //  4. Use relative paths for configure otherwise msys/mingw might be
 //     confused with drives and such.
 
+extern crate dirs;
+
 use std::env;
 use std::ffi::{OsStr, OsString};
 use std::fs::{self, File};
@@ -69,11 +71,11 @@ fn main() {
 
     let (version_prefix, version_patch) = get_version();
 
-    // The cache dir is for testing purposes, it is *not* meant for
-    // general use.
     println!("cargo:rerun-if-env-changed=GMP_MPFR_SYS_CACHE");
     let cache_dir = env::var_os("GMP_MPFR_SYS_CACHE")
-        .map(|cache| PathBuf::from(cache).join(&version_prefix).join(host));
+        .map(PathBuf::from)
+        .or_else(|| dirs::cache_dir().map(|c| c.join("gmp-mpfr-sys")))
+        .map(|cache| cache.join(&version_prefix).join(host));
 
     let target = target
         .into_string()
