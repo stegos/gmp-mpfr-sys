@@ -24,7 +24,7 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
-### Version 1.1.12 news (unreleased)
+### Version 1.1.12 news (2019-03-08)
 
   * The built C libraries are now cached.
 
