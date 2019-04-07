@@ -29,7 +29,7 @@ use std::os::unix::fs as unix_fs;
 #[cfg(windows)]
 use std::os::windows::fs as windows_fs;
 use std::path::{Path, PathBuf};
-use std::process::Command;
+use std::process::{Command, Stdio};
 
 const GMP_DIR: &'static str = "gmp-6.1.2-c";
 const MPFR_DIR: &'static str = "mpfr-4.0.2-c";
@@ -613,8 +613,10 @@ fn check_for_bug_47048(env: &Environment) -> Workaround47048 {
     }
     let try_dir = env.build_dir.join("try_47048");
     let rustc = cargo_env("RUSTC");
+    remove_dir_or_panic(&try_dir);
     create_dir_or_panic(&try_dir);
     println!("$ cd {:?}", try_dir);
+    println!("$ #Check for bug 47048");
     create_file_or_panic(&try_dir.join("say_hi.c"), BUG_47048_SAY_HI_C);
     create_file_or_panic(&try_dir.join("c_main.c"), BUG_47048_C_MAIN_C);
     create_file_or_panic(&try_dir.join("r_main.rs"), BUG_47048_R_MAIN_RS);
@@ -643,15 +645,22 @@ fn check_for_bug_47048(env: &Environment) -> Workaround47048 {
 
     cmd = Command::new(&rustc);
     cmd.current_dir(&try_dir)
-        .args(&["r_main.rs", "-L.", "-lsay_hi", "-o", "r_main.exe"]);
-    println!("$ {:?}", cmd);
+        .args(&["r_main.rs", "-L.", "-lsay_hi", "-o", "r_main.exe"])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null());
+    println!(
+        "$ {:?} >& /dev/null && echo Bug 47048 not found || echo Working around bug 47048",
+        cmd
+    );
     let status = cmd
         .status()
         .unwrap_or_else(|_| panic!("Unable to execute: {:?}", cmd));
-    let need_workaround = !status.success();
+    let need_workaround = if status.success() {
+        println!("Bug 47048 not found");
+        Workaround47048::No
+    } else {
+        println!("Working around bug 47048");
 
-    // build and test libworkaround_47048.a
-    if need_workaround {
         cmd = Command::new("gcc");
         cmd.current_dir(&try_dir)
             .args(&["-fPIC", "-O2", "-c", "workaround.c"]);
@@ -676,13 +685,11 @@ fn check_for_bug_47048(env: &Environment) -> Workaround47048 {
         let src = try_dir.join("libworkaround_47048.a");
         let dst = env.lib_dir.join("libworkaround_47048.a");
         copy_file_or_panic(&src, &dst);
-    }
 
+        Workaround47048::Yes
+    };
     remove_dir_or_panic(&try_dir);
-    match need_workaround {
-        true => Workaround47048::Yes,
-        false => Workaround47048::No,
-    }
+    need_workaround
 }
 
 fn add_mingw_libs(feature_mpfr: bool, _feature_mpc: bool) {
