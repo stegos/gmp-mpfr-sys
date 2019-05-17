@@ -24,11 +24,11 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
-### Version 1.1.13 news (unreleased)
+### Version 1.1.13 news (2019-05-17)
 
-  * List the internal fields of [`gmp::mpq_t`], [`gmp::randstate_t`]
-    and [`mpc::mpc_t`] in the documentation, and add some notes about
-    compatibility.
+  * Expose the internal fields of [`gmp::mpq_t`], [`gmp::randstate_t`]
+    and [`mpc::mpc_t`], and add some notes about compatibility in the
+    documentation.
 
 ### Version 1.1.12 news (2019-03-08)
 
