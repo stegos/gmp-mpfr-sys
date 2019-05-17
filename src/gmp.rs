@@ -87,6 +87,16 @@ pub type bitcnt_t = c_ulong;
 
 /// See: [`mpz_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/GMP-Basics.html#index-mpz_005ft)
 /// and [Integer Internals](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Internals.html#Integer-Internals)
+///
+/// # Compatibility note
+///
+/// The fields listed here are considered internal details. These
+/// internals may change in new minor releases of this crate, though
+/// they will be kept unchanged for patch releases. Any code that
+/// makes use of these internals should list the dependency as
+/// `version = "~1.1"` inside [*Cargo.toml*], *not* `version = "1.1"`.
+///
+/// [*Cargo.toml*]: https://doc.rust-lang.org/cargo/guide/dependencies.html
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct mpz_t {
@@ -100,15 +110,38 @@ pub struct mpz_t {
 
 /// See: [`mpq_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/GMP-Basics.html#index-mpq_005ft)
 /// and [Rational Internals](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Internals.html#Rational-Internals)
+///
+/// # Compatibility note
+///
+/// The fields listed here are considered internal details. These
+/// internals may change in new minor releases of this crate, though
+/// they will be kept unchanged for patch releases. Any code that
+/// makes use of these internals should list the dependency as
+/// `version = "~1.1"` inside [*Cargo.toml*], *not* `version = "1.1"`.
+///
+/// [*Cargo.toml*]: https://doc.rust-lang.org/cargo/guide/dependencies.html
+///
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct mpq_t {
-    num: mpz_t,
-    den: mpz_t,
+    /// Internal implementation detail: numerator.
+    pub num: mpz_t,
+    /// Internal implementation detail: denominator.
+    pub den: mpz_t,
 }
 
 /// See: [`mpf_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/GMP-Basics.html#index-mpf_005ft)
 /// and [Float Internals](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Internals.html#Float-Internals)
+///
+/// # Compatibility note
+///
+/// The fields listed here are considered internal details. These
+/// internals may change in new minor releases of this crate, though
+/// they will be kept unchanged for patch releases. Any code that
+/// makes use of these internals should list the dependency as
+/// `version = "~1.1"` inside [*Cargo.toml*], *not* `version = "1.1"`.
+///
+/// [*Cargo.toml*]: https://doc.rust-lang.org/cargo/guide/dependencies.html
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct mpf_t {
@@ -123,12 +156,25 @@ pub struct mpf_t {
 }
 
 /// See: [`gmp_randstate_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/GMP-Basics.html#index-gmp_005frandstate_005ft)
+///
+/// # Compatibility note
+///
+/// The fields listed here are considered internal details. These
+/// internals may change in new minor releases of this crate, though
+/// they will be kept unchanged for patch releases. Any code that
+/// makes use of these internals should list the dependency as
+/// `version = "~1.1"` inside [*Cargo.toml*], *not* `version = "1.1"`.
+///
+/// [*Cargo.toml*]: https://doc.rust-lang.org/cargo/guide/dependencies.html
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct randstate_t {
-    seed: mpz_t,
-    alg: c_int,
-    algdata: *mut c_void,
+    /// Internal implementation detail: state of the generator.
+    pub seed: mpz_t,
+    /// Internal implementation detail: unused.
+    pub alg: c_int,
+    /// Internal implementation detail: pointer to function pointers structure.
+    pub algdata: *mut c_void,
 }
 
 // Types for function declarations in this file.

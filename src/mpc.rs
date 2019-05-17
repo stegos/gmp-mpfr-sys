@@ -121,11 +121,23 @@ pub const RNDDU: c_int = RNDD + (RNDU << 4);
 pub const RNDDD: c_int = RNDD + (RNDD << 4);
 
 /// See: [`mpc_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/GNU-MPC-Basics.html#index-mpc_005ft)
+///
+/// # Compatibility note
+///
+/// The fields listed here are considered internal details. These
+/// internals may change in new minor releases of this crate, though
+/// they will be kept unchanged for patch releases. Any code that
+/// makes use of these internals should list the dependency as
+/// `version = "~1.1"` inside [*Cargo.toml*], *not* `version = "1.1"`.
+///
+/// [*Cargo.toml*]: https://doc.rust-lang.org/cargo/guide/dependencies.html
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct mpc_t {
-    re: mpfr::mpfr_t,
-    im: mpfr::mpfr_t,
+    /// Internal implementation detail: real part.
+    pub re: mpfr::mpfr_t,
+    /// Internal implementation detail: imaginary part.
+    pub im: mpfr::mpfr_t,
 }
 
 // Types for function declarations in this file.

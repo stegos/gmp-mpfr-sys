@@ -149,6 +149,16 @@ pub const PREC_MAX: prec_t = ((!(0 as uprec_t) >> 1) - 256) as prec_t;
 
 /// See: [`mpfr_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005ft)
 /// and [Internals](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#Internals)
+///
+/// # Compatibility note
+///
+/// The fields listed here are considered internal details. These
+/// internals may change in new minor releases of this crate, though
+/// they will be kept unchanged for patch releases. Any code that
+/// makes use of these internals should list the dependency as
+/// `version = "~1.1"` inside [*Cargo.toml*], *not* `version = "1.1"`.
+///
+/// [*Cargo.toml*]: https://doc.rust-lang.org/cargo/guide/dependencies.html
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct mpfr_t {
@@ -156,9 +166,9 @@ pub struct mpfr_t {
     pub prec: prec_t,
     /// See: [Internals](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#Internals)
     pub sign: c_int,
-    /// See: [Internals](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#Internals)    pub prec: prec_t,
+    /// See: [Internals](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#Internals)
     pub exp: exp_t,
-    /// See: [Internals](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#Internals)    pub prec: prec_t,
+    /// See: [Internals](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#Internals)
     pub d: *mut gmp::limb_t,
 }
 

@@ -24,6 +24,12 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
+### Version 1.1.13 news (unreleased)
+
+  * List the internal fields of [`gmp::mpq_t`], [`gmp::randstate_t`]
+    and [`mpc::mpc_t`] in the documentation, and add some notes about
+    compatibility.
+
 ### Version 1.1.12 news (2019-03-08)
 
   * The built C libraries are now cached.

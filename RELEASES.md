@@ -5,6 +5,13 @@ modification, are permitted in any medium without royalty provided the
 copyright notice and this notice are preserved. This file is offered
 as-is, without any warranty. -->
 
+Version 1.1.13 (unreleased)
+===========================
+
+  * List the internal fields of `gmp::mpq_t`, `gmp::randstate_t` and
+    `mpc::mpc_t` in the documentation, and add some notes about
+    compatibility.
+
 Version 1.1.12 (2019-03-08)
 ===========================
 
