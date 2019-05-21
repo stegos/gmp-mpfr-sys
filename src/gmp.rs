@@ -20,16 +20,19 @@ Function and type bindings for the [GMP] library.
 # Examples
 
 ```rust
+# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))] {
 use gmp_mpfr_sys::gmp;
-use std::mem;
+use std::mem::MaybeUninit;
 unsafe {
-    let mut z = mem::uninitialized();
-    gmp::mpz_init(&mut z);
+    let mut z = MaybeUninit::uninit();
+    gmp::mpz_init(z.as_mut_ptr());
+    let mut z = z.assume_init();
     gmp::mpz_set_ui(&mut z, 15);
     let u = gmp::mpz_get_ui(&z);
     assert_eq!(u, 15);
     gmp::mpz_clear(&mut z);
 }
+# }
 ```
 
 [GMP]: https://gmplib.org/

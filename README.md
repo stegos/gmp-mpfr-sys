@@ -24,6 +24,14 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
+### Version 1.1.14 news (unreleased)
+
+  * The documentation examples now use [`MaybeUnint`] instead of
+    [`mem::uninitialized`].
+
+[`MaybeUninit`]: https://doc.rust-lang.org/nightly/std/mem/union.MaybeUninit.html
+[`mem::uninitialized`]: https://doc.rust-lang.org/nightly/std/mem/fn.uninitialized.html
+
 ### Version 1.1.13 news (2019-05-17)
 
   * Expose the internal fields of [`gmp::mpq_t`], [`gmp::randstate_t`]

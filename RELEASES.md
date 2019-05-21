@@ -5,6 +5,12 @@ modification, are permitted in any medium without royalty provided the
 copyright notice and this notice are preserved. This file is offered
 as-is, without any warranty. -->
 
+Version 1.1.14 (unreleased)
+===========================
+
+  * The documentation examples now use `MaybeUnint` instead of
+    `mem::uninitialized`.
+
 Version 1.1.13 (2019-05-17)
 ===========================
 

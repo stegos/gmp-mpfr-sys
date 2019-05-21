@@ -20,18 +20,21 @@ Function and type bindings for the [MPFR] library.
 # Examples
 
 ```rust
+# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))] {
 use gmp_mpfr_sys::mpfr;
-use std::mem;
+use std::mem::MaybeUninit;
 let one_third = 1.0_f64 / 3.0;
 unsafe {
-    let mut f = mem::uninitialized();
-    mpfr::init2(&mut f, 53);
+    let mut f = MaybeUninit::uninit();
+    mpfr::init2(f.as_mut_ptr(), 53);
+    let mut f = f.assume_init();
     let dir = mpfr::set_d(&mut f, one_third, mpfr::rnd_t::RNDN);
     assert_eq!(dir, 0);
     let d = mpfr::get_d(&f, mpfr::rnd_t::RNDN);
     assert_eq!(d, one_third);
     mpfr::clear(&mut f);
 }
+# }
 ```
 
 The following example is a translation of the [MPFR sample] found on
@@ -42,24 +45,36 @@ using 200-bit precision. The program writes:
 `Sum is 2.7182818284590452353602874713526624977572470936999595749669131`
 
 ```rust
+# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))]
 use gmp_mpfr_sys::mpfr::{self, mpfr_t, rnd_t};
+# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))]
 use std::ffi::CStr;
+# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))]
 use std::fmt::Write;
-use std::mem;
+# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))]
+use std::mem::MaybeUninit;
+# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))]
 use std::os::raw::c_int;
+# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))]
 use std::ptr;
 
 fn main() {
+# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))] {
     unsafe {
-        let mut s = mem::uninitialized();
-        let mut t = mem::uninitialized();
-        let mut u = mem::uninitialized();
-
-        mpfr::init2(&mut t, 200);
+        let mut t = MaybeUninit::uninit();
+        mpfr::init2(t.as_mut_ptr(), 200);
+        let mut t = t.assume_init();
         mpfr::set_d(&mut t, 1.0, rnd_t::RNDD);
-        mpfr::init2(&mut s, 200);
+
+        let mut s = MaybeUninit::uninit();
+        mpfr::init2(s.as_mut_ptr(), 200);
+        let mut s = s.assume_init();
         mpfr::set_d(&mut s, 1.0, rnd_t::RNDD);
-        mpfr::init2(&mut u, 200);
+
+        let mut u = MaybeUninit::uninit();
+        mpfr::init2(u.as_mut_ptr(), 200);
+        let mut u = u.assume_init();
+
         for i in 1..101 {
             mpfr::mul_ui(&mut t, &t, i, rnd_t::RNDU);
             mpfr::set_d(&mut u, 1.0, rnd_t::RNDD);
@@ -76,13 +91,16 @@ fn main() {
         #     "2.7182818284590452353602874713526624977572470936999595749669131"
         # );
     }
+# }
 }
 
+# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))]
 unsafe fn mpfr_to_string(
     base: c_int, n: usize, op: *const mpfr_t, rnd: rnd_t
 ) -> String {
-    let mut exp = mem::uninitialized();
-    let str = mpfr::get_str(ptr::null_mut(), &mut exp, base, n, op, rnd);
+    let mut exp = MaybeUninit::uninit();
+    let str = mpfr::get_str(ptr::null_mut(), exp.as_mut_ptr(), base, n, op, rnd);
+    let exp = exp.assume_init();
     let mut buf = CStr::from_ptr(str).to_string_lossy().into_owned();
     mpfr::free_str(str);
     if mpfr::regular_p(op) != 0 {
@@ -1418,7 +1436,6 @@ pub unsafe extern "C" fn custom_move(x: mpfr_ptr, new_position: *mut c_void) {
 mod tests {
     use mpfr;
     use std::ffi::CStr;
-    use std::mem;
 
     #[test]
     fn check_version() {
@@ -1440,8 +1457,20 @@ mod tests {
     #[test]
     fn check_round_nearest_away() {
         unsafe {
-            let mut f = mem::uninitialized();
-            mpfr::init2(&mut f, 4);
+            let mut f;
+            #[cfg(maybe_uninit)]
+            {
+                use std::mem::MaybeUninit;
+                let mut maybe = MaybeUninit::uninit();
+                mpfr::init2(maybe.as_mut_ptr(), 4);
+                f = maybe.assume_init();
+            }
+            #[cfg(not(maybe_uninit))]
+            {
+                use std::mem;
+                f = mem::uninitialized();
+                mpfr::init2(&mut f, 4);
+            }
 
             // mpfr_round_nearest_away needs emin > emin_min
             if mpfr::get_emin() == mpfr::get_emin_min() {

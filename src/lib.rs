@@ -251,6 +251,7 @@ To use a different directory, you can set the environment variable
 #![doc(html_logo_url = "https://tspiteri.gitlab.io/gmp-mpfr-sys/rug.svg")]
 #![doc(test(attr(deny(warnings))))]
 #![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
+#![cfg_attr(nightly_maybe_uninit, feature(maybe_uninit))]
 
 extern crate libc;
 

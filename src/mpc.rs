@@ -20,15 +20,17 @@ Function and type bindings for the [MPC] library.
 # Examples
 
 ```rust
+# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))] {
 use gmp_mpfr_sys::mpc;
 use gmp_mpfr_sys::mpfr;
 use std::f64;
-use std::mem;
+use std::mem::MaybeUninit;
 let one_third = 1.0_f64 / 3.0;
 let neg_inf = f64::NEG_INFINITY;
 unsafe {
-    let mut c = mem::uninitialized();
-    mpc::init3(&mut c, 53, 53);
+    let mut c = MaybeUninit::uninit();
+    mpc::init3(c.as_mut_ptr(), 53, 53);
+    let mut c = c.assume_init();
     let dirs = mpc::set_d_d(&mut c, one_third, neg_inf, mpc::RNDNN);
     assert_eq!(dirs, 0);
     let re_ptr = mpc::realref_const(&c);
@@ -38,6 +40,7 @@ unsafe {
     let im = mpfr::get_d(im_ptr, mpfr::rnd_t::RNDN);
     assert_eq!(im, neg_inf);
     mpc::clear(&mut c);
+# }
 }
 ```
 
