@@ -1018,22 +1018,22 @@ extern "C" {
 /// See: [`mpq_numref`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Rational-Number-Functions.html#index-mpq_005fnumref)
 #[inline]
 pub unsafe extern "C" fn mpq_numref(op: mpq_ptr) -> mpz_ptr {
-    (&mut (*op).num) as mpz_ptr
+    op as mpz_ptr
 }
 /// Constant version of [`mpq_numref`](fn.mpq_numref.html).
 #[inline]
 pub unsafe extern "C" fn mpq_numref_const(op: mpq_srcptr) -> mpz_srcptr {
-    (&(*op).num) as mpz_srcptr
+    op as mpz_srcptr
 }
 /// See: [`mpq_denref`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Rational-Number-Functions.html#index-mpq_005fdenref)
 #[inline]
 pub unsafe extern "C" fn mpq_denref(op: mpq_ptr) -> mpz_ptr {
-    (&mut (*op).den) as mpz_ptr
+    (op as mpz_ptr).offset(1)
 }
 /// Constant version of [`mpq_denref`](fn.mpq_denref.html).
 #[inline]
 pub unsafe extern "C" fn mpq_denref_const(op: mpq_srcptr) -> mpz_srcptr {
-    (&(*op).den) as mpz_srcptr
+    (op as mpz_srcptr).offset(1)
 }
 extern "C" {
     /// See: [`mpq_get_num`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Rational-Number-Functions.html#index-mpq_005fget_005fnum)
@@ -1713,6 +1713,29 @@ mod tests {
     use gmp;
     use std::ffi::CStr;
     use std::mem;
+
+    #[test]
+    fn check_mpq_num_den_offsets() {
+        let mut limbs: [gmp::limb_t; 2] = [1, 1];
+        let mut q = gmp::mpq_t {
+            num: gmp::mpz_t {
+                alloc: 1,
+                size: 1,
+                d: &mut limbs[0],
+            },
+            den: gmp::mpz_t {
+                alloc: 1,
+                size: 1,
+                d: &mut limbs[1],
+            },
+        };
+        unsafe {
+            assert_eq!(&q.num as *const gmp::mpz_t, gmp::mpq_numref_const(&q));
+            assert_eq!(&q.den as *const gmp::mpz_t, gmp::mpq_denref_const(&q));
+            assert_eq!(&mut q.num as *mut gmp::mpz_t, gmp::mpq_numref(&mut q));
+            assert_eq!(&mut q.den as *mut gmp::mpz_t, gmp::mpq_denref(&mut q));
+        }
+    }
 
     #[test]
     fn check_limb_size() {

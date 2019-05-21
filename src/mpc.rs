@@ -308,22 +308,22 @@ extern "C" {
 /// See: [`mpc_realref`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005frealref)
 #[inline]
 pub unsafe extern "C" fn realref(op: mpc_ptr) -> mpfr_ptr {
-    (&mut (*op).re) as mpfr_ptr
+    op as mpfr_ptr
 }
 /// Constant version of [`realref`](fn.realref.html).
 #[inline]
 pub unsafe extern "C" fn realref_const(op: mpc_srcptr) -> mpfr_srcptr {
-    (&(*op).re) as mpfr_srcptr
+    op as mpfr_srcptr
 }
 /// See: [`mpc_imagref`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005fimagref)
 #[inline]
 pub unsafe extern "C" fn imagref(op: mpc_ptr) -> mpfr_ptr {
-    (&mut (*op).im) as mpfr_ptr
+    (op as mpfr_ptr).offset(1)
 }
 /// Constant version of [`imagref`](fn.imagref.html).
 #[inline]
 pub unsafe extern "C" fn imagref_const(op: mpc_srcptr) -> mpfr_srcptr {
-    (&(*op).im) as mpfr_srcptr
+    (op as mpfr_srcptr).offset(1)
 }
 extern "C" {
     /// See: [`mpc_arg`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/Complex-Functions.html#index-mpc_005farg)
@@ -550,8 +550,35 @@ pub extern "C" fn VERSION_NUM(major: c_int, minor: c_int, patchlevel: c_int) -> 
 
 #[cfg(test)]
 mod tests {
+    use gmp;
     use mpc;
+    use mpfr;
     use std::ffi::CStr;
+
+    #[test]
+    fn check_real_imag_offsets() {
+        let mut limbs: [gmp::limb_t; 2] = [1 << (gmp::LIMB_BITS - 1), 1 << (gmp::LIMB_BITS - 1)];
+        let mut c = mpc::mpc_t {
+            re: mpfr::mpfr_t {
+                prec: 1,
+                sign: 1,
+                exp: 0,
+                d: &mut limbs[0],
+            },
+            im: mpfr::mpfr_t {
+                prec: 1,
+                sign: 1,
+                exp: 0,
+                d: &mut limbs[1],
+            },
+        };
+        unsafe {
+            assert_eq!(&c.re as *const mpfr::mpfr_t, mpc::realref_const(&c));
+            assert_eq!(&c.im as *const mpfr::mpfr_t, mpc::imagref_const(&c));
+            assert_eq!(&mut c.re as *mut mpfr::mpfr_t, mpc::realref(&mut c));
+            assert_eq!(&mut c.im as *mut mpfr::mpfr_t, mpc::imagref(&mut c));
+        }
+    }
 
     #[test]
     fn check_version() {
