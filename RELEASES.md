@@ -8,7 +8,7 @@ as-is, without any warranty. -->
 Version 1.1.14 (unreleased)
 ===========================
 
-  * The documentation examples now use `MaybeUnint` instead of
+  * The documentation examples now use `MaybeUninit` instead of
     `mem::uninitialized`.
 
 Version 1.1.13 (2019-05-17)

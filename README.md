@@ -26,7 +26,7 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ### Version 1.1.14 news (unreleased)
 
-  * The documentation examples now use [`MaybeUnint`] instead of
+  * The documentation examples now use [`MaybeUninit`] instead of
     [`mem::uninitialized`].
 
 [`MaybeUninit`]: https://doc.rust-lang.org/nightly/std/mem/union.MaybeUninit.html
