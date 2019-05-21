@@ -43,6 +43,7 @@ enum Target {
 }
 
 struct Environment {
+    rustc: OsString,
     out_dir: PathBuf,
     lib_dir: PathBuf,
     include_dir: PathBuf,
@@ -62,6 +63,8 @@ enum Workaround47048 {
 }
 
 fn main() {
+    let rustc = cargo_env("RUSTC");
+
     let src_dir = PathBuf::from(cargo_env("CARGO_MANIFEST_DIR"));
     let out_dir = PathBuf::from(cargo_env("OUT_DIR"));
 
@@ -95,6 +98,7 @@ fn main() {
             && cargo_env("PROFILE") == OsString::from("release"));
 
     let env = Environment {
+        rustc: rustc,
         out_dir: out_dir.clone(),
         lib_dir: out_dir.join("lib"),
         include_dir: out_dir.join("include"),
@@ -106,6 +110,7 @@ fn main() {
         version_prefix: version_prefix,
         version_patch: version_patch,
     };
+    env.check_feature("maybe_uninit", TRY_MAYBE_UNINIT, Some("maybe_uninit"));
 
     // make sure we have target directories
     create_dir_or_panic(&env.lib_dir);
@@ -592,6 +597,52 @@ fn write_link_info(
     }
 }
 
+impl Environment {
+    fn check_feature(&self, name: &str, contents: &str, nightly_features: Option<&str>) {
+        let try_dir = self.out_dir.join(format!("try_{}", name));
+        let filename = format!("try_{}.rs", name);
+        create_dir_or_panic(&try_dir);
+        println!("$ cd {:?}", try_dir);
+
+        enum Iteration {
+            Stable,
+            Unstable,
+        }
+        for i in &[Iteration::Stable, Iteration::Unstable] {
+            let s;
+            let file_contents = match *i {
+                Iteration::Stable => contents,
+                Iteration::Unstable => match nightly_features {
+                    Some(features) => {
+                        s = format!("#![feature({})]\n{}", features, contents);
+                        &s
+                    }
+                    None => continue,
+                },
+            };
+            create_file_or_panic(&try_dir.join(&filename), file_contents);
+            let mut cmd = Command::new(&self.rustc);
+            cmd.current_dir(&try_dir)
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
+                .args(&[&*filename, "--emit=dep-info,metadata"]);
+            println!("$ {:?} >& /dev/null", cmd);
+            let status = cmd
+                .status()
+                .unwrap_or_else(|_| panic!("Unable to execute: {:?}", cmd));
+            if status.success() {
+                println!("cargo:rustc-cfg={}", name);
+                if let Iteration::Unstable = *i {
+                    println!("cargo:rustc-cfg=nightly_{}", name);
+                }
+                break;
+            }
+        }
+
+        remove_dir_or_panic(&try_dir);
+    }
+}
+
 fn cargo_env(name: &str) -> OsString {
     env::var_os(name)
         .unwrap_or_else(|| panic!("environment variable not found: {}, please use cargo", name))
@@ -864,6 +915,17 @@ fn flush(writer: &mut BufWriter<File>, name: &Path) {
         .flush()
         .unwrap_or_else(|_| panic!("Cannot write to: {:?}", name));
 }
+
+const TRY_MAYBE_UNINIT: &'static str = r#"// try_maybe_uninit.rs
+use std::mem::MaybeUninit;
+fn main() {
+    let mut x = MaybeUninit::<u8>::zeroed();
+    let _ = x.as_ptr();
+    let _ = x.as_mut_ptr();
+    let _ = unsafe { x.assume_init() };
+    let _ = MaybeUninit::<u8>::uninit();
+}
+"#;
 
 const BUG_47048_SAY_HI_C: &'static str = r#"/* say_hi.c */
 #include <stdio.h>
