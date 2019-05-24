@@ -46,20 +46,26 @@ using 200-bit precision. The program writes:
 
 ```rust
 # #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))]
+# macro_rules! cond {
+#     ($($t:tt)*) => {
+#         $($t)*
+#     };
+# }
+# #[cfg(any(not(maybe_uninit), nightly_maybe_uninit))]
+# macro_rules! cond {
+#     ($($t:tt)*) => {
+#         fn main() {}
+#     };
+# }
+# cond! {
 use gmp_mpfr_sys::mpfr::{self, mpfr_t, rnd_t};
-# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))]
 use std::ffi::CStr;
-# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))]
 use std::fmt::Write;
-# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))]
 use std::mem::MaybeUninit;
-# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))]
 use std::os::raw::c_int;
-# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))]
 use std::ptr;
 
 fn main() {
-# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))] {
     unsafe {
         let mut t = MaybeUninit::uninit();
         mpfr::init2(t.as_mut_ptr(), 200);
@@ -75,7 +81,7 @@ fn main() {
         mpfr::init2(u.as_mut_ptr(), 200);
         let mut u = u.assume_init();
 
-        for i in 1..101 {
+        for i in 1..=100 {
             mpfr::mul_ui(&mut t, &t, i, rnd_t::RNDU);
             mpfr::set_d(&mut u, 1.0, rnd_t::RNDD);
             mpfr::div(&mut u, &u, &t, rnd_t::RNDD);
@@ -91,10 +97,8 @@ fn main() {
         #     "2.7182818284590452353602874713526624977572470936999595749669131"
         # );
     }
-# }
 }
 
-# #[cfg(all(maybe_uninit, not(nightly_maybe_uninit)))]
 unsafe fn mpfr_to_string(
     base: c_int, n: usize, op: *const mpfr_t, rnd: rnd_t
 ) -> String {
@@ -113,6 +117,7 @@ unsafe fn mpfr_to_string(
     }
     buf
 }
+# }
 ```
 
 [MPFR sample]: https://www.mpfr.org/sample.html
