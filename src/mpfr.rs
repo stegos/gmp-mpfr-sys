@@ -173,7 +173,7 @@ pub const PREC_MAX: prec_t = ((!(0 as uprec_t) >> 1) - 256) as prec_t;
 /// See: [`mpfr_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Basics.html#index-mpfr_005ft)
 /// and [Internals](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpfr/MPFR-Interface.html#Internals)
 ///
-/// # Compatibility note
+/// # Future compatibility
 ///
 /// The fields listed here are considered internal details. These
 /// internals may change in new minor releases of this crate, though

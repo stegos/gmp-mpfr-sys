@@ -91,7 +91,7 @@ pub type bitcnt_t = c_ulong;
 /// See: [`mpz_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/GMP-Basics.html#index-mpz_005ft)
 /// and [Integer Internals](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Internals.html#Integer-Internals)
 ///
-/// # Compatibility note
+/// # Future compatibility
 ///
 /// The fields listed here are considered internal details. These
 /// internals may change in new minor releases of this crate, though
@@ -114,7 +114,7 @@ pub struct mpz_t {
 /// See: [`mpq_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/GMP-Basics.html#index-mpq_005ft)
 /// and [Rational Internals](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Internals.html#Rational-Internals)
 ///
-/// # Compatibility note
+/// # Future compatibility
 ///
 /// The fields listed here are considered internal details. These
 /// internals may change in new minor releases of this crate, though
@@ -136,7 +136,7 @@ pub struct mpq_t {
 /// See: [`mpf_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/GMP-Basics.html#index-mpf_005ft)
 /// and [Float Internals](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Internals.html#Float-Internals)
 ///
-/// # Compatibility note
+/// # Future compatibility
 ///
 /// The fields listed here are considered internal details. These
 /// internals may change in new minor releases of this crate, though
@@ -160,7 +160,7 @@ pub struct mpf_t {
 
 /// See: [`gmp_randstate_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/GMP-Basics.html#index-gmp_005frandstate_005ft)
 ///
-/// # Compatibility note
+/// # Future compatibility
 ///
 /// The fields listed here are considered internal details. These
 /// internals may change in new minor releases of this crate, though

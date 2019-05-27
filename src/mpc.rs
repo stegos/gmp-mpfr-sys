@@ -125,7 +125,7 @@ pub const RNDDD: c_int = RNDD + (RNDD << 4);
 
 /// See: [`mpc_t`](https://tspiteri.gitlab.io/gmp-mpfr-sys/mpc/GNU-MPC-Basics.html#index-mpc_005ft)
 ///
-/// # Compatibility note
+/// # Future compatibility
 ///
 /// The fields listed here are considered internal details. These
 /// internals may change in new minor releases of this crate, though
