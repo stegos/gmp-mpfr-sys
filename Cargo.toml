@@ -45,4 +45,4 @@ cnodelete = []
 libc = "0.2"
 
 [build-dependencies]
-dirs = "~1.0"
+dirs = "~2.0"
