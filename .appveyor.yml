@@ -33,7 +33,7 @@ environment:
       MSYSTEM_PREFIX: C:/msys64/mingw32
 
 cache:
-  - '%USERPROFILE%\.cargo\registry\cache'
+  - '%USERPROFILE%\.cargo\registry\cache -> Cargo.toml'
 
 install:
   - set PATH=C:\msys64\%MSYSTEM%\bin;C:\msys64\usr\bin;%USERPROFILE%\.cargo\bin;%PATH%
