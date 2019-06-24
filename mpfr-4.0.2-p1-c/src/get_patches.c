@@ -25,5 +25,5 @@ https://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 const char *
 mpfr_get_patches (void)
 {
-  return "";
+  return "include-float";
 }
