@@ -26,6 +26,7 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ### Version 1.1.14 news (unreleased)
 
+  * [MPFR] was updated from version 4.0.2 to 4.0.2-p1.
   * The documentation examples now use [`MaybeUninit`] instead of
     [`mem::uninitialized`].
 

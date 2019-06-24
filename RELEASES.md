@@ -8,6 +8,7 @@ as-is, without any warranty. -->
 Version 1.1.14 (unreleased)
 ===========================
 
+  * MPFR was updated from version 4.0.2 to 4.0.2-p1.
   * The documentation examples now use `MaybeUninit` instead of
     `mem::uninitialized`.
 
