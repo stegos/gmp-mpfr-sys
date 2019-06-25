@@ -1440,10 +1440,11 @@ pub unsafe extern "C" fn custom_move(x: mpfr_ptr, new_position: *mut c_void) {
 #[cfg(test)]
 mod tests {
     use mpfr;
-    use std::ffi::CStr;
 
+    #[cfg(not(newer_cache))]
     #[test]
     fn check_version() {
+        use std::ffi::CStr;
         let num_version = "4.0.2";
         let from_constants = format!(
             "{}.{}.{}",

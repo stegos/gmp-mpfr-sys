@@ -556,7 +556,6 @@ mod tests {
     use gmp;
     use mpc;
     use mpfr;
-    use std::ffi::CStr;
 
     #[test]
     fn check_real_imag_offsets() {
@@ -583,8 +582,10 @@ mod tests {
         }
     }
 
+    #[cfg(not(newer_cache))]
     #[test]
     fn check_version() {
+        use std::ffi::CStr;
         let version = "1.1.0";
         let from_constants = format!(
             "{}.{}.{}",

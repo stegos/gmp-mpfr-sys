@@ -54,6 +54,7 @@ struct Environment {
     make_check: bool,
     version_prefix: String,
     version_patch: Option<u64>,
+    newer_cache: bool,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -97,7 +98,7 @@ fn main() {
         || (!there_is_env("CARGO_FEATURE_CNOTEST")
             && cargo_env("PROFILE") == OsString::from("release"));
 
-    let env = Environment {
+    let mut env = Environment {
         rustc: rustc,
         out_dir: out_dir.clone(),
         lib_dir: out_dir.join("lib"),
@@ -109,6 +110,7 @@ fn main() {
         make_check: make_check,
         version_prefix: version_prefix,
         version_patch: version_patch,
+        newer_cache: false,
     };
     env.check_feature("maybe_uninit", TRY_MAYBE_UNINIT, Some("maybe_uninit"));
 
@@ -133,7 +135,8 @@ fn main() {
         None
     };
 
-    let (compile_gmp, compile_mpfr, compile_mpc) = need_compile(&env, &gmp_ah, &mpfr_ah, &mpc_ah);
+    let (compile_gmp, compile_mpfr, compile_mpc) =
+        need_compile(&mut env, &gmp_ah, &mpfr_ah, &mpc_ah);
     if compile_gmp {
         check_for_msvc(&env);
         remove_dir_or_panic(&env.build_dir);
@@ -160,6 +163,9 @@ fn main() {
             clear_cache_redundancies(&env, mpfr_ah.is_some(), mpc_ah.is_some());
         }
     }
+    if env.newer_cache {
+        println!("cargo:rustc-cfg=newer_cache");
+    }
     process_gmp_header(&gmp_ah.1, &out_dir.join("gmp_h.rs"));
     write_link_info(&env, workaround_47048, mpfr_ah.is_some(), mpc_ah.is_some());
 }
@@ -185,7 +191,7 @@ fn get_version() -> (String, Option<u64>) {
 }
 
 fn need_compile(
-    env: &Environment,
+    env: &mut Environment,
     gmp_ah: &(PathBuf, PathBuf),
     mpfr_ah: &Option<(PathBuf, PathBuf)>,
     mpc_ah: &Option<(PathBuf, PathBuf)>,
@@ -333,7 +339,7 @@ fn cache_directories(env: &Environment, base: &Path) -> Vec<(PathBuf, Option<u64
 }
 
 fn load_cache(
-    env: &Environment,
+    env: &mut Environment,
     gmp_ah: &(PathBuf, PathBuf),
     mpfr_ah: &Option<(PathBuf, PathBuf)>,
     mpc_ah: &Option<(PathBuf, PathBuf)>,
@@ -342,10 +348,11 @@ fn load_cache(
         Some(ref s) => s,
         None => return false,
     };
+    let env_version_patch = env.version_patch;
     let cache_dirs = cache_directories(env, &cache_dir)
         .into_iter()
         .rev()
-        .filter(|x| match env.version_patch {
+        .filter(|x| match env_version_patch {
             None => x.1.is_none(),
             Some(patch) => x.1.map(|p| p >= patch).unwrap_or(false),
         });
@@ -355,7 +362,7 @@ fn load_cache(
     } else {
         &checks
     };
-    for (version_dir, _) in cache_dirs {
+    for (version_dir, version_patch) in cache_dirs {
         for req_check in req_checks {
             let check_dir = version_dir.join(req_check);
             let mut ok = true;
@@ -371,6 +378,9 @@ fn load_cache(
             ok = ok && copy_file(&check_dir.join("libgmp.a"), a).is_ok();
             ok = ok && copy_file(&check_dir.join("gmp.h"), h).is_ok();
             if ok {
+                if version_patch != env_version_patch {
+                    env.newer_cache = true;
+                }
                 return true;
             }
         }

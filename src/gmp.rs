@@ -1714,7 +1714,6 @@ extern "C" {
 #[cfg(test)]
 mod tests {
     use gmp;
-    use std::ffi::CStr;
     use std::mem;
 
     #[test]
@@ -1749,8 +1748,10 @@ mod tests {
         assert_eq!(from_static, from_constant);
     }
 
+    #[cfg(not(newer_cache))]
     #[test]
     fn check_version() {
+        use std::ffi::CStr;
         let version = "6.1.2";
         let from_static = unsafe { CStr::from_ptr(gmp::version) };
         let from_constants = format!(
