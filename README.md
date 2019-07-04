@@ -24,7 +24,7 @@ text of the [GNU LGPL] and [GNU GPL] for details.
 
 ## What’s new
 
-### Version 1.1.14 news (unreleased)
+### Version 1.1.14 news (2019-07-04)
 
   * [MPFR] was updated from version 4.0.2 to 4.0.2-p1.
   * The documentation examples now use [`MaybeUninit`] instead of
@@ -38,14 +38,6 @@ text of the [GNU LGPL] and [GNU GPL] for details.
   * Expose the internal fields of [`gmp::mpq_t`], [`gmp::randstate_t`]
     and [`mpc::mpc_t`], and add some notes about compatibility in the
     documentation.
-
-### Version 1.1.12 news (2019-03-08)
-
-  * The built C libraries are now cached.
-
-### Version 1.1.11 news (2019-02-01)
-
-  * [MPFR] was updated from version 4.0.1-p14 to 4.0.2.
 
 ### Other releases
 
