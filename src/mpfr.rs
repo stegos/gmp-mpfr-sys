@@ -59,11 +59,8 @@ using 200-bit precision. The program writes:
 # }
 # cond! {
 use gmp_mpfr_sys::mpfr::{self, mpfr_t, rnd_t};
-use std::ffi::CStr;
-use std::fmt::Write;
 use std::mem::MaybeUninit;
 use std::os::raw::c_int;
-use std::ptr;
 
 fn main() {
     unsafe {
@@ -92,6 +89,7 @@ fn main() {
         mpfr::clear(&mut s);
         mpfr::clear(&mut t);
         mpfr::clear(&mut u);
+        mpfr::free_cache();
         # assert_eq!(
         #     sr,
         #     "2.7182818284590452353602874713526624977572470936999595749669131"
@@ -102,6 +100,10 @@ fn main() {
 unsafe fn mpfr_to_string(
     base: c_int, n: usize, op: *const mpfr_t, rnd: rnd_t
 ) -> String {
+    use std::ffi::CStr;
+    use std::fmt::Write;
+    use std::ptr;
+
     let mut exp = MaybeUninit::uninit();
     let str = mpfr::get_str(ptr::null_mut(), exp.as_mut_ptr(), base, n, op, rnd);
     let exp = exp.assume_init();
