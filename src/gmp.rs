@@ -273,11 +273,9 @@ extern "C" {
 #[inline]
 #[cfg(any(not(nails), long_long_limb))]
 pub unsafe extern "C" fn mpz_get_ui(op: mpz_srcptr) -> c_ulong {
-    let p = (*op).d;
-    let n = (*op).size;
-    let l = (*p) as c_ulong;
-    if n != 0 {
-        l
+    if (*op).size != 0 {
+        let p = (*op).d;
+        (*p) as c_ulong
     } else {
         0
     }
@@ -287,17 +285,13 @@ pub unsafe extern "C" fn mpz_get_ui(op: mpz_srcptr) -> c_ulong {
 #[cfg(all(nails, not(long_long_limb)))]
 pub unsafe extern "C" fn mpz_get_ui(op: mpz_srcptr) -> c_ulong {
     let p = (*op).d;
-    let n = (*op).size;
-    let l = (*p);
-    let n = n.abs();
-    if n <= 1 {
-        if n != 0 {
-            l
-        } else {
-            0
-        }
+    let n = (*op).size.abs();
+    if n == 0 {
+        0
+    } else if n == 1 {
+        *p
     } else {
-        l + ((*(p.offset(1))) << NUMB_BITS)
+        *p + ((*(p.offset(1))) << NUMB_BITS)
     }
 }
 extern "C" {
@@ -833,7 +827,11 @@ extern "C" {
 /// See: [`mpz_odd_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005fodd_005fp)
 #[inline]
 pub unsafe extern "C" fn mpz_odd_p(op: mpz_srcptr) -> c_int {
-    (*(*op).d) as c_int & if (*op).size != 0 { 1 } else { 0 }
+    if (*op).size == 0 {
+        0
+    } else {
+        1 & (*(*op).d) as c_int
+    }
 }
 /// See: [`mpz_even_p`](https://tspiteri.gitlab.io/gmp-mpfr-sys/gmp/Integer-Functions.html#index-mpz_005feven_005fp)
 #[inline]
