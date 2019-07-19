@@ -1557,7 +1557,7 @@ div.name.expand::before {
 	transform: rotate(90deg);
 	left: -14px;
 }
-/* Sylliness */
+/* Sillyness */
 img.dancing:hover {
 	transform: rotate(360deg);
 	transition: 2s ease-in-out;
