@@ -46,3 +46,5 @@ libc = "0.2"
 
 [build-dependencies]
 dirs = "2.0"
+# we do not use cfg-if directly, but cfg-if 0.1.10 needs rustc > 1.13, so block it
+cfg-if = "<0.1.10"
