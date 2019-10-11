@@ -21,7 +21,7 @@
 extern crate dirs;
 
 use std::env;
-use std::ffi::{OsStr, OsString};
+use std::ffi::OsString;
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader, BufWriter, Result as IoResult, Write};
 #[cfg(unix)]
@@ -55,6 +55,9 @@ struct Environment {
     version_prefix: String,
     version_patch: Option<u64>,
     newer_cache: bool,
+    cc: String,
+    cflags: String,
+    host: String,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -69,9 +72,7 @@ fn main() {
     let src_dir = PathBuf::from(cargo_env("CARGO_MANIFEST_DIR"));
     let out_dir = PathBuf::from(cargo_env("OUT_DIR"));
 
-    let host = cargo_env("HOST");
     let target = cargo_env("TARGET");
-    assert_eq!(host, target, "cross compilation is not supported");
 
     let (version_prefix, version_patch) = get_version();
 
@@ -81,13 +82,14 @@ fn main() {
         Some(c) => Some(PathBuf::from(c)),
         None => dirs::cache_dir().map(|c| c.join("gmp-mpfr-sys")),
     };
-    let cache_dir = cache_dir.map(|cache| cache.join(&version_prefix).join(host));
+    let cache_dir = cache_dir.map(|cache| cache.join(&version_prefix).join(target.clone()));
 
     let target = target
         .into_string()
         .expect("cannot convert environment variable TARGET into a `String`");
     let target = if target.contains("-windows-msvc") {
-        Target::Msvc
+        panic!("MSVC is not supported");
+    //Target::Msvc
     } else if target.contains("-windows-gnu") {
         Target::Mingw
     } else {
@@ -97,6 +99,36 @@ fn main() {
     let make_check = there_is_env("CARGO_FEATURE_CTEST")
         || (!there_is_env("CARGO_FEATURE_CNOTEST")
             && cargo_env("PROFILE") == OsString::from("release"));
+
+    // Get CC, CFLAGS and HOST from `cc` crate.
+    let compiler = cc::Build::new().get_compiler();
+    let cc = match &compiler.cc_env() {
+        cc if cc.is_empty() => compiler
+            .path()
+            .to_str()
+            .expect("Unprintable CC")
+            .to_string(),
+        cc => cc.to_str().expect("Unprintable CC").to_string(),
+    };
+    let cflags = compiler
+        .cflags_env()
+        .to_str()
+        .expect("Unprintable CFLAGS")
+        .to_string();
+    let host = String::from_utf8(
+        compiler
+            .to_command()
+            .arg("-dumpmachine")
+            .output()
+            .expect("Failed to get HOST")
+            .stdout,
+    )
+    .expect("Unprintable HOST")
+    .trim_end()
+    .to_string();
+    if host.is_empty() {
+        panic!("Failed to get HOST")
+    }
 
     let mut env = Environment {
         rustc: rustc,
@@ -111,6 +143,9 @@ fn main() {
         version_prefix: version_prefix,
         version_patch: version_patch,
         newer_cache: false,
+        cc,
+        cflags,
+        host,
     };
     env.check_feature("maybe_uninit", TRY_MAYBE_UNINIT, Some("maybe_uninit"));
 
@@ -432,8 +467,25 @@ fn build_gmp(env: &Environment, lib: &Path, header: &Path) {
     let build_dir = env.build_dir.join("gmp-build");
     create_dir_or_panic(&build_dir);
     println!("$ cd {:?}", build_dir);
-    let conf = "../gmp-src/configure --enable-fat --disable-shared --with-pic";
-    configure(&build_dir, &OsString::from(conf));
+    println!("$ export CC={:?}", &env.cc);
+    println!("$ export CFLAGS={:?}", &env.cflags);
+    let conf = format!(
+        "../gmp-src/configure \
+         --host={} \
+         --enable-fat \
+         --disable-shared \
+         --with-pic \
+         ",
+        &env.host
+    );
+    let mut configure = Command::new("sh");
+    configure
+        .current_dir(&build_dir)
+        .arg("-c")
+        .arg(conf)
+        .env("CC", &env.cc)
+        .env("CFLAGS", &env.cflags);
+    execute(configure);
     make_and_check(env, &build_dir);
     let build_lib = build_dir.join(".libs").join("libgmp.a");
     copy_file_or_panic(&build_lib, &lib);
@@ -525,13 +577,30 @@ fn build_mpfr(env: &Environment, lib: &Path, header: &Path) {
     let build_dir = env.build_dir.join("mpfr-build");
     create_dir_or_panic(&build_dir);
     println!("$ cd {:?}", build_dir);
+    println!("$ export CC={:?}", &env.cc);
+    println!("$ export CFLAGS={:?}", &env.cflags);
     link_dir(
         &env.build_dir.join("gmp-build"),
         &build_dir.join("gmp-build"),
     );
-    let conf = "../mpfr-src/configure --enable-thread-safe --disable-shared \
-                --with-gmp-build=../gmp-build --with-pic";
-    configure(&build_dir, &OsString::from(conf));
+    let conf = format!(
+        "../mpfr-src/configure \
+         --host={} \
+         --enable-thread-safe \
+         --disable-shared \
+         --with-pic \
+         --with-gmp-build=../gmp-build \
+         ",
+        &env.host
+    );
+    let mut configure = Command::new("sh");
+    configure
+        .current_dir(&build_dir)
+        .arg("-c")
+        .arg(conf)
+        .env("CC", &env.cc)
+        .env("CFLAGS", &env.cflags);
+    execute(configure);
     make_and_check(env, &build_dir);
     let build_lib = build_dir.join("src").join(".libs").join("libmpfr.a");
     copy_file_or_panic(&build_lib, &lib);
@@ -551,12 +620,29 @@ fn build_mpc(env: &Environment, lib: &Path, header: &Path) {
         &env.build_dir.join("mpfr-build"),
         &build_dir.join("mpfr-build"),
     );
-    let conf = "../mpc-src/configure --disable-shared \
-                --with-mpfr-include=../mpfr-src/src \
-                --with-mpfr-lib=../mpfr-build/src/.libs \
-                --with-gmp-include=../gmp-build \
-                --with-gmp-lib=../gmp-build/.libs --with-pic";
-    configure(&build_dir, &OsString::from(conf));
+    println!("$ export CC={:?}", &env.cc);
+    println!("$ export CFLAGS={:?}", &env.cflags);
+    let conf = format!(
+        "../mpc-src/configure \
+         --host={} \
+         --enable-fat \
+         --disable-shared \
+         --with-pic \
+         --with-mpfr-include=../mpfr-src/src \
+         --with-mpfr-lib=../mpfr-build/src/.libs \
+         --with-gmp-include=../gmp-build \
+         --with-gmp-lib=../gmp-build/.libs
+         ",
+        &env.host
+    );
+    let mut configure = Command::new("sh");
+    configure
+        .current_dir(&build_dir)
+        .arg("-c")
+        .arg(conf)
+        .env("CC", &env.cc)
+        .env("CFLAGS", &env.cflags);
+    execute(configure);
     make_and_check(env, &build_dir);
     let build_lib = build_dir.join("src").join(".libs").join("libmpc.a");
     copy_file_or_panic(&build_lib, &lib);
@@ -835,12 +921,6 @@ fn copy_file_or_panic(src: &Path, dst: &Path) {
     copy_file(src, dst).unwrap_or_else(|_| {
         panic!("Unable to copy {:?} -> {:?}", src, dst);
     });
-}
-
-fn configure(build_dir: &Path, conf_line: &OsStr) {
-    let mut conf = Command::new("sh");
-    conf.current_dir(&build_dir).arg("-c").arg(conf_line);
-    execute(conf);
 }
 
 fn make_and_check(env: &Environment, build_dir: &Path) {
